@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+dependencies {
+    compile rootProject.ext.rxjava
+    compile rootProject.ext.rxrelay
+
+    testCompile rootProject.ext.junit
+    testCompile rootProject.ext.assertjCore2
+    testCompile rootProject.ext.cucjava
+    testCompile rootProject.ext.cucjunit
+    testCompile rootProject.ext.picocontainer
+}
