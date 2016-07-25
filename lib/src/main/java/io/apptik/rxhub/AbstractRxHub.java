@@ -91,7 +91,8 @@ public abstract class AbstractRxHub implements RxHub {
         if (res == null) {
             res = addNode(tag);
         }
-        return res;
+        //make sure we expose it asObservable hide node's identity
+        return res.asObservable();
     }
 
     private Observable addNode(Object tag) {
@@ -140,7 +141,7 @@ public abstract class AbstractRxHub implements RxHub {
     }
 
     /**
-     * Manually emit event to a specific Node
+     * Manually emit event to a specific Node. In order to prohibit this behaviour override this
      * @param tag the ID of the Node
      * @param event the Event to emit
      */
