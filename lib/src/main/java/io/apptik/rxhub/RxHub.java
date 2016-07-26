@@ -8,13 +8,27 @@ import rx.Observable;
  * RxJava based Hub connecting Observables and Observers so that Observers can receive events
  * without knowledge of which Observables, if any, there are,
  * while maintaining clear connection between them.
+ *
  * @see AbstractRxHub
  */
 public interface RxHub {
 
-
+    /**
+     * Subscribes Node to {@link Observable}.
+     * If there is no Node with the specific tag a new one will be created
+     * except if the node is of type {@link NodeType#ObservableRef}
+     *
+     * @param tag      the ID of the Node
+     * @param provider the Observable to subscribe to
+     */
     void addProvider(Object tag, Observable provider);
 
+    /**
+     * Unsubscribe {@link Observable} from a Node
+     *
+     * @param tag      the ID of the Node
+     * @param provider the Observable to unsubscribe from
+     */
     void removeProvider(Object tag, Observable provider);
 
     void clearProviders();
@@ -63,6 +77,7 @@ public interface RxHub {
         ReplaySubject,
         BehaviorRelay,
         PublishRelay,
-        ReplayRelay
+        ReplayRelay,
+        ObservableRef
     }
 }

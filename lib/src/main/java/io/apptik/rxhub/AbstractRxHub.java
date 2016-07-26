@@ -18,19 +18,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * Base implementation of {@link RxHub}
  * Essentially this is a collection of {@link Observable} nodes which can also subscribe to other
  * Observables and pass events to their Subscribers
- * <p>
+ * <p/>
  * Nodes can be either {@link Subject} or {@link Relay}. Nodes are identified by their Tags.
  * Nodes subscribes to Observables however each subscription created is
  * per {@link io.apptik.rxhub.RxHub.Source}. A Source is identified by Observable and a Tag.
  * For example when Observable A is added with Tag T1 and Tag T2. Two nodes are created receiving
  * the same events. Each of those nodes can be used and unsubscribed from Observable A
  * independently.
- * <p>
+ * <p/>
  * Observers subscribe to a Node. Observers does not need to know about the source of the Events
  * i.e the Observers that the Nodes is subscribed to.
- * <p>
+ * <p/>
  * To fetch the Node to subscribe to {@link AbstractRxHub#getNode(Object)} must be called.
- * <p>
+ * <p/>
  * Non-Rx code can also call {@link AbstractRxHub#emit(Object, Object)} to manually emit Events
  * through specific Node.
  */
@@ -41,58 +41,61 @@ public abstract class AbstractRxHub implements RxHub {
 
     private CompositeSubscription subscriptions = new CompositeSubscription();
 
-    /**
-     * Subscribes Node to {@link Observable}.
-     * If there is no Node with the specific tag a new one will be created
-     *
-     * @param tag the ID of the Node
-     * @param provider the Observable to subscribe to
-     */
     @Override
     public void addProvider(Object tag, Observable provider) {
-        Subscription res;
-        Observable node = nodeMap.get(tag);
-        if (node == null) {
-            node = addNode(tag);
-        }
-        if (Action1.class.isAssignableFrom(node.getClass())) {
-            res = provider.subscribe((Action1) node);
-        } else if (Observer.class.isAssignableFrom(node.getClass())) {
-            res = provider.subscribe((Observer) node);
+        if (getNodeType(tag) == NodeType.ObservableRef) {
+            nodeMap.put(tag, provider);
         } else {
-            //should not happen
-            throw new IllegalStateException(String.format(Locale.ENGLISH,
-                    "Node(%s) neither " + "Action1 nor " + "Observer", tag));
+            Subscription res;
+            Observable node = nodeMap.get(tag);
+            if (node == null) {
+                node = addNode(tag);
+            }
+            if (Action1.class.isAssignableFrom(node.getClass())) {
+                res = provider.subscribe((Action1) node);
+            } else if (Observer.class.isAssignableFrom(node.getClass())) {
+                res = provider.subscribe((Observer) node);
+            } else {
+                //should not happen
+                throw new IllegalStateException(String.format(Locale.ENGLISH,
+                        "Node(%s) type(%s) is not supported! Do we have an alien injection?",
+                        tag, provider.getClass()));
+            }
+            subscriptions.add(res);
+            subscriptionMap.put(new Source(provider, tag), res);
         }
-        subscriptions.add(res);
-        subscriptionMap.put(new Source(provider, tag), res);
     }
 
-    /**
-     * Unsubscribe {@link Observable} from a Node
-     * @param tag the ID of the Node
-     * @param provider the Observable to unsubscribe from
-     */
     @Override
     public void removeProvider(Object tag, Observable provider) {
-        Source s = new Source(provider, tag);
-        subscriptions.remove(subscriptionMap.get(s));
-        subscriptionMap.remove(s);
+        if (getNodeType(tag) == NodeType.ObservableRef) {
+            nodeMap.remove(tag);
+        } else {
+            Source s = new Source(provider, tag);
+            subscriptions.remove(subscriptionMap.get(s));
+            subscriptionMap.remove(s);
+        }
     }
 
     /**
      * Returns the Node Observable identified by the tag
+     *
      * @param tag the ID of the Node
      * @return the Node Observable
      */
     @Override
     public Observable getNode(Object tag) {
+        //make sure we expose it asObservable hide node's identity
+        return getNodeInternal(tag).asObservable();
+    }
+
+
+    private Observable getNodeInternal(Object tag) {
         Observable res = nodeMap.get(tag);
         if (res == null) {
             res = addNode(tag);
         }
-        //make sure we expose it asObservable hide node's identity
-        return res.asObservable();
+        return res;
     }
 
     private Observable addNode(Object tag) {
@@ -116,6 +119,9 @@ public abstract class AbstractRxHub implements RxHub {
                 break;
             case ReplayRelay:
                 res = ReplayRelay.create();
+                break;
+            case ObservableRef:
+                res = null;
                 break;
             //should not happen;
             default:
@@ -142,12 +148,17 @@ public abstract class AbstractRxHub implements RxHub {
 
     /**
      * Manually emit event to a specific Node. In order to prohibit this behaviour override this
-     * @param tag the ID of the Node
+     *
+     * @param tag   the ID of the Node
      * @param event the Event to emit
      */
     @Override
     public void emit(Object tag, Object event) {
-        Observable node = getNode(tag);
+        if (getNodeType(tag)==NodeType.ObservableRef) {
+            throw new IllegalStateException(String.format(Locale.ENGLISH,
+                    "Emitting event not possible. Node(%s) represents immutable stream.", tag));
+        }
+        Observable node = getNodeInternal(tag);
         if (Action1.class.isAssignableFrom(node.getClass())) {
             ((Action1) node).call(event);
         } else if (Observer.class.isAssignableFrom(node.getClass())) {
@@ -155,7 +166,8 @@ public abstract class AbstractRxHub implements RxHub {
         } else {
             //should not happen
             throw new IllegalStateException(String.format(Locale.ENGLISH,
-                    "Node(%s) neither " + "Action1 nor " + "Observer", tag));
+                    "Node(%s) type(%s) is not supported! Do we have an alien injection?",
+                    tag, node.getClass()));
         }
     }
 
