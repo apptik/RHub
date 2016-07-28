@@ -40,6 +40,8 @@ Snapshots of the development versions are available in [Sonatype's `snapshots` r
 
 ## Overview
 
+![RxHub](https://raw.githubusercontent.com/apptik/rxhub/master/img/RxHub.png)
+
 RxHub allows Publish/Subscribe pattern implementation and thus helps
 decouple components. This might be compared to an EventBus where:
 
@@ -50,7 +52,7 @@ or by adding an Observable
 
 In RxHub different set of events are separated into Nodes identified by a tag.
 
-Main Concepts:
+Main Concepts and Features:
 (Hub, Node, Tag, Producer, Consumer)
 
 *   a Hub contains Nodes which are rx.Observables
@@ -60,6 +62,7 @@ Main Concepts:
 *   one or more Producers can be added to a Node
 *   Node can be returned by the Hub and then multiple Consumers can subscribe to it
 
+Check also the [Gherkin Features][features]
 
 ## Considerations
 
@@ -70,6 +73,8 @@ Main Concepts:
 Using RxHub in fully reactive code emit should be disabled or removed.
 *   ObservableRef node type is not really unsubscribed form the original source,
 because it is the original source. This might cause confusion.
+*   Backpressure handling is not done in the nodes where probably it makes the most sense to do that.
+Backpressure strategy interface could be used and applied to nodes in the hub
 
 ## Licence
 
@@ -91,4 +96,5 @@ because it is the original source. This might cause confusion.
 [mvn]: http://search.maven.org/#search|ga|1|io.apptik.rxhub.core
  [release]: https://oss.sonatype.org/content/repositories/releases/io/apptik/rxhub/core
  [snap]: https://oss.sonatype.org/content/repositories/snapshots/io/apptik/rxhub/core
+ [features]: https://github.com/apptik/rxHub/tree/master/lib/src/test/resources/features
  
