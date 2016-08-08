@@ -1,5 +1,7 @@
 # RxHub
 
+[![Build Status](https://travis-ci.org/apptik/rxhub.svg?branch=master)](https://travis-ci.org/apptik/rxhub)
+
 RxJava based Observables Hub connecting Observables and Observers so that 
 Observers can subscribe to an Event Source without knowledge of which 
 Observables, if any, there are, while maintaining clear connection between them.
@@ -18,12 +20,12 @@ Find [the latest JARs][mvn] or grab via Maven:
 <dependency>
   <groupId>io.apptik.rxhub</groupId>
   <artifactId>core</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.1-SNAPSHOT</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'io.apptik.rxhub:core:0.0.1'
+compile 'io.apptik.rxhub:core:0.0.1-SNAPSHOT'
 ```
 
 Downloads of the released versions are available in [Sonatype's `releases` repository][release].
@@ -37,6 +39,17 @@ Snapshots of the development versions are available in [Sonatype's `snapshots` r
 *   Most EventBus implementations support only non Rx input/output of events
 *   EventBus connections with producers and event consumers are not that evident thus making the code more difficult to read, reason and debug 
 
+
+
+## Example
+
+```java
+	RxHub rxHub = new DefaultRxHub();
+	rxHub.getNode("src1").subscribe(System.out::println);
+	rxHub.addProvider("src1", Observable.just(1));
+	rxHub.addProvider("src1", Observable.just(5));
+	rxHub.getNode("src1").subscribe(System.err::println);
+```
 
 ## Overview
 

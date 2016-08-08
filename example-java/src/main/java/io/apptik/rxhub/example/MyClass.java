@@ -19,7 +19,7 @@ public class MyClass {
                 return super.getNodeType(tag);
             }
         };
-        Observable src1 = Observable.from(new Integer[] {1,3,5,7,11,13});
+        Observable src1 = Observable.just(5).from(new Integer[] {1,3,5,7,11,13});
         Observable src2 = Observable.interval(1, TimeUnit.SECONDS);
         rxHub.addProvider("src1", src1);
 
@@ -27,6 +27,7 @@ public class MyClass {
             System.out.println("consumer1 (src1) got: " + o);
         });
 
+        rxHub.getNode("src1").subscribe(System.out::println);
         rxHub.getNode("src1.1").subscribe(o -> {
             System.out.println("consumer1 (src1.1) got: " + o);
         });
@@ -44,7 +45,6 @@ public class MyClass {
         rxHub.getNode("src2").subscribe(o -> {
             System.out.println("consumer2 (src2) got: " + o);
         });
-
         new Thread(() -> {
             try {
                 Thread.sleep(5000);
