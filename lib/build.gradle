@@ -10,3 +10,6 @@ dependencies {
     testCompile rootProject.ext.cucjunit
     testCompile rootProject.ext.picocontainer
 }
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
