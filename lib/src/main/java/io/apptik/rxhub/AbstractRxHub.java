@@ -1,17 +1,27 @@
 package io.apptik.rxhub;
 
 
-import com.jakewharton.rxrelay.*;
-import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
-import rx.functions.Action1;
-import rx.subjects.*;
-import rx.subscriptions.CompositeSubscription;
+import com.jakewharton.rxrelay.BehaviorRelay;
+import com.jakewharton.rxrelay.PublishRelay;
+import com.jakewharton.rxrelay.Relay;
+import com.jakewharton.rxrelay.ReplayRelay;
+import com.jakewharton.rxrelay.SerializedRelay;
 
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
+import rx.subjects.ReplaySubject;
+import rx.subjects.SerializedSubject;
+import rx.subjects.Subject;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -77,16 +87,21 @@ public abstract class AbstractRxHub implements RxHub {
         }
     }
 
-    /**
-     * Returns the Node Observable identified by the tag
-     *
-     * @param tag the ID of the Node
-     * @return the Node Observable
-     */
     @Override
     public Observable getNode(Object tag) {
         //make sure we expose it asObservable hide node's identity
         return getNodeInternal(tag).asObservable();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> Observable<T> getNodeFiltered(Object tag, final Class<T> filterClass) {
+        return getNode(tag).filter(new Func1<Object, Boolean>() {
+            @Override
+            public Boolean call(Object obj) {
+                return filterClass.isAssignableFrom(obj.getClass());
+            }
+        });
     }
 
 
@@ -146,12 +161,6 @@ public abstract class AbstractRxHub implements RxHub {
         return res;
     }
 
-    /**
-     * Manually emit event to a specific Node. In order to prohibit this behaviour override this
-     *
-     * @param tag   the ID of the Node
-     * @param event the Event to emit
-     */
     @Override
     public void emit(Object tag, Object event) {
         if (getNodeType(tag)==NodeType.ObservableRef) {
@@ -171,9 +180,6 @@ public abstract class AbstractRxHub implements RxHub {
         }
     }
 
-    /**
-     * Clears all subscriptions of all Nodes
-     */
     @Override
     public void clearProviders() {
         subscriptions.clear();

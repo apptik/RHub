@@ -79,9 +79,6 @@ Check also the [Gherkin Features][features]
 
 ## Considerations
 
-*   RxHub Nodes by default are not type-safe. Custom implementations or wrappers of
- RxHub (prefferably extending AbstractRxHub or DefaultRxHub), might fix this 
- by exposing type-safe getters.
 *   Using emit() interfere with original streams and might break those, thus its usage is not encouraged. 
 Using RxHub in fully reactive code emit should be disabled or removed.
 *   ObservableRef node type is not really unsubscribed form the original source,

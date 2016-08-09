@@ -31,10 +31,36 @@ public interface RxHub {
      */
     void removeProvider(Object tag, Observable provider);
 
+    /**
+     * Clears all subscriptions of all Nodes
+     */
     void clearProviders();
 
+    /**
+     * Returns the Node Observable identified by the tag
+     *
+     * @param tag the ID of the Node
+     * @return the Node Observable
+     */
     Observable getNode(Object tag);
 
+    /**
+     * Type safe variant of {@link #getNode(Object)}.
+     * Returns the Node Observable identified by the tag and filtered by the Class provided
+     *
+     * @param tag the ID of the Node
+     * @param filterClass the Class to filter the observable by
+     * @param <T> the Type of the events the returned Observable will emit
+     * @return the Filtered Node Observable
+     */
+    <T> Observable<T> getNodeFiltered(Object tag, Class<T> filterClass);
+
+    /**
+     * Manually emit event to a specific Node. In order to prohibit this behaviour override this
+     *
+     * @param tag   the ID of the Node
+     * @param event the Event to emit
+     */
     void emit(Object tag, Object event);
 
     NodeType getNodeType(Object tag);
@@ -43,10 +69,10 @@ public interface RxHub {
 
 
     class Source {
-        public final Observable provider;
-        public final Object tag;
+        final Observable provider;
+        final Object tag;
 
-        public Source(Observable provider, Object tag) {
+        Source(Observable provider, Object tag) {
             this.provider = provider;
             this.tag = tag;
         }

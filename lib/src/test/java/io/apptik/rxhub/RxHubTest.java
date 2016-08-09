@@ -1,25 +1,18 @@
 package io.apptik.rxhub;
 
 
-import cucumber.api.PendingException;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.api.java.it.Ma;
-import rx.Observable;
-import rx.Observer;
-import rx.subjects.PublishSubject;
-import rx.subjects.Subject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import rx.Observer;
+import rx.subjects.PublishSubject;
 
 import static io.apptik.rxhub.RxHubTest.Helper.getDummyConsumer;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RxHubTest {
 
@@ -52,6 +45,18 @@ public class RxHubTest {
             throws Throwable {
         try {
             helper.hubs.get(hub).getNode(tag).subscribe(helper.consumers.get(consumer));
+        } catch (Exception ex) {
+            helper.error = ex;
+        }
+    }
+    @When("^Consumer\"([^\"]*)\" subscribes to Hub\"([^\"]*)\" with tag \"([^\"]*)\" and filter\"" +
+            "([^\"]*)\"$")
+    @Given("^Consumer\"([^\"]*)\" is subscribed to Hub\"([^\"]*)\" with tag \"([^\"]*)\" and filter\"([^\"]*)\"$")
+    public void consumer_is_subscribed_to_Hub_with_tag_and_filter(
+            String consumer, String hub, String tag, String filter) throws Throwable {
+        try {
+            helper.hubs.get(hub).getNodeFiltered(tag, Class.forName(filter))
+                    .subscribe(helper.consumers.get(consumer));
         } catch (Exception ex) {
             helper.error = ex;
         }
@@ -136,7 +141,7 @@ public class RxHubTest {
         }
     }
 
-    public static class DummyConsumer implements Observer<String> {
+    public static class DummyConsumer implements Observer<Object> {
         ArrayList<String> events = new ArrayList<>();
 
         @Override
@@ -150,8 +155,8 @@ public class RxHubTest {
         }
 
         @Override
-        public void onNext(String o) {
-            events.add(o);
+        public void onNext(Object o) {
+            events.add(o.toString());
         }
     }
 

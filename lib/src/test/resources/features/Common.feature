@@ -162,3 +162,24 @@ Feature: Common behaviour of RxHub
       | ObservableRef   |
 
 
+  Scenario Outline: Filtered Node Observable
+    Given Provider"P"
+    And Consumer"C1"
+    And Consumer"C2"
+    And Hub"H" with NodeType <nodeType>
+    And Hub"H" is subscribed to Provider"P" with tag "T"
+    And Consumer"C1" is subscribed to Hub"H" with tag "T" and filter"java.lang.String"
+    And Consumer"C2" is subscribed to Hub"H" with tag "T" and filter"java.lang.Number"
+    When Provider"P" emits Event"E"
+    Then Consumer"C1" should receive Event"E"
+    And Consumer"C2" should not receive Event"E"
+
+    Examples:
+      | nodeType        |
+      | BehaviorSubject |
+      | PublishSubject  |
+      | ReplaySubject   |
+      | BehaviorRelay   |
+      | PublishRelay    |
+      | ReplayRelay     |
+      | ObservableRef   |
