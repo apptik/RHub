@@ -16,7 +16,7 @@ script:
 
 env:
    matrix:
-     - MODULE=lib
+     - MODULE=core
 
 notifications:
   email: true
