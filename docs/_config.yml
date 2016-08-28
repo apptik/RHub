@@ -1,15 +1,13 @@
 
-title: Jus
+title: RxHub
 email: a@apptik.io
 description: > # this means to ignore newlines until "baseurl:"
-  Jus is a flexible and easy HTTP/REST client library for Java and Android.
-
-      it is like Volley but much easier
-      it is like Retrofit but infinitely more flexible
-
-  Jus is inspired by the flexibility, modularity and transparency of Google's Volley Library
-  and the extreme simplicity of declarative API mapping of Retrofit.
-baseurl: "/jus"
+RxJava based Observables Hub connecting Observables and Observers so that
+Observers can subscribe to an Event Source without knowledge of which Observables, if any,
+there are, while maintaining clear connection between them.
+It is ideal for centralizing cross-cutting activities
+like UI updates, logging, alerting, monitoring, security, etc.
+baseurl: "/rxhub"
 url: "http://apptik.io"
 twitter_username: apptikProj
 github_username:  apptik
