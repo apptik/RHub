@@ -1,5 +1,7 @@
 # RxHub
 
+[JavaDocs](http://apptik.github.io/rxhub/)
+
 [![Build Status](https://travis-ci.org/apptik/rxHub.svg?branch=master)](https://travis-ci.org/apptik/rxHub)
 
 RxJava based Observables Hub connecting Observables and Observers so that 
