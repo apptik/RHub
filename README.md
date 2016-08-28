@@ -1,6 +1,6 @@
 # RxHub
 
-[JavaDocs](http://apptik.github.io/rxhub/)
+[JavaDocs](http://apptik.github.io/rxHub/)
 
 [![Build Status](https://travis-ci.org/apptik/rxHub.svg?branch=master)](https://travis-ci.org/apptik/rxHub)
 

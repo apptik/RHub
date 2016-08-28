@@ -7,7 +7,7 @@ Observers can subscribe to an Event Source without knowledge of which Observable
 there are, while maintaining clear connection between them.
 It is ideal for centralizing cross-cutting activities
 like UI updates, logging, alerting, monitoring, security, etc.
-baseurl: "/rxhub"
+baseurl: "/rxHub"
 url: "http://apptik.io"
 twitter_username: apptikProj
 github_username:  apptik
