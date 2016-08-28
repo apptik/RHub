@@ -23,7 +23,7 @@ task clean(type: Delete) {
 }
 
 ext {
-    rxjava = 'io.reactivex:rxjava:1.1.8'
+    rxjava = 'io.reactivex:rxjava:1.1.9'
     rxrelay = 'com.jakewharton.rxrelay:rxrelay:1.1.0'
     junit = 'junit:junit:4.12'
     mockito = 'org.mockito:mockito-core:2.0.99-beta'
