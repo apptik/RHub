@@ -2,11 +2,11 @@
 title: RxHub
 email: a@apptik.io
 description: > # this means to ignore newlines until "baseurl:"
-RxJava based Observables Hub connecting Observables and Observers so that
-Observers can subscribe to an Event Source without knowledge of which Observables, if any,
-there are, while maintaining clear connection between them.
-It is ideal for centralizing cross-cutting activities
-like UI updates, logging, alerting, monitoring, security, etc.
+  RxJava based Observables Hub connecting Observables and Observers so that
+  Observers can subscribe to an Event Source without knowledge of which Observables, if any,
+  there are, while maintaining clear connection between them.
+  It is ideal for centralizing cross-cutting activities
+  like UI updates, logging, alerting, monitoring, security, etc.
 baseurl: "/rxHub"
 url: "http://apptik.io"
 twitter_username: apptikProj
