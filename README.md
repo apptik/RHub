@@ -3,6 +3,8 @@
 [JavaDocs](http://apptik.github.io/rxHub/)
 
 [![Build Status](https://travis-ci.org/apptik/rxHub.svg?branch=master)](https://travis-ci.org/apptik/rxHub)
+[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rxHub/core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rxHub/core)
+[![VersionEye](https://www.versioneye.com/java/io.apptik.rxHub:core/0.0.1/badge.svg)](https://www.versioneye.com/java/io.apptik.rxHub:core/0.0.1)
 
 RxJava based Observables Hub connecting Observables and Observers so that 
 Observers can subscribe to an Event Source without knowledge of which 
