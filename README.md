@@ -1,4 +1,4 @@
-# RxHub
+# RxHub - WIP
 
 [JavaDocs](http://apptik.github.io/rxHub/)
 
@@ -13,10 +13,6 @@ Observables, if any, there are, while maintaining clear connection between them.
 It is ideal for centralizing cross-cutting activities like 
 UI updates, logging, alerting, monitoring, security, etc.
 
--- Disclaimer --
-
-This is in experimental stage. The API may change at any time.
-
 ## Download
 
 Find [the latest JARs][mvn] or grab via Maven:
@@ -24,12 +20,12 @@ Find [the latest JARs][mvn] or grab via Maven:
 <dependency>
   <groupId>io.apptik.rxhub</groupId>
   <artifactId>core</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'io.apptik.rxhub:core:0.0.1-SNAPSHOT'
+compile 'io.apptik.rxhub:core:0.0.1'
 ```
 
 Downloads of the released versions are available in [Sonatype's `releases` repository][release].
