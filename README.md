@@ -5,6 +5,8 @@
 [![Build Status](https://travis-ci.org/apptik/rxHub.svg?branch=master)](https://travis-ci.org/apptik/rxHub)
 [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rxhub/core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rxhub/core)
 [![VersionEye](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.1/badge.svg)](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.1)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-rxHub-green.svg?style=true)](https://android-arsenal.com/details/1/4260)
+
 
 RxJava based Observables Hub connecting Observables and Observers so that 
 Observers can subscribe to an Event Source without knowledge of which 
