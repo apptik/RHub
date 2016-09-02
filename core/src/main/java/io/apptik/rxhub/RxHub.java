@@ -63,10 +63,26 @@ public interface RxHub {
      */
     void emit(Object tag, Object event);
 
+    /**
+     * Implement this to return the type of node per tag
+     * @param tag the identifier of the node
+     * @return the Node Type
+     */
     NodeType getNodeType(Object tag);
 
+    /**
+     * Implement this to return if the node is threadsafe
+     * @param tag the identifier of the node
+     * @return true if the node is threadsafe, false otherwise
+     */
     boolean isNodeThreadsafe(Object tag);
 
+    /**
+     * Implement this to return the ability to manually (in non-Rx fashion) emit events
+     * @param tag the identifier of the node
+     * @return true when manual emit is possible, false otherwise
+     */
+    boolean canTriggerEmit(Object tag);
 
     class Source {
         final Observable provider;

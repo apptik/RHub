@@ -49,9 +49,11 @@ public class RxHubTest {
             helper.error = ex;
         }
     }
+
     @When("^Consumer\"([^\"]*)\" subscribes to Hub\"([^\"]*)\" with tag \"([^\"]*)\" and filter\"" +
             "([^\"]*)\"$")
-    @Given("^Consumer\"([^\"]*)\" is subscribed to Hub\"([^\"]*)\" with tag \"([^\"]*)\" and filter\"([^\"]*)\"$")
+    @Given("^Consumer\"([^\"]*)\" is subscribed to Hub\"([^\"]*)\" with tag \"([^\"]*)\" and " +
+            "filter\"([^\"]*)\"$")
     public void consumer_is_subscribed_to_Hub_with_tag_and_filter(
             String consumer, String hub, String tag, String filter) throws Throwable {
         try {
@@ -78,8 +80,9 @@ public class RxHubTest {
     }
 
 
-    @Given("^Hub\"([^\"]*)\" with NodeType (.*)$")
-    public void hub_with_NodeType_(String hub, final String nodeType) throws Throwable {
+    @Given("^Hub\"([^\"]*)\" with NodeType ([^\\s]*) and Emittability \"([^\"]*)\"$")
+    public void hub_with_NodeType_(String hub, final String nodeType, final boolean emmitable)
+            throws Throwable {
         helper.hubs.put(hub, new AbstractRxHub() {
             @Override
             public NodeType getNodeType(Object tag) {
@@ -90,8 +93,33 @@ public class RxHubTest {
             public boolean isNodeThreadsafe(Object tag) {
                 return true;
             }
-        });
 
+            @Override
+            public boolean canTriggerEmit(Object tag) {
+                return emmitable;
+            }
+        });
+    }
+
+    @Given("^Hub\"([^\"]*)\" with NodeType ([^\\s]*)$")
+    public void hub_with_NodeType_(String hub, final String nodeType)
+            throws Throwable {
+        helper.hubs.put(hub, new AbstractRxHub() {
+            @Override
+            public NodeType getNodeType(Object tag) {
+                return NodeType.valueOf(nodeType);
+            }
+
+            @Override
+            public boolean isNodeThreadsafe(Object tag) {
+                return true;
+            }
+
+            @Override
+            public boolean canTriggerEmit(Object tag) {
+                return true;
+            }
+        });
     }
 
     @When("^Event\"([^\"]*)\" with tag \"([^\"]*)\" is emitted on Hub\"([^\"]*)\"$")
