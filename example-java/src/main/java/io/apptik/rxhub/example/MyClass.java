@@ -90,15 +90,15 @@ public class MyClass {
 
     private static class Shield {
         final RxHub rxHub;
-        public Shield(RxHub rxHub) {
+        Shield(RxHub rxHub) {
            this.rxHub = rxHub;
         }
 
-        public  Observable<String> getNames() {
+        Observable<String> getNames() {
             return rxHub.getNodeFiltered("topic1", String.class);
         }
 
-        public Observable<Integer> getBigOnes() {
+        Observable<Integer> getBigOnes() {
             return rxHub.getNodeFiltered("topic1", Integer.class)
                     .filter(o -> o > 100);
         }

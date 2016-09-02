@@ -46,13 +46,13 @@ import rx.subscriptions.CompositeSubscription;
  */
 public abstract class AbstractRxHub implements RxHub {
 
-    private Map<Object, Observable> nodeMap = new ConcurrentHashMap<>();
-    private Map<Source, Subscription> subscriptionMap = new ConcurrentHashMap<>();
+    private final Map<Object, Observable> nodeMap = new ConcurrentHashMap<>();
+    private final Map<Source, Subscription> subscriptionMap = new ConcurrentHashMap<>();
 
-    private CompositeSubscription subscriptions = new CompositeSubscription();
+    private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Override
-    public void addProvider(Object tag, Observable provider) {
+    public final void addProvider(Object tag, Observable provider) {
         if (getNodeType(tag) == NodeType.ObservableRef) {
             nodeMap.put(tag, provider);
         } else {
@@ -77,7 +77,7 @@ public abstract class AbstractRxHub implements RxHub {
     }
 
     @Override
-    public void removeProvider(Object tag, Observable provider) {
+    public final void removeProvider(Object tag, Observable provider) {
         if (getNodeType(tag) == NodeType.ObservableRef) {
             nodeMap.remove(tag);
         } else {
@@ -88,14 +88,14 @@ public abstract class AbstractRxHub implements RxHub {
     }
 
     @Override
-    public Observable getNode(Object tag) {
+    public final Observable getNode(Object tag) {
         //make sure we expose it asObservable hide node's identity
         return getNodeInternal(tag).asObservable();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Observable<T> getNodeFiltered(Object tag, final Class<T> filterClass) {
+    public final <T> Observable<T> getNodeFiltered(Object tag, final Class<T> filterClass) {
         return getNode(tag).filter(new Func1<Object, Boolean>() {
             @Override
             public Boolean call(Object obj) {
@@ -162,7 +162,11 @@ public abstract class AbstractRxHub implements RxHub {
     }
 
     @Override
-    public void emit(Object tag, Object event) {
+    public final void emit(Object tag, Object event) {
+        if(!canTriggerEmit(tag)) {
+            throw new IllegalStateException(String.format(Locale.ENGLISH,
+                    "Emitting events on Node(%s) not allowed.", tag));
+        }
         if (getNodeType(tag)==NodeType.ObservableRef) {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
                     "Emitting event not possible. Node(%s) represents immutable stream.", tag));
@@ -181,7 +185,7 @@ public abstract class AbstractRxHub implements RxHub {
     }
 
     @Override
-    public void clearProviders() {
+    public final void clearProviders() {
         subscriptions.clear();
     }
 
