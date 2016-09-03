@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/apptik/rxHub.svg?branch=master)](https://travis-ci.org/apptik/rxHub)
 [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rxhub/core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rxhub/core)
-[![VersionEye](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.1/badge.svg)](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.1)
+[![VersionEye](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.2/badge.svg)](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.2)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-rxHub-green.svg?style=true)](https://android-arsenal.com/details/1/4260)
 
 
@@ -22,12 +22,12 @@ Find [the latest JARs][mvn] or grab via Maven:
 <dependency>
   <groupId>io.apptik.rxhub</groupId>
   <artifactId>core</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'io.apptik.rxhub:core:0.0.1'
+compile 'io.apptik.rxhub:core:0.0.2'
 ```
 
 Downloads of the released versions are available in [Sonatype's `releases` repository][release].
