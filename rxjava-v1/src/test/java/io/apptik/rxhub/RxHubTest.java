@@ -8,6 +8,7 @@ import java.util.Map;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import io.apptik.rxhub.rxjava1.RxJava1Hub;
 import rx.Observer;
 import rx.subjects.PublishSubject;
 
@@ -83,7 +84,7 @@ public class RxHubTest {
     @Given("^Hub\"([^\"]*)\" with NodeType ([^\\s]*) and Emittability \"([^\"]*)\"$")
     public void hub_with_NodeType_(String hub, final String nodeType, final boolean emmitable)
             throws Throwable {
-        helper.hubs.put(hub, new AbstractRxHub() {
+        helper.hubs.put(hub, new AbstractRxJava1Hub() {
             @Override
             public NodeType getNodeType(Object tag) {
                 return NodeType.valueOf(nodeType);
@@ -104,7 +105,7 @@ public class RxHubTest {
     @Given("^Hub\"([^\"]*)\" with NodeType ([^\\s]*)$")
     public void hub_with_NodeType_(String hub, final String nodeType)
             throws Throwable {
-        helper.hubs.put(hub, new AbstractRxHub() {
+        helper.hubs.put(hub, new AbstractRxJava1Hub() {
             @Override
             public NodeType getNodeType(Object tag) {
                 return NodeType.valueOf(nodeType);
@@ -158,7 +159,7 @@ public class RxHubTest {
 
 
     public static class Helper {
-        public Map<String, RxHub> hubs = new HashMap<>();
+        public Map<String, RxJava1Hub> hubs = new HashMap<>();
         //use subjects  so we can easily emit events when needed
         public Map<String, PublishSubject> providers = new HashMap<>();
         public Map<String, DummyConsumer> consumers = new HashMap<>();

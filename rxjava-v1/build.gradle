@@ -6,7 +6,7 @@ compileJava {
 }
 
 dependencies {
-    compile rootProject.ext.rxjava
+    compile rootProject.ext.rxjava1
     compile rootProject.ext.rxrelay
 
     testCompile rootProject.ext.junit

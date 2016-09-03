@@ -1,6 +1,6 @@
 package io.apptik.rxhub;
 
-public class DefaultRxHub extends AbstractRxHub {
+public class DefaultRxJava1Hub extends AbstractRxJava1Hub {
 
     @Override
     public NodeType getNodeType(Object tag) {

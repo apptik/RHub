@@ -25,13 +25,13 @@ import rx.subscriptions.CompositeSubscription;
 
 
 /**
- * Base implementation of {@link RxHub}
+ * Base implementation of {@link RxJava1Hub}
  * Essentially this is a collection of {@link Observable} nodes which can also subscribe to other
  * Observables and pass events to their Subscribers
  * <p/>
  * Nodes can be either {@link Subject} or {@link Relay}. Nodes are identified by their Tags.
  * Nodes subscribes to Observables however each subscription created is
- * per {@link io.apptik.rxhub.RxHub.Source}. A Source is identified by Observable and a Tag.
+ * per {@link Source}. A Source is identified by Observable and a Tag.
  * For example when Observable A is added with Tag T1 and Tag T2. Two nodes are created receiving
  * the same events. Each of those nodes can be used and unsubscribed from Observable A
  * independently.
@@ -39,12 +39,12 @@ import rx.subscriptions.CompositeSubscription;
  * Observers subscribe to a Node. Observers does not need to know about the source of the Events
  * i.e the Observers that the Nodes is subscribed to.
  * <p/>
- * To fetch the Node to subscribe to {@link AbstractRxHub#getNode(Object)} must be called.
+ * To fetch the Node to subscribe to {@link AbstractRxJava1Hub#getNode(Object)} must be called.
  * <p/>
- * Non-Rx code can also call {@link AbstractRxHub#emit(Object, Object)} to manually emit Events
+ * Non-Rx code can also call {@link AbstractRxJava1Hub#emit(Object, Object)} to manually emit Events
  * through specific Node.
  */
-public abstract class AbstractRxHub implements RxHub {
+public abstract class AbstractRxJava1Hub implements RxJava1Hub {
 
     private final Map<Object, Observable> nodeMap = new ConcurrentHashMap<>();
     private final Map<Source, Subscription> subscriptionMap = new ConcurrentHashMap<>();

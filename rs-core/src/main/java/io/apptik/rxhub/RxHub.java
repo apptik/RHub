@@ -1,35 +1,33 @@
 package io.apptik.rxhub;
 
 
-import rx.Observable;
-
+import org.reactivestreams.Publisher;
 
 /**
  * RxJava based Hub connecting Observables and Observers so that Observers can receive events
  * without knowledge of which Observables, if any, there are,
  * while maintaining clear connection between them.
  *
- * @see AbstractRxHub
  */
 public interface RxHub {
 
     /**
-     * Subscribes Node to {@link Observable}.
+     * Subscribes Node to {@link Publisher}.
      * If there is no Node with the specific tag a new one will be created
      * except if the node is of type {@link NodeType#ObservableRef}
      *
      * @param tag      the ID of the Node
      * @param provider the Observable to subscribe to
      */
-    void addProvider(Object tag, Observable provider);
+    void addProvider(Object tag, Publisher provider);
 
     /**
-     * Unsubscribe {@link Observable} from a Node
+     * Unsubscribe {@link Publisher} from a Node
      *
      * @param tag      the ID of the Node
      * @param provider the Observable to unsubscribe from
      */
-    void removeProvider(Object tag, Observable provider);
+    void removeProvider(Object tag, Publisher provider);
 
     /**
      * Clears all subscriptions of all Nodes
@@ -42,7 +40,7 @@ public interface RxHub {
      * @param tag the ID of the Node
      * @return the Node Observable
      */
-    Observable getNode(Object tag);
+    Publisher getNode(Object tag);
 
     /**
      * Type safe variant of {@link #getNode(Object)}.
@@ -53,7 +51,7 @@ public interface RxHub {
      * @param <T> the Type of the events the returned Observable will emit
      * @return the Filtered Node Observable
      */
-    <T> Observable<T> getNodeFiltered(Object tag, Class<T> filterClass);
+    <T> Publisher<T> getNodeFiltered(Object tag, Class<T> filterClass);
 
     /**
      * Manually emit event to a specific Node. In order to prohibit this behaviour override this
@@ -85,10 +83,10 @@ public interface RxHub {
     boolean canTriggerEmit(Object tag);
 
     class Source {
-        final Observable provider;
+        final Publisher provider;
         final Object tag;
 
-        Source(Observable provider, Object tag) {
+        Source(Publisher provider, Object tag) {
             this.provider = provider;
             this.tag = tag;
         }
@@ -113,13 +111,10 @@ public interface RxHub {
         }
     }
 
-    enum NodeType {
-        BehaviorSubject,
-        PublishSubject,
-        ReplaySubject,
-        BehaviorRelay,
-        PublishRelay,
-        ReplayRelay,
-        ObservableRef
+    interface NodeType {
+    }
+
+    enum CoreNodeType implements NodeType{
+        PublisherRef
     }
 }
