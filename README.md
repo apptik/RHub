@@ -108,5 +108,5 @@ Backpressure strategy interface could be used and applied to nodes in the hub
 [mvn]: http://search.maven.org/#search|ga|1|io.apptik.rxhub.core
  [release]: https://oss.sonatype.org/content/repositories/releases/io/apptik/rxhub/core
  [snap]: https://oss.sonatype.org/content/repositories/snapshots/io/apptik/rxhub/core
- [features]: https://github.com/apptik/rxHub/tree/master/lib/src/test/resources/features
+ [features]: https://github.com/apptik/rxHub/tree/master/rxjava-v1/src/test/resources/features
  
