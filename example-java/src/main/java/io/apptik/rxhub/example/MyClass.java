@@ -4,7 +4,7 @@ package io.apptik.rxhub.example;
 import java.util.concurrent.TimeUnit;
 
 import io.apptik.rxhub.DefaultRxJava1Hub;
-import io.apptik.rxhub.rxjava1.RxJava1Hub;
+import io.apptik.rxhub.RxJava1Hub;
 import rx.Observable;
 
 public class MyClass {

@@ -1,1 +1,1 @@
-include ':rxjava-v1', ':example-java', ':shield', ':rs-core', ':rxjava-v2', ':reactor'
+include ':rxjava-v1', ':example-java', ':shield', ':rs-core', ':rxjava-v2', ':reactor', ':bindup'
