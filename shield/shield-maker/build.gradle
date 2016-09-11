@@ -1,0 +1,8 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(":rxjava-v1")
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
