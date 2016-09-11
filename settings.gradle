@@ -1,4 +1,5 @@
 include ':rxjava-v1', ':example-java',
         ':rs-core', ':rxjava-v2', ':reactor', ':bindup',
         ':shield:shield-processor',
-        ':shield:shield-maker'
+        ':shield:shield-maker' ,
+        ':shield:shield-annotations'
