@@ -1,0 +1,10 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(':rxjava-v1')
+    compile rootProject.ext.autoservice
+    compile rootProject.ext.autocommon
+    compile rootProject.ext.javapoet
+    compileOnly files(org.gradle.internal.jvm.Jvm.current().getToolsJar())
+}
+
