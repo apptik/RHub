@@ -4,8 +4,8 @@ package io.apptik.rxhub;
 import org.reactivestreams.Publisher;
 
 /**
- * RxJava based Hub connecting Observables and Observers so that Observers can receive events
- * without knowledge of which Observables, if any, there are,
+ * Reactive Streams based Hub connecting Publishers and Observers so that Observers can receive
+ * events without knowledge of which Publishers, if any, there are,
  * while maintaining clear connection between them.
  *
  */
@@ -14,10 +14,10 @@ public interface RxHub {
     /**
      * Subscribes Node to {@link Publisher}.
      * If there is no Node with the specific tag a new one will be created
-     * except if the node is of type {@link NodeType#ObservableRef}
+     * except if the node is of type {@link CoreNodeType#PublisherRef}
      *
      * @param tag      the ID of the Node
-     * @param provider the Observable to subscribe to
+     * @param provider the Publisher to subscribe to
      */
     void addProvider(Object tag, Publisher provider);
 
@@ -25,7 +25,7 @@ public interface RxHub {
      * Unsubscribe {@link Publisher} from a Node
      *
      * @param tag      the ID of the Node
-     * @param provider the Observable to unsubscribe from
+     * @param provider the Publisher to unsubscribe from
      */
     void removeProvider(Object tag, Publisher provider);
 
@@ -35,21 +35,21 @@ public interface RxHub {
     void clearProviders();
 
     /**
-     * Returns the Node Observable identified by the tag
+     * Returns the Node Publisher identified by the tag
      *
      * @param tag the ID of the Node
-     * @return the Node Observable
+     * @return the Node Publisher
      */
     Publisher getNode(Object tag);
 
     /**
      * Type safe variant of {@link #getNode(Object)}.
-     * Returns the Node Observable identified by the tag and filtered by the Class provided
+     * Returns the Node Publisher identified by the tag and filtered by the Class provided
      *
      * @param tag the ID of the Node
-     * @param filterClass the Class to filter the observable by
-     * @param <T> the Type of the events the returned Observable will emit
-     * @return the Filtered Node Observable
+     * @param filterClass the Class to filter the Publisher by
+     * @param <T> the Type of the events the returned Publisher will emit
+     * @return the Filtered Node Publisher
      */
     <T> Publisher<T> getNodeFiltered(Object tag, Class<T> filterClass);
 

@@ -21,4 +21,7 @@ public interface TestShield {
     @NodeTag(value = "tag1")
     void addTag1Provider(Observable p1);
 
+    @NodeTag(value = "tag1")
+    void addTag1IntProvider(Observable<Integer> p1);
+
 }

@@ -14,6 +14,7 @@ public class ShieldMakerExample {
     private static void example1() {
         RxJava1Hub rxJava1Hub = new DefaultRxJava1Hub();
         TestShield testShield = ShieldMaker.make(TestShield.class,rxJava1Hub);
+
         Observable<String> tag1String =  testShield.getTag1String();
         tag1String.subscribe(System.out::println);
         rxJava1Hub.emit("tag1", "Here we go :)");
@@ -22,5 +23,6 @@ public class ShieldMakerExample {
         tag1Int.subscribe(System.out::println);
         rxJava1Hub.emit("tag1",999);
         testShield.addTag1Provider(Observable.just(1,2,3,4,"a","b","c","d"));
+        testShield.addTag1IntProvider(Observable.just(1));
     }
 }
