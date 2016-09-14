@@ -189,7 +189,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../io/apptik/rxhub/AbstractRxHub.html#addProvider-java.lang.Object-rx.Observable-">addProvider</a></span>(java.lang.Object&nbsp;tag,
-           rx.Observable&nbsp;provider)</code>
+           rx.Observable&nbsp;publisher)</code>
 <div class="block">Subscribes Node to <code>Observable</code>.</div>
 </td>
 </tr>
@@ -222,7 +222,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../io/apptik/rxhub/AbstractRxHub.html#removeProvider-java.lang.Object-rx.Observable-">removeProvider</a></span>(java.lang.Object&nbsp;tag,
-              rx.Observable&nbsp;provider)</code>
+              rx.Observable&nbsp;publisher)</code>
 <div class="block">Unsubscribe <code>Observable</code> from a Node</div>
 </td>
 </tr>
@@ -239,7 +239,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <!--   -->
 </a>
 <h3>Methods inherited from interface&nbsp;io.apptik.rxhub.<a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></h3>
-<code><a href="../../../io/apptik/rxhub/RxHub.html#canTriggerEmit-java.lang.Object-">canTriggerEmit</a>, <a href="../../../io/apptik/rxhub/RxHub.html#getNodeType-java.lang.Object-">getNodeType</a>, <a href="../../../io/apptik/rxhub/RxHub.html#isNodeThreadsafe-java.lang.Object-">isNodeThreadsafe</a></code></li>
+<code><a href="../../../io/apptik/rxhub/RxHub.html#canTriggerEmit-java.lang.Object-">canTriggerEmit</a>, <a href="../../../io/apptik/rxhub/RxHub.html#getProxyType-java.lang.Object-">getProxyType</a>, <a href="../../../io/apptik/rxhub/RxHub.html#isNodeThreadsafe-java.lang.Object-">isNodeThreadsafe</a></code></li>
 </ul>
 </li>
 </ul>
@@ -279,7 +279,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <li class="blockList">
 <h4>addProvider</h4>
 <pre>public final&nbsp;void&nbsp;addProvider(java.lang.Object&nbsp;tag,
-                              rx.Observable&nbsp;provider)</pre>
+                              rx.Observable&nbsp;publisher)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html#addProvider-java.lang.Object-rx.Observable-">RxHub</a></code></span></div>
 <div class="block">Subscribes Node to <code>Observable</code>.
  If there is no Node with the specific tag a new one will be created
@@ -289,7 +289,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <dd><code><a href="../../../io/apptik/rxhub/RxHub.html#addProvider-java.lang.Object-rx.Observable-">addProvider</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>tag</code> - the ID of the Node</dd>
-<dd><code>provider</code> - the Observable to subscribe to</dd>
+<dd><code>publisher</code> - the Observable to subscribe to</dd>
 </dl>
 </li>
 </ul>
@@ -300,7 +300,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <li class="blockList">
 <h4>removeProvider</h4>
 <pre>public final&nbsp;void&nbsp;removeProvider(java.lang.Object&nbsp;tag,
-                                 rx.Observable&nbsp;provider)</pre>
+                                 rx.Observable&nbsp;publisher)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html#removeProvider-java.lang.Object-rx.Observable-">RxHub</a></code></span></div>
 <div class="block">Unsubscribe <code>Observable</code> from a Node</div>
 <dl>
@@ -308,7 +308,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <dd><code><a href="../../../io/apptik/rxhub/RxHub.html#removeProvider-java.lang.Object-rx.Observable-">removeProvider</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>tag</code> - the ID of the Node</dd>
-<dd><code>provider</code> - the Observable to unsubscribe from</dd>
+<dd><code>publisher</code> - the Observable to unsubscribe from</dd>
 </dl>
 </li>
 </ul>

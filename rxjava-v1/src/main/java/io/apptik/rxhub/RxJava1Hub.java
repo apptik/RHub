@@ -9,87 +9,92 @@ import rx.Observable;
  * without knowledge of which Observables, if any, there are,
  * while maintaining clear connection between them.
  *
+ * The Hub is fairly simple it just accepts Observables or single events and merges them depending
+ * on the type of Proxy then returns the resulting Observable.
+ *
+ * The Proxy is a Concept responsible for multiplex/multicast the streams of events.
+ * Internally they might be implemented by Subjects or simple Observables
  * @see AbstractRxJava1Hub
  */
 public interface RxJava1Hub {
 
     /**
-     * Subscribes Node to {@link Observable}.
-     * If there is no Node with the specific tag a new one will be created
-     * except if the node is of type {@link NodeType#ObservableRef}
+     * Subscribes Proxy to {@link Observable}.
+     * If there is no Proxy with the specific tag a new one will be created
+     * except if the Proxy is of type {@link RxJava1ProxyType#ObservableRef}
      *
-     * @param tag      the ID of the Node
-     * @param provider the Observable to subscribe to
+     * @param tag      the ID of the Proxy
+     * @param observable the Observable to subscribe to
      */
-    void addProvider(Object tag, Observable provider);
+    void addObservable(Object tag, Observable observable);
 
     /**
-     * Unsubscribe {@link Observable} from a Node
+     * Unsubscribe {@link Observable} from a Proxy
      *
-     * @param tag      the ID of the Node
-     * @param provider the Observable to unsubscribe from
+     * @param tag      the ID of the Proxy
+     * @param observable the Observable to unsubscribe from
      */
-    void removeProvider(Object tag, Observable provider);
+    void removeObservable(Object tag, Observable observable);
 
     /**
-     * Clears all subscriptions of all Nodes
+     * Clears all subscriptions of all Proxies
      */
-    void clearProviders();
+    void clearObservables();
 
     /**
-     * Returns the Node Observable identified by the tag
+     * Returns the Proxy Observable identified by the tag
      *
-     * @param tag the ID of the Node
-     * @return the Node Observable
+     * @param tag the ID of the Proxy
+     * @return the Proxy Observable
      */
-    Observable getNode(Object tag);
+    Observable getObservable(Object tag);
 
     /**
-     * Type safe variant of {@link #getNode(Object)}.
-     * Returns the Node Observable identified by the tag and filtered by the Class provided
+     * Type safe variant of {@link #getObservable(Object)}.
+     * Returns the Proxy Observable identified by the tag and filtered by the Class provided
      *
-     * @param tag the ID of the Node
+     * @param tag the ID of the Proxy
      * @param filterClass the Class to filter the observable by
      * @param <T> the Type of the events the returned Observable will emit
-     * @return the Filtered Node Observable
+     * @return the Filtered Proxy Observable
      */
-    <T> Observable<T> getNodeFiltered(Object tag, Class<T> filterClass);
+    <T> Observable<T> getFilteredObservable(Object tag, Class<T> filterClass);
 
     /**
-     * Manually emit event to a specific Node. In order to prohibit this behaviour override this
+     * Manually emit event to a specific Proxy. In order to prohibit this behaviour override this
      *
-     * @param tag   the ID of the Node
+     * @param tag   the ID of the Proxy
      * @param event the Event to emit
      */
     void emit(Object tag, Object event);
 
     /**
-     * Implement this to return the type of node per tag
-     * @param tag the identifier of the node
-     * @return the Node Type
+     * Implement this to return the type of Proxy per tag
+     * @param tag the identifier of the Proxy
+     * @return the Proxy Type
      */
-    NodeType getNodeType(Object tag);
+    RxJava1ProxyType getProxyType(Object tag);
 
     /**
-     * Implement this to return if the node is threadsafe
-     * @param tag the identifier of the node
-     * @return true if the node is threadsafe, false otherwise
+     * Implement this to return if the Proxy is threadsafe
+     * @param tag the identifier of the Proxy
+     * @return true if the Proxy is threadsafe, false otherwise
      */
-    boolean isNodeThreadsafe(Object tag);
+    boolean isProxyThreadsafe(Object tag);
 
     /**
      * Implement this to return the ability to manually (in non-Rx fashion) emit events
-     * @param tag the identifier of the node
+     * @param tag the identifier of the Proxy
      * @return true when manual emit is possible, false otherwise
      */
     boolean canTriggerEmit(Object tag);
 
     class Source {
-        final Observable provider;
+        final Observable observable;
         final Object tag;
 
-        Source(Observable provider, Object tag) {
-            this.provider = provider;
+        Source(Observable observable, Object tag) {
+            this.observable = observable;
             this.tag = tag;
         }
 
@@ -100,20 +105,20 @@ public interface RxJava1Hub {
 
             Source source = (Source) o;
 
-            if (!provider.equals(source.provider)) return false;
+            if (!observable.equals(source.observable)) return false;
             return tag.equals(source.tag);
 
         }
 
         @Override
         public int hashCode() {
-            int result = provider.hashCode();
+            int result = observable.hashCode();
             result = 31 * result + tag.hashCode();
             return result;
         }
     }
 
-    enum NodeType {
+    enum RxJava1ProxyType {
         BehaviorSubject,
         PublishSubject,
         ReplaySubject,

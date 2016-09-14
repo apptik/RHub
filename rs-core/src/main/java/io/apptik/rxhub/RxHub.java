@@ -4,90 +4,95 @@ package io.apptik.rxhub;
 import org.reactivestreams.Publisher;
 
 /**
- * Reactive Streams based Hub connecting Publishers and Observers so that Observers can receive
+ * Reactive Streams based Hub connecting Publishers and Subscribers so that Subscribers can receive
  * events without knowledge of which Publishers, if any, there are,
  * while maintaining clear connection between them.
  *
+ * The Hub is fairly simple it just accepts Publishers or single events and merges them depending
+ * on the type of Proxy then returns the resulting Publisher.
+ *
+ * The Proxy is a Concept responsible for multiplex/multicast the streams of events.
+ * Internally they might be implemented by Processors or Subjects or simple Observables
  */
 public interface RxHub {
 
     /**
-     * Subscribes Node to {@link Publisher}.
-     * If there is no Node with the specific tag a new one will be created
-     * except if the node is of type {@link CoreNodeType#PublisherRef}
+     * Subscribes Proxy to {@link Publisher}.
+     * If there is no Proxy with the specific tag a new one will be created
+     * except if the Proxy is of type {@link CoreProxyType#PublisherRef}
      *
-     * @param tag      the ID of the Node
-     * @param provider the Publisher to subscribe to
+     * @param tag      the ID of the Proxy
+     * @param publisher the Publisher to subscribe to
      */
-    void addProvider(Object tag, Publisher provider);
+    void addPub(Object tag, Publisher publisher);
 
     /**
-     * Unsubscribe {@link Publisher} from a Node
+     * Unsubscribe {@link Publisher} from a Proxy
      *
-     * @param tag      the ID of the Node
-     * @param provider the Publisher to unsubscribe from
+     * @param tag      the ID of the Proxy
+     * @param publisher the Publisher to unsubscribe from
      */
-    void removeProvider(Object tag, Publisher provider);
+    void removePub(Object tag, Publisher publisher);
 
     /**
-     * Clears all subscriptions of all Nodes
+     * Clears all subscriptions to all Publishers
      */
-    void clearProviders();
+    void clearPublishers();
 
     /**
-     * Returns the Node Publisher identified by the tag
+     * Returns the Proxy Publisher identified by the tag
      *
-     * @param tag the ID of the Node
-     * @return the Node Publisher
+     * @param tag the ID of the Proxy
+     * @return the Proxy Publisher
      */
-    Publisher getNode(Object tag);
+    Publisher getPub(Object tag);
 
     /**
-     * Type safe variant of {@link #getNode(Object)}.
-     * Returns the Node Publisher identified by the tag and filtered by the Class provided
+     * Type safe variant of {@link #getPub(Object)}.
+     * Returns the Proxy Publisher identified by the tag and filtered by the Class provided
      *
-     * @param tag the ID of the Node
+     * @param tag the ID of the Proxy
      * @param filterClass the Class to filter the Publisher by
      * @param <T> the Type of the events the returned Publisher will emit
-     * @return the Filtered Node Publisher
+     * @return the Filtered Proxy Publisher
      */
-    <T> Publisher<T> getNodeFiltered(Object tag, Class<T> filterClass);
+    <T> Publisher<T> getPubFiltered(Object tag, Class<T> filterClass);
 
     /**
-     * Manually emit event to a specific Node. In order to prohibit this behaviour override this
+     * Manually emit event to a specific Proxy. In order to prohibit this behaviour override this
      *
-     * @param tag   the ID of the Node
+     * @param tag   the ID of the Proxy
      * @param event the Event to emit
      */
     void emit(Object tag, Object event);
 
     /**
-     * Implement this to return the type of node per tag
-     * @param tag the identifier of the node
-     * @return the Node Type
+     * Implement this to return the type of Proxy per tag
+     * @param tag the identifier of the Proxy
+     * @return the Proxy Type
      */
-    NodeType getNodeType(Object tag);
+    ProxyType getProxyType(Object tag);
 
     /**
-     * Implement this to return if the node is threadsafe
-     * @param tag the identifier of the node
-     * @return true if the node is threadsafe, false otherwise
+     * Implement this to return if the Proxy is threadsafe
+     * @param tag the identifier of the Proxy
+     * @return true if the Proxy is threadsafe, false otherwise
      */
-    boolean isNodeThreadsafe(Object tag);
+    boolean isProxyThreadsafe(Object tag);
 
     /**
      * Implement this to return the ability to manually (in non-Rx fashion) emit events
-     * @param tag the identifier of the node
+     * @param tag the identifier of the Proxy
      * @return true when manual emit is possible, false otherwise
      */
     boolean canTriggerEmit(Object tag);
 
     class Source {
-        final Publisher provider;
+        final Publisher publisher;
         final Object tag;
 
-        Source(Publisher provider, Object tag) {
-            this.provider = provider;
+        Source(Publisher publisher, Object tag) {
+            this.publisher = publisher;
             this.tag = tag;
         }
 
@@ -98,23 +103,26 @@ public interface RxHub {
 
             Source source = (Source) o;
 
-            if (!provider.equals(source.provider)) return false;
+            if (!publisher.equals(source.publisher)) return false;
             return tag.equals(source.tag);
 
         }
 
         @Override
         public int hashCode() {
-            int result = provider.hashCode();
+            int result = publisher.hashCode();
             result = 31 * result + tag.hashCode();
             return result;
         }
     }
 
-    interface NodeType {
+    /**
+     * In general this can be kind of Processor/Subject or simple Publisher/Observable
+     */
+    interface ProxyType {
     }
 
-    enum CoreNodeType implements NodeType{
+    enum CoreProxyType implements ProxyType {
         PublisherRef
     }
 }

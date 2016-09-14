@@ -36,7 +36,7 @@ public class RxHubTest {
     @Given("^Hub\"([^\"]*)\" is subscribed to Provider\"([^\"]*)\" with tag \"([^\"]*)\"$")
     public void hub_is_subscribed_to_Provider_with_tag(String hub, String provider,
                                                        String tag) throws Throwable {
-        helper.hubs.get(hub).addProvider(tag, helper.providers.get(provider));
+        helper.hubs.get(hub).addObservable(tag, helper.providers.get(provider));
     }
 
     @When("^Consumer\"([^\"]*)\" subscribes to Hub\"([^\"]*)\" with tag \"([^\"]*)\"$")
@@ -44,7 +44,7 @@ public class RxHubTest {
     public void consumer_subscribes_to_Hub_with_tag(String consumer, String hub, String tag)
             throws Throwable {
         try {
-            helper.hubs.get(hub).getNode(tag).subscribe(helper.consumers.get(consumer));
+            helper.hubs.get(hub).getObservable(tag).subscribe(helper.consumers.get(consumer));
         } catch (Exception ex) {
             helper.error = ex;
         }
@@ -57,7 +57,7 @@ public class RxHubTest {
     public void consumer_is_subscribed_to_Hub_with_tag_and_filter(
             String consumer, String hub, String tag, String filter) throws Throwable {
         try {
-            helper.hubs.get(hub).getNodeFiltered(tag, Class.forName(filter))
+            helper.hubs.get(hub).getFilteredObservable(tag, Class.forName(filter))
                     .subscribe(helper.consumers.get(consumer));
         } catch (Exception ex) {
             helper.error = ex;
@@ -80,17 +80,17 @@ public class RxHubTest {
     }
 
 
-    @Given("^Hub\"([^\"]*)\" with NodeType ([^\\s]*) and Emittability \"([^\"]*)\"$")
-    public void hub_with_NodeType_(String hub, final String nodeType, final boolean emmitable)
+    @Given("^Hub\"([^\"]*)\" with ProxyType ([^\\s]*) and Emittability \"([^\"]*)\"$")
+    public void hub_with_ProxyType_(String hub, final String nodeType, final boolean emmitable)
             throws Throwable {
         helper.hubs.put(hub, new AbstractRxJava1Hub() {
             @Override
-            public NodeType getNodeType(Object tag) {
-                return NodeType.valueOf(nodeType);
+            public RxJava1ProxyType getProxyType(Object tag) {
+                return RxJava1ProxyType.valueOf(nodeType);
             }
 
             @Override
-            public boolean isNodeThreadsafe(Object tag) {
+            public boolean isProxyThreadsafe(Object tag) {
                 return true;
             }
 
@@ -101,17 +101,17 @@ public class RxHubTest {
         });
     }
 
-    @Given("^Hub\"([^\"]*)\" with NodeType ([^\\s]*)$")
-    public void hub_with_NodeType_(String hub, final String nodeType)
+    @Given("^Hub\"([^\"]*)\" with ProxyType ([^\\s]*)$")
+    public void hub_with_ProxyType_(String hub, final String nodeType)
             throws Throwable {
         helper.hubs.put(hub, new AbstractRxJava1Hub() {
             @Override
-            public NodeType getNodeType(Object tag) {
-                return NodeType.valueOf(nodeType);
+            public RxJava1ProxyType getProxyType(Object tag) {
+                return RxJava1ProxyType.valueOf(nodeType);
             }
 
             @Override
-            public boolean isNodeThreadsafe(Object tag) {
+            public boolean isProxyThreadsafe(Object tag) {
                 return true;
             }
 
@@ -136,12 +136,12 @@ public class RxHubTest {
     public void provider_with_tag_is_removed_from_Hub(String provider, String tag, String hub)
             throws
             Throwable {
-        helper.hubs.get(hub).removeProvider(tag, helper.providers.get(provider));
+        helper.hubs.get(hub).removeObservable(tag, helper.providers.get(provider));
     }
 
     @When("^providers are cleared from Hub\"([^\"]*)\"$")
     public void providers_are_cleared_from_Hub(String hub) throws Throwable {
-        helper.hubs.get(hub).clearProviders();
+        helper.hubs.get(hub).clearObservables();
     }
 
     @Then("^there should be Error \"([^\"]*)\"$")

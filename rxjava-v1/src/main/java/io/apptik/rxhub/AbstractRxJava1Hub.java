@@ -26,77 +26,77 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * Base implementation of {@link RxJava1Hub}
- * Essentially this is a collection of {@link Observable} nodes which can also subscribe to other
+ * Essentially this is a collection of {@link Observable} proxies which can also subscribe to other
  * Observables and pass events to their Subscribers
  * <p/>
- * Nodes can be either {@link Subject} or {@link Relay}. Nodes are identified by their Tags.
- * Nodes subscribes to Observables however each subscription created is
+ * Proxys can be either {@link Subject} or {@link Relay}. Proxys are identified by their Tags.
+ * Proxys subscribes to Observables however each subscription created is
  * per {@link Source}. A Source is identified by Observable and a Tag.
- * For example when Observable A is added with Tag T1 and Tag T2. Two nodes are created receiving
- * the same events. Each of those nodes can be used and unsubscribed from Observable A
+ * For example when Observable A is added with Tag T1 and Tag T2. Two proxies are created receiving
+ * the same events. Each of those proxies can be used and unsubscribed from Observable A
  * independently.
  * <p/>
- * Observers subscribe to a Node. Observers does not need to know about the source of the Events
- * i.e the Observers that the Nodes is subscribed to.
+ * Observers subscribe to a Proxy. Observers does not need to know about the source of the Events
+ * i.e the Observers that the Proxys is subscribed to.
  * <p/>
- * To fetch the Node to subscribe to {@link AbstractRxJava1Hub#getNode(Object)} must be called.
+ * To fetch the Proxy to subscribe to {@link AbstractRxJava1Hub#getObservable(Object)} must be called.
  * <p/>
  * Non-Rx code can also call {@link AbstractRxJava1Hub#emit(Object, Object)} to manually emit Events
- * through specific Node.
+ * through specific Proxy.
  */
 public abstract class AbstractRxJava1Hub implements RxJava1Hub {
 
-    private final Map<Object, Observable> nodeMap = new ConcurrentHashMap<>();
+    private final Map<Object, Observable> proxyMap = new ConcurrentHashMap<>();
     private final Map<Source, Subscription> subscriptionMap = new ConcurrentHashMap<>();
 
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Override
-    public final void addProvider(Object tag, Observable provider) {
-        if (getNodeType(tag) == NodeType.ObservableRef) {
-            nodeMap.put(tag, provider);
+    public final void addObservable(Object tag, Observable observable) {
+        if (getProxyType(tag) == RxJava1ProxyType.ObservableRef) {
+            proxyMap.put(tag, observable);
         } else {
             Subscription res;
-            Observable node = nodeMap.get(tag);
-            if (node == null) {
-                node = addNode(tag);
+            Observable proxy = proxyMap.get(tag);
+            if (proxy == null) {
+                proxy = addProxy(tag);
             }
-            if (Action1.class.isAssignableFrom(node.getClass())) {
-                res = provider.subscribe((Action1) node);
-            } else if (Observer.class.isAssignableFrom(node.getClass())) {
-                res = provider.subscribe((Observer) node);
+            if (Action1.class.isAssignableFrom(proxy.getClass())) {
+                res = observable.subscribe((Action1) proxy);
+            } else if (Observer.class.isAssignableFrom(proxy.getClass())) {
+                res = observable.subscribe((Observer) proxy);
             } else {
                 //should not happen
                 throw new IllegalStateException(String.format(Locale.ENGLISH,
-                        "Node(%s) type(%s) is not supported! Do we have an alien injection?",
-                        tag, provider.getClass()));
+                        "Proxy(%s) type(%s) is not supported! Do we have an alien injection?",
+                        tag, observable.getClass()));
             }
             subscriptions.add(res);
-            subscriptionMap.put(new Source(provider, tag), res);
+            subscriptionMap.put(new Source(observable, tag), res);
         }
     }
 
     @Override
-    public final void removeProvider(Object tag, Observable provider) {
-        if (getNodeType(tag) == NodeType.ObservableRef) {
-            nodeMap.remove(tag);
+    public final void removeObservable(Object tag, Observable observable) {
+        if (getProxyType(tag) == RxJava1ProxyType.ObservableRef) {
+            proxyMap.remove(tag);
         } else {
-            Source s = new Source(provider, tag);
+            Source s = new Source(observable, tag);
             subscriptions.remove(subscriptionMap.get(s));
             subscriptionMap.remove(s);
         }
     }
 
     @Override
-    public final Observable getNode(Object tag) {
-        //make sure we expose it asObservable hide node's identity
-        return getNodeInternal(tag).asObservable();
+    public final Observable getObservable(Object tag) {
+        //make sure we expose it asObservable hide proxy's identity
+        return getProxyInternal(tag).asObservable();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <T> Observable<T> getNodeFiltered(Object tag, final Class<T> filterClass) {
-        return getNode(tag).filter(new Func1<Object, Boolean>() {
+    public final <T> Observable<T> getFilteredObservable(Object tag, final Class<T> filterClass) {
+        return getObservable(tag).filter(new Func1<Object, Boolean>() {
             @Override
             public Boolean call(Object obj) {
                 return filterClass.isAssignableFrom(obj.getClass());
@@ -105,17 +105,17 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
     }
 
 
-    private Observable getNodeInternal(Object tag) {
-        Observable res = nodeMap.get(tag);
+    private Observable getProxyInternal(Object tag) {
+        Observable res = proxyMap.get(tag);
         if (res == null) {
-            res = addNode(tag);
+            res = addProxy(tag);
         }
         return res;
     }
 
-    private Observable addNode(Object tag) {
+    private Observable addProxy(Object tag) {
         Observable res;
-        NodeType nt = getNodeType(tag);
+        RxJava1ProxyType nt = getProxyType(tag);
         switch (nt) {
             case BehaviorSubject:
                 res = BehaviorSubject.create();
@@ -140,10 +140,10 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
                 break;
             //should not happen;
             default:
-                throw new IllegalStateException("Unknown NodeType");
+                throw new IllegalStateException("Unknown ProxyType");
         }
 
-        if (isNodeThreadsafe(tag)) {
+        if (isProxyThreadsafe(tag)) {
             switch (nt) {
                 case BehaviorSubject:
                 case PublishSubject:
@@ -157,7 +157,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
                     break;
             }
         }
-        nodeMap.put(tag, res);
+        proxyMap.put(tag, res);
         return res;
     }
 
@@ -165,27 +165,27 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
     public final void emit(Object tag, Object event) {
         if(!canTriggerEmit(tag)) {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
-                    "Emitting events on Node(%s) not allowed.", tag));
+                    "Emitting events on Tag(%s) not allowed.", tag));
         }
-        if (getNodeType(tag)==NodeType.ObservableRef) {
+        if (getProxyType(tag)==RxJava1ProxyType.ObservableRef) {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
-                    "Emitting event not possible. Node(%s) represents immutable stream.", tag));
+                    "Emitting event not possible. Tag(%s) represents immutable stream.", tag));
         }
-        Observable node = getNodeInternal(tag);
-        if (Action1.class.isAssignableFrom(node.getClass())) {
-            ((Action1) node).call(event);
-        } else if (Observer.class.isAssignableFrom(node.getClass())) {
-            ((Observer) node).onNext(event);
+        Observable proxy = getProxyInternal(tag);
+        if (Action1.class.isAssignableFrom(proxy.getClass())) {
+            ((Action1) proxy).call(event);
+        } else if (Observer.class.isAssignableFrom(proxy.getClass())) {
+            ((Observer) proxy).onNext(event);
         } else {
             //should not happen
             throw new IllegalStateException(String.format(Locale.ENGLISH,
-                    "Node(%s) type(%s) is not supported! Do we have an alien injection?",
-                    tag, node.getClass()));
+                    "Proxy(%s) type(%s) is not supported! Do we have an alien injection?",
+                    tag, proxy.getClass()));
         }
     }
 
     @Override
-    public final void clearProviders() {
+    public final void clearObservables() {
         subscriptions.clear();
     }
 

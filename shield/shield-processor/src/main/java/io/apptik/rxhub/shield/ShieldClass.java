@@ -59,18 +59,18 @@ public class ShieldClass {
             if (na.isInputNode()) {
                 methodSpec.addParameter(ParameterSpec.builder(na.paramType, "src").build());
                 methodSpec.addCode(CodeBlock.builder()
-                        .addStatement("rxHub.addProvider($S,$L)",
+                        .addStatement("rxHub.addObservable($S,$L)",
                                 na.nodeTag,"src").build());
             } else {
                 if (na.hasEnclosedClassName()) {
                     methodSpec.addCode(CodeBlock.builder()
-                            .addStatement("return rxHub.getNodeFiltered($S,$T.class)",
+                            .addStatement("return rxHub.getFilteredObservable($S,$T.class)",
                                     na.nodeTag,
                                     na.getEnclosedClassName())
                             .build());
                 } else {
                     methodSpec.addCode(CodeBlock.builder()
-                            .addStatement("return rxHub.getNode($S)",
+                            .addStatement("return rxHub.getObservable($S)",
                                     na.nodeTag).build());
                 }
             }

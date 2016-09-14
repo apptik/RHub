@@ -3,7 +3,7 @@ package io.apptik.rxhub;
 
 public interface ReactorHub extends RxHub {
 
-    enum ReactorNodeType implements NodeType {
+    enum ReactorNodeType implements ProxyType {
         EmitterProcessor,
         ReplayProcessor,
         TopicProcessor,

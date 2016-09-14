@@ -12,11 +12,11 @@ public class MyClass {
     public static void main(String[] args) {
         RxJava1Hub rxJava1Hub = new DefaultRxJava1Hub() {
             @Override
-            public NodeType getNodeType(Object tag) {
+            public RxJava1ProxyType getProxyType(Object tag) {
                 if(tag.equals("src2")) {
-                    return NodeType.ObservableRef;
+                    return RxJava1ProxyType.ObservableRef;
                 }
-                return super.getNodeType(tag);
+                return super.getProxyType(tag);
             }
         };
        // generalExample(rxJava1Hub);
@@ -26,36 +26,36 @@ public class MyClass {
     private static void generalExample(RxJava1Hub rxJava1Hub) {
         Observable src1 = Observable.from(new Integer[] {1,3,5,7,11,13});
         Observable src2 = Observable.interval(1, TimeUnit.SECONDS);
-        rxJava1Hub.addProvider("src1", src1);
+        rxJava1Hub.addObservable("src1", src1);
 
-        rxJava1Hub.getNode("src1").subscribe(o -> {
+        rxJava1Hub.getObservable("src1").subscribe(o -> {
             System.out.println("consumer1 (src1) got: " + o);
         });
 
-        rxJava1Hub.getNode("src1").subscribe(System.out::println);
-        rxJava1Hub.getNode("src1.1").subscribe(o -> {
+        rxJava1Hub.getObservable("src1").subscribe(System.out::println);
+        rxJava1Hub.getObservable("src1.1").subscribe(o -> {
             System.out.println("consumer1 (src1.1) got: " + o);
         });
 
-        rxJava1Hub.addProvider("src1.1", src1.repeat(1));
-        rxJava1Hub.addProvider("src2", src2.onBackpressureBuffer());
+        rxJava1Hub.addObservable("src1.1", src1.repeat(1));
+        rxJava1Hub.addObservable("src2", src2.onBackpressureBuffer());
 
-        rxJava1Hub.getNode("src1").subscribe(o -> {
+        rxJava1Hub.getObservable("src1").subscribe(o -> {
             System.out.println("consumer2 (src1) got: " + o);
         });
 
-        rxJava1Hub.getNode("src1.1").subscribe(o -> {
+        rxJava1Hub.getObservable("src1.1").subscribe(o -> {
             System.out.println("consumer2 (src1.1) got: " + o);
         });
-        rxJava1Hub.getNode("src2").subscribe(o -> {
+        rxJava1Hub.getObservable("src2").subscribe(o -> {
             System.out.println("consumer2 (src2) got: " + o);
         });
         new Thread(() -> {
             try {
                 Thread.sleep(5000);
-                rxJava1Hub.addProvider("src1.1", Observable.interval(1, TimeUnit.SECONDS));
+                rxJava1Hub.addObservable("src1.1", Observable.interval(1, TimeUnit.SECONDS));
                 Thread.sleep(5000);
-                rxJava1Hub.clearProviders();
+                rxJava1Hub.clearObservables();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -83,8 +83,8 @@ public class MyClass {
             System.out.println("consumer2 got: " + o);
         });
 
-        rxJava1Hub.addProvider("topic1", srcInt);
-        rxJava1Hub.addProvider("topic1", srcString);
+        rxJava1Hub.addObservable("topic1", srcInt);
+        rxJava1Hub.addObservable("topic1", srcString);
 
     }
 
@@ -95,11 +95,11 @@ public class MyClass {
         }
 
         Observable<String> getNames() {
-            return rxJava1Hub.getNodeFiltered("topic1", String.class);
+            return rxJava1Hub.getFilteredObservable("topic1", String.class);
         }
 
         Observable<Integer> getBigOnes() {
-            return rxJava1Hub.getNodeFiltered("topic1", Integer.class)
+            return rxJava1Hub.getFilteredObservable("topic1", Integer.class)
                     .filter(o -> o > 100);
         }
     }

@@ -155,7 +155,7 @@ var activeTableTab = "activeTableTab";
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../io/apptik/rxhub/RxHub.html#addProvider-java.lang.Object-rx.Observable-">addProvider</a></span>(java.lang.Object&nbsp;tag,
-           rx.Observable&nbsp;provider)</code>
+           rx.Observable&nbsp;publisher)</code>
 <div class="block">Subscribes Node to <code>Observable</code>.</div>
 </td>
 </tr>
@@ -187,7 +187,7 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../io/apptik/rxhub/RxHub.NodeType.html" title="enum in io.apptik.rxhub">RxHub.NodeType</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../io/apptik/rxhub/RxHub.html#getNodeType-java.lang.Object-">getNodeType</a></span>(java.lang.Object&nbsp;tag)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../io/apptik/rxhub/RxHub.html#getProxyType-java.lang.Object-">getProxyType</a></span>(java.lang.Object&nbsp;tag)</code>&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
@@ -196,7 +196,7 @@ var activeTableTab = "activeTableTab";
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../io/apptik/rxhub/RxHub.html#removeProvider-java.lang.Object-rx.Observable-">removeProvider</a></span>(java.lang.Object&nbsp;tag,
-              rx.Observable&nbsp;provider)</code>
+              rx.Observable&nbsp;publisher)</code>
 <div class="block">Unsubscribe <code>Observable</code> from a Node</div>
 </td>
 </tr>
@@ -222,14 +222,14 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <h4>addProvider</h4>
 <pre>void&nbsp;addProvider(java.lang.Object&nbsp;tag,
-                 rx.Observable&nbsp;provider)</pre>
+                 rx.Observable&nbsp;publisher)</pre>
 <div class="block">Subscribes Node to <code>Observable</code>.
  If there is no Node with the specific tag a new one will be created
  except if the node is of returnType <a href="../../../io/apptik/rxhub/RxHub.NodeType.html#ObservableRef"><code>RxHub.NodeType.ObservableRef</code></a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>tag</code> - the ID of the Node</dd>
-<dd><code>provider</code> - the Observable to subscribe to</dd>
+<dd><code>publisher</code> - the Observable to subscribe to</dd>
 </dl>
 </li>
 </ul>
@@ -240,12 +240,12 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <h4>removeProvider</h4>
 <pre>void&nbsp;removeProvider(java.lang.Object&nbsp;tag,
-                    rx.Observable&nbsp;provider)</pre>
+                    rx.Observable&nbsp;publisher)</pre>
 <div class="block">Unsubscribe <code>Observable</code> from a Node</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>tag</code> - the ID of the Node</dd>
-<dd><code>provider</code> - the Observable to unsubscribe from</dd>
+<dd><code>publisher</code> - the Observable to unsubscribe from</dd>
 </dl>
 </li>
 </ul>
@@ -312,13 +312,13 @@ var activeTableTab = "activeTableTab";
 </dl>
 </li>
 </ul>
-<a name="getNodeType-java.lang.Object-">
+<a name="getProxyType-java.lang.Object-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getNodeType</h4>
-<pre><a href="../../../io/apptik/rxhub/RxHub.NodeType.html" title="enum in io.apptik.rxhub">RxHub.NodeType</a>&nbsp;getNodeType(java.lang.Object&nbsp;tag)</pre>
+<h4>getProxyType</h4>
+<pre><a href="../../../io/apptik/rxhub/RxHub.NodeType.html" title="enum in io.apptik.rxhub">RxHub.NodeType</a>&nbsp;getProxyType(java.lang.Object&nbsp;tag)</pre>
 </li>
 </ul>
 <a name="isNodeThreadsafe-java.lang.Object-">
