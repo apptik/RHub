@@ -14,17 +14,17 @@ import org.reactivestreams.Publisher;
  * The Proxy is a Concept responsible for multiplex/multicast the streams of events.
  * Internally they might be implemented by Processors or Subjects or simple Observables
  */
-public interface RxHub {
+public interface RxHub<P extends Publisher> {
 
     /**
      * Subscribes Proxy to {@link Publisher}.
      * If there is no Proxy with the specific tag a new one will be created
-     * except if the Proxy is of type {@link CoreProxyType#PublisherRef}
+     * except if the Proxy is of type {@link CoreProxyType#PublisherRefProxy}
      *
      * @param tag      the ID of the Proxy
      * @param publisher the Publisher to subscribe to
      */
-    void addPub(Object tag, Publisher publisher);
+    void addPub(Object tag, P publisher);
 
     /**
      * Unsubscribe {@link Publisher} from a Proxy
@@ -32,7 +32,7 @@ public interface RxHub {
      * @param tag      the ID of the Proxy
      * @param publisher the Publisher to unsubscribe from
      */
-    void removePub(Object tag, Publisher publisher);
+    void removePub(Object tag, P publisher);
 
     /**
      * Clears all subscriptions to all Publishers
@@ -45,7 +45,7 @@ public interface RxHub {
      * @param tag the ID of the Proxy
      * @return the Proxy Publisher
      */
-    Publisher getPub(Object tag);
+    P getPub(Object tag);
 
     /**
      * Type safe variant of {@link #getPub(Object)}.
@@ -56,7 +56,7 @@ public interface RxHub {
      * @param <T> the Type of the events the returned Publisher will emit
      * @return the Filtered Proxy Publisher
      */
-    <T> Publisher<T> getPubFiltered(Object tag, Class<T> filterClass);
+    <T> Publisher<T> getFilteredPub(Object tag, Class<T> filterClass);
 
     /**
      * Manually emit event to a specific Proxy. In order to prohibit this behaviour override this
@@ -123,6 +123,6 @@ public interface RxHub {
     }
 
     enum CoreProxyType implements ProxyType {
-        PublisherRef
+        PublisherRefProxy
     }
 }

@@ -1,10 +1,10 @@
 package io.apptik.rxhub;
 
-public class DefaultRxJava1Hub extends AbstractRxJava1Hub {
+public class DefaultRxJava2Hub extends AbstractRxJava2Hub {
 
     @Override
-    public RxJava1ProxyType getProxyType(Object tag) {
-        return RxJava1ProxyType.BehaviorRelayProxy;
+    public RxJava2ProxyType getProxyType(Object tag) {
+        return RxJava2ProxyType.BehaviorProcessorProxy;
     }
 
     @Override

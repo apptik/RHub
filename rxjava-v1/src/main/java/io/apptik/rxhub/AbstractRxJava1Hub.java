@@ -53,13 +53,13 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
 
     @Override
     public final void addObservable(Object tag, Observable observable) {
-        if (getProxyType(tag) == RxJava1ProxyType.ObservableRef) {
+        if (getProxyType(tag) == RxJava1ProxyType.ObservableRefProxy) {
             proxyMap.put(tag, observable);
         } else {
             Subscription res;
             Observable proxy = proxyMap.get(tag);
             if (proxy == null) {
-                proxy = addProxy(tag);
+                proxy = createProxy(tag);
             }
             if (Action1.class.isAssignableFrom(proxy.getClass())) {
                 res = observable.subscribe((Action1) proxy);
@@ -78,7 +78,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
 
     @Override
     public final void removeObservable(Object tag, Observable observable) {
-        if (getProxyType(tag) == RxJava1ProxyType.ObservableRef) {
+        if (getProxyType(tag) == RxJava1ProxyType.ObservableRefProxy) {
             proxyMap.remove(tag);
         } else {
             Source s = new Source(observable, tag);
@@ -108,36 +108,36 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
     private Observable getProxyInternal(Object tag) {
         Observable res = proxyMap.get(tag);
         if (res == null) {
-            res = addProxy(tag);
+            res = createProxy(tag);
         }
         return res;
     }
 
-    private Observable addProxy(Object tag) {
+    private Observable createProxy(Object tag) {
         Observable res;
         RxJava1ProxyType nt = getProxyType(tag);
         switch (nt) {
-            case BehaviorSubject:
+            case BehaviorSubjectProxy:
                 res = BehaviorSubject.create();
                 break;
-            case PublishSubject:
+            case PublishSubjectProxy:
                 res = PublishSubject.create();
                 break;
-            case ReplaySubject:
+            case ReplaySubjectProxy:
                 res = ReplaySubject.create();
                 break;
-            case BehaviorRelay:
+            case BehaviorRelayProxy:
                 res = BehaviorRelay.create();
                 break;
-            case PublishRelay:
+            case PublishRelayProxy:
                 res = PublishRelay.create();
                 break;
-            case ReplayRelay:
+            case ReplayRelayProxy:
                 res = ReplayRelay.create();
                 break;
-            case ObservableRef:
-                res = null;
-                break;
+            case ObservableRefProxy:
+                throw new IllegalStateException("Cannot create ObservableRefProxy, " +
+                        "it must be added before.");
             //should not happen;
             default:
                 throw new IllegalStateException("Unknown ProxyType");
@@ -145,14 +145,14 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
 
         if (isProxyThreadsafe(tag)) {
             switch (nt) {
-                case BehaviorSubject:
-                case PublishSubject:
-                case ReplaySubject:
+                case BehaviorSubjectProxy:
+                case PublishSubjectProxy:
+                case ReplaySubjectProxy:
                     res = new SerializedSubject((Subject) res);
                     break;
-                case BehaviorRelay:
-                case PublishRelay:
-                case ReplayRelay:
+                case BehaviorRelayProxy:
+                case PublishRelayProxy:
+                case ReplayRelayProxy:
                     res = new SerializedRelay((Relay) res);
                     break;
             }
@@ -167,7 +167,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
                     "Emitting events on Tag(%s) not allowed.", tag));
         }
-        if (getProxyType(tag)==RxJava1ProxyType.ObservableRef) {
+        if (getProxyType(tag)==RxJava1ProxyType.ObservableRefProxy) {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
                     "Emitting event not possible. Tag(%s) represents immutable stream.", tag));
         }
@@ -187,6 +187,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
     @Override
     public final void clearObservables() {
         subscriptions.clear();
+        subscriptionMap.clear();
     }
 
 }

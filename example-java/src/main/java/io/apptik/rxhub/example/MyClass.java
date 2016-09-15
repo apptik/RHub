@@ -14,7 +14,7 @@ public class MyClass {
             @Override
             public RxJava1ProxyType getProxyType(Object tag) {
                 if(tag.equals("src2")) {
-                    return RxJava1ProxyType.ObservableRef;
+                    return RxJava1ProxyType.ObservableRefProxy;
                 }
                 return super.getProxyType(tag);
             }

@@ -21,7 +21,7 @@ public interface RxJava1Hub {
     /**
      * Subscribes Proxy to {@link Observable}.
      * If there is no Proxy with the specific tag a new one will be created
-     * except if the Proxy is of type {@link RxJava1ProxyType#ObservableRef}
+     * except if the Proxy is of type {@link RxJava1ProxyType#ObservableRefProxy}
      *
      * @param tag      the ID of the Proxy
      * @param observable the Observable to subscribe to
@@ -119,12 +119,12 @@ public interface RxJava1Hub {
     }
 
     enum RxJava1ProxyType {
-        BehaviorSubject,
-        PublishSubject,
-        ReplaySubject,
-        BehaviorRelay,
-        PublishRelay,
-        ReplayRelay,
-        ObservableRef
+        BehaviorSubjectProxy,
+        PublishSubjectProxy,
+        ReplaySubjectProxy,
+        BehaviorRelayProxy,
+        PublishRelayProxy,
+        ReplayRelayProxy,
+        ObservableRefProxy
     }
 }

@@ -1,6 +1,7 @@
 package io.apptik.rxhub;
 
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -11,12 +12,12 @@ import io.reactivex.Observable;
  * exception in case {@link #getProxyType(Object)} returns incompatible proxy.
  * 
  */
-public interface RxJava2Hub extends RxHub {
+public interface RxJava2Hub extends RxHub<Flowable> {
 
     /**
      * Subscribes Proxy to {@link Observable}.
      * If there is no Proxy with the specific tag a new one will be created
-     * except if the Proxy is of type {@link RxJava2ProxyType#ObservableRef}
+     * except if the Proxy is of type {@link RxJava2ProxyType#ObservableRefProxy}
      *
      * @param tag      the ID of the Proxy
      * @param observable the Observable to subscribe to
@@ -55,19 +56,47 @@ public interface RxJava2Hub extends RxHub {
      */
     <T> Observable<T> getFilteredObservable(Object tag, Class<T> filterClass);
 
+    class ObservableSource {
+        final Observable observable;
+        final Object tag;
+
+        ObservableSource(Observable observable, Object tag) {
+            this.observable = observable;
+            this.tag = tag;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ObservableSource source = (ObservableSource) o;
+
+            if (!observable.equals(source.observable)) return false;
+            return tag.equals(source.tag);
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = observable.hashCode();
+            result = 31 * result + tag.hashCode();
+            return result;
+        }
+    }
 
     enum RxJava2ProxyType implements ProxyType {
-        BehaviorProcessor,
-        PublishProcessor,
-        ReplayProcessor,
+        BehaviorProcessorProxy,
+        PublishProcessorProxy,
+        ReplayProcessorProxy,
 
-        BehaviorSubject,
-        PublishSubject,
-        ReplaySubject,
-        //TODO possibly coming up later
+        BehaviorSubjectProxy,
+        PublishSubjectProxy,
+        ReplaySubjectProxy,
+        //TODO possibly coming up later, reminder to check
 //        BehaviorRelay,
 //        PublishRelay,
 //        ReplayRelay,
-        ObservableRef
+        ObservableRefProxy
     }
 }
