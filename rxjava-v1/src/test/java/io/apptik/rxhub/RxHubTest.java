@@ -57,7 +57,7 @@ public class RxHubTest {
     public void consumer_is_subscribed_to_Hub_with_tag_and_filter(
             String consumer, String hub, String tag, String filter) throws Throwable {
         try {
-            helper.hubs.get(hub).getFilteredObservable(tag, Class.forName(filter))
+            helper.hubs.get(hub).getObservable(tag, Class.forName(filter))
                     .subscribe(helper.consumers.get(consumer));
         } catch (Exception ex) {
             helper.error = ex;

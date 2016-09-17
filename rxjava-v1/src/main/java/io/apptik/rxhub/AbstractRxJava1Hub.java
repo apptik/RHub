@@ -16,6 +16,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.observables.ConnectableObservable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import rx.subjects.ReplaySubject;
@@ -39,7 +40,8 @@ import rx.subscriptions.CompositeSubscription;
  * Observers subscribe to a Proxy. Observers does not need to know about the source of the Events
  * i.e the Observers that the Proxys is subscribed to.
  * <p/>
- * To fetch the Proxy to subscribe to {@link AbstractRxJava1Hub#getObservable(Object)} must be called.
+ * To fetch the Proxy to subscribe to {@link AbstractRxJava1Hub#getObservable(Object)} must be
+ * called.
  * <p/>
  * Non-Rx code can also call {@link AbstractRxJava1Hub#emit(Object, Object)} to manually emit Events
  * through specific Proxy.
@@ -56,23 +58,28 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
         if (getProxyType(tag) == RxJava1ProxyType.ObservableRefProxy) {
             proxyMap.put(tag, observable);
         } else {
-            Subscription res;
             Observable proxy = proxyMap.get(tag);
             if (proxy == null) {
                 proxy = createProxy(tag);
             }
+            ConnectableObservable obs = observable.publish();
             if (Action1.class.isAssignableFrom(proxy.getClass())) {
-                res = observable.subscribe((Action1) proxy);
+                obs.subscribe((Action1) proxy);
             } else if (Observer.class.isAssignableFrom(proxy.getClass())) {
-                res = observable.subscribe((Observer) proxy);
+                obs.subscribe((Observer) proxy);
             } else {
                 //should not happen
                 throw new IllegalStateException(String.format(Locale.ENGLISH,
                         "Proxy(%s) type(%s) is not supported! Do we have an alien injection?",
                         tag, observable.getClass()));
             }
-            subscriptions.add(res);
-            subscriptionMap.put(new Source(observable, tag), res);
+            obs.connect(new Action1<Subscription>() {
+                @Override
+                public void call(Subscription subscription) {
+                    subscriptions.add(subscription);
+                    subscriptionMap.put(new Source(observable, tag), subscription);
+                }
+            });
         }
     }
 
@@ -95,7 +102,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <T> Observable<T> getFilteredObservable(Object tag, final Class<T> filterClass) {
+    public final <T> Observable<T> getObservable(Object tag, final Class<T> filterClass) {
         return getObservable(tag).filter(new Func1<Object, Boolean>() {
             @Override
             public Boolean call(Object obj) {
@@ -138,7 +145,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
             case ObservableRefProxy:
                 throw new IllegalStateException("Cannot create ObservableRefProxy, " +
                         "it must be added before.");
-            //should not happen;
+                //should not happen;
             default:
                 throw new IllegalStateException("Unknown ProxyType");
         }
@@ -163,11 +170,11 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
 
     @Override
     public final void emit(Object tag, Object event) {
-        if(!canTriggerEmit(tag)) {
+        if (!canTriggerEmit(tag)) {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
                     "Emitting events on Tag(%s) not allowed.", tag));
         }
-        if (getProxyType(tag)==RxJava1ProxyType.ObservableRefProxy) {
+        if (getProxyType(tag) == RxJava1ProxyType.ObservableRefProxy) {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
                     "Emitting event not possible. Tag(%s) represents immutable stream.", tag));
         }

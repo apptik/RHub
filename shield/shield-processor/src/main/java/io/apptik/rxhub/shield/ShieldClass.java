@@ -64,7 +64,7 @@ public class ShieldClass {
             } else {
                 if (na.hasEnclosedClassName()) {
                     methodSpec.addCode(CodeBlock.builder()
-                            .addStatement("return rxHub.getFilteredObservable($S,$T.class)",
+                            .addStatement("return rxHub.getObservable($S,$T.class)",
                                     na.nodeTag,
                                     na.getEnclosedClassName())
                             .build());

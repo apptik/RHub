@@ -78,10 +78,10 @@ public class RxHubTest {
             String consumer, String hub, String tag, String filter) throws Throwable {
         try {
             if (helper.isObservableType()) {
-                helper.hubs.get(hub).getFilteredObservable(tag, Class.forName(filter))
+                helper.hubs.get(hub).getObservable(tag, Class.forName(filter))
                         .subscribe(helper.obsrvabpleConsumers.get(consumer));
             } else {
-                helper.hubs.get(hub).getFilteredPub(tag, Class.forName(filter))
+                helper.hubs.get(hub).getPub(tag, Class.forName(filter))
                         .subscribe(helper.publisherConsumers.get(consumer));
             }
         } catch (Exception ex) {

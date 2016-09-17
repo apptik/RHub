@@ -58,7 +58,7 @@ public interface RxJava1Hub {
      * @param <T> the Type of the events the returned Observable will emit
      * @return the Filtered Proxy Observable
      */
-    <T> Observable<T> getFilteredObservable(Object tag, Class<T> filterClass);
+    <T> Observable<T> getObservable(Object tag, Class<T> filterClass);
 
     /**
      * Manually emit event to a specific Proxy. In order to prohibit this behaviour override this

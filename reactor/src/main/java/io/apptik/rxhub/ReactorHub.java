@@ -1,7 +1,9 @@
 package io.apptik.rxhub;
 
 
-public interface ReactorHub extends RxHub {
+import reactor.core.publisher.Flux;
+
+public interface ReactorHub extends RxHub<Flux> {
 
     enum ReactorNodeType implements ProxyType {
         EmitterProcessor,

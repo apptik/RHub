@@ -56,7 +56,7 @@ public interface RxHub<P extends Publisher> {
      * @param <T> the Type of the events the returned Publisher will emit
      * @return the Filtered Proxy Publisher
      */
-    <T> Publisher<T> getFilteredPub(Object tag, Class<T> filterClass);
+    <T> P getPub(Object tag, Class<T> filterClass);
 
     /**
      * Manually emit event to a specific Proxy. In order to prohibit this behaviour override this

@@ -54,7 +54,7 @@ public interface RxJava2Hub extends RxHub<Flowable> {
      * @param <T>         the Type of the events the returned Observable will emit
      * @return the Filtered Proxy Observable
      */
-    <T> Observable<T> getFilteredObservable(Object tag, Class<T> filterClass);
+    <T> Observable<T> getObservable(Object tag, Class<T> filterClass);
 
     class ObservableSource {
         final Observable observable;

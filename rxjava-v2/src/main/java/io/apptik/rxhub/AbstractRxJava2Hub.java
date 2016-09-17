@@ -12,7 +12,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.flowables.ConnectableFlowable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
+import io.reactivex.observables.ConnectableObservable;
 import io.reactivex.processors.BehaviorProcessor;
 import io.reactivex.processors.FlowableProcessor;
 import io.reactivex.processors.PublishProcessor;
@@ -58,10 +63,13 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
 
     private final Map<Object, Flowable> publisherProxyMap = new ConcurrentHashMap<>();
     private final Map<Object, Observable> observableProxyMap = new ConcurrentHashMap<>();
-    private final Map<Source, PublishProcessor>
+    private final Map<Source, Disposable>
             publisherSubscriptionMap = new ConcurrentHashMap<>();
-    private final Map<ObservableSource, PublishSubject>
+    private final Map<ObservableSource, Disposable>
             observableSubscriptionMap = new ConcurrentHashMap<>();
+    private final CompositeDisposable publisherDisposables = new CompositeDisposable();
+    private final CompositeDisposable observableDisposables = new CompositeDisposable();
+
 
     @Override
     public final void addObservable(Object tag, Observable observable) {
@@ -70,11 +78,19 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
             observableProxyMap.put(tag, observable);
         } else {
             Observable proxy = getObservableProxyInternal(tag);
+            ConnectableObservable cObs = observable.publish();
+
             //check if we are still cool
             if (Subject.class.isAssignableFrom(proxy.getClass())) {
-                PublishSubject ps = PublishSubject.create();
-                observable.takeUntil(ps).subscribe((Observer) proxy);
-                observableSubscriptionMap.put(new ObservableSource(observable, tag), ps);
+                cObs.subscribe((Observer) proxy);
+                cObs.connect(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        observableDisposables.add(disposable);
+                        observableSubscriptionMap.put(
+                                new ObservableSource(observable, tag), disposable);
+                    }
+                });
             } else {
                 //should not happen
                 throw new IllegalStateException(String.format(Locale.ENGLISH,
@@ -91,11 +107,18 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
             publisherProxyMap.put(tag, publisher);
         } else {
             Publisher proxy = getPublisherProxyInternal(tag);
+            ConnectableFlowable cFlowable = publisher.publish();
             //check if we are still cool
             if (Processor.class.isAssignableFrom(proxy.getClass())) {
-                PublishProcessor pp = PublishProcessor.create();
-                publisher.takeUntil(pp).subscribe((Subscriber) proxy);
-                publisherSubscriptionMap.put(new Source(publisher, tag), pp);
+                cFlowable.subscribe((Subscriber) proxy);
+                cFlowable.connect(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        publisherDisposables.add(disposable);
+                        publisherSubscriptionMap.put(
+                                new Source(publisher, tag), disposable);
+                    }
+                });
             } else {
                 //should not happen
                 throw new IllegalStateException(String.format(Locale.ENGLISH,
@@ -139,7 +162,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
         } else {
             ObservableSource s = new ObservableSource(observable, tag);
             if (observableSubscriptionMap.containsKey(s)) {
-                observableSubscriptionMap.get(s).onComplete();
+                observableDisposables.remove(observableSubscriptionMap.get(s));
                 observableSubscriptionMap.remove(s);
             }
         }
@@ -153,7 +176,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
         } else {
             Source s = new Source(publisher, tag);
             if (publisherSubscriptionMap.containsKey(s)) {
-                publisherSubscriptionMap.get(s).onComplete();
+                publisherDisposables.remove(publisherSubscriptionMap.get(s));
                 publisherSubscriptionMap.remove(s);
             }
         }
@@ -173,7 +196,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <T> Observable<T> getFilteredObservable(Object tag, final Class<T> filterClass) {
+    public final <T> Observable<T> getObservable(Object tag, final Class<T> filterClass) {
         return getObservable(tag).filter(new Predicate() {
             @Override
             public boolean test(Object obj) throws Exception {
@@ -184,7 +207,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <T> Publisher<T> getFilteredPub(Object tag, final Class<T> filterClass) {
+    public final <T> Flowable<T> getPub(Object tag, final Class<T> filterClass) {
         return getPub(tag).filter(new Predicate() {
             @Override
             public boolean test(Object obj) throws Exception {
@@ -330,17 +353,13 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
 
     @Override
     public final void clearObservables() {
-        for (PublishSubject ps : observableSubscriptionMap.values()) {
-            ps.onComplete();
-        }
+        observableDisposables.clear();
         observableSubscriptionMap.clear();
     }
 
     @Override
     public final void clearPublishers() {
-        for (PublishProcessor pp : publisherSubscriptionMap.values()) {
-            pp.onComplete();
-        }
+        publisherDisposables.clear();
         publisherSubscriptionMap.clear();
     }
 
