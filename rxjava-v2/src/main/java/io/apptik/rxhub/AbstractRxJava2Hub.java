@@ -72,7 +72,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
 
 
     @Override
-    public final void addObservable(Object tag, Observable observable) {
+    public final void addObservable(final Object tag, final Observable observable) {
         checkIfObservableProxy(tag);
         if (getProxyType(tag) == ObservableRefProxy) {
             observableProxyMap.put(tag, observable);
@@ -101,7 +101,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     }
 
     @Override
-    public final void addPub(Object tag, Flowable publisher) {
+    public final void addPub(final Object tag,final Flowable publisher) {
         checkIfPublisherProxy(tag);
         if (getProxyType(tag) == PublisherRefProxy) {
             publisherProxyMap.put(tag, publisher);

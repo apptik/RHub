@@ -54,7 +54,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
     @Override
-    public final void addObservable(Object tag, Observable observable) {
+    public final void addObservable(final Object tag,final Observable observable) {
         if (getProxyType(tag) == RxJava1ProxyType.ObservableRefProxy) {
             proxyMap.put(tag, observable);
         } else {
