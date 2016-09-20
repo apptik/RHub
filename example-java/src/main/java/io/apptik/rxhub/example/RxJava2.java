@@ -25,7 +25,7 @@ public class RxJava2 {
                 return RxJava2ProxyType.BehaviorProcessorProxy;
             }
         };
-        // generalExample(rxJava2Hub);
+        // generalExample(rxHub);
         shieldExample(rxJava2Hub);
     }
 
@@ -176,7 +176,7 @@ public class RxJava2 {
             this.rxJava2Hub = rxJava2Hub;
         }
 
-        Flowable<String> getNamesPublisher() {
+        Publisher<String> getNamesPublisher() {
             return rxJava2Hub.getPub("topic1", String.class);
         }
 

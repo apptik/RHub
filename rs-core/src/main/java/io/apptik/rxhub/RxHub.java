@@ -14,7 +14,7 @@ import org.reactivestreams.Publisher;
  * The Proxy is a Concept responsible for multiplex/multicast the streams of events.
  * Internally they might be implemented by Processors or Subjects or simple Observables
  */
-public interface RxHub<P extends Publisher> {
+public interface RxHub {
 
     /**
      * Subscribes Proxy to {@link Publisher}.
@@ -24,18 +24,24 @@ public interface RxHub<P extends Publisher> {
      * @param tag      the ID of the Proxy
      * @param publisher the Publisher to subscribe to
      */
-    void addPub(Object tag, P publisher);
+    void addPub(Object tag, Publisher publisher);
 
     /**
-     * Unsubscribe {@link Publisher} from a Proxy
+     * Unsubscribe upstream {@link Publisher} from a Proxy
      *
      * @param tag      the ID of the Proxy
      * @param publisher the Publisher to unsubscribe from
      */
-    void removePub(Object tag, P publisher);
+    void removePub(Object tag, Publisher publisher);
 
     /**
-     * Clears all subscriptions to all Publishers
+     * Unsubscribe all upstream {@link Publisher} from a Proxy
+     * @param tag      the ID of the Proxy
+     */
+    void removeAllPub(Object tag);
+
+    /**
+     * Clears all upstream subscriptions to all Publishers
      */
     void clearPublishers();
 
@@ -45,7 +51,7 @@ public interface RxHub<P extends Publisher> {
      * @param tag the ID of the Proxy
      * @return the Proxy Publisher
      */
-    P getPub(Object tag);
+    Publisher getPub(Object tag);
 
     /**
      * Type safe variant of {@link #getPub(Object)}.
@@ -56,7 +62,7 @@ public interface RxHub<P extends Publisher> {
      * @param <T> the Type of the events the returned Publisher will emit
      * @return the Filtered Proxy Publisher
      */
-    <T> P getPub(Object tag, Class<T> filterClass);
+    <T> Publisher<T> getPub(Object tag, Class<T> filterClass);
 
     /**
      * Manually emit event to a specific Proxy. In order to prohibit this behaviour override this
@@ -86,6 +92,12 @@ public interface RxHub<P extends Publisher> {
      * @return true when manual emit is possible, false otherwise
      */
     boolean canTriggerEmit(Object tag);
+
+    /**
+     * removes the Proxy and frees the topic space of {@param tag} and send onComplete
+     * (if the proxy allows it) to all its Subscribers
+     */
+    void resetProxy(Object tag);
 
     class Source {
         final Publisher publisher;

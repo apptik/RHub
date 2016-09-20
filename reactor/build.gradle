@@ -8,5 +8,11 @@ compileJava {
 dependencies {
     compile project(':rs-core')
     compile rootProject.ext.reactor
+
+    testCompile rootProject.ext.junit
+    testCompile rootProject.ext.assertjCore2
+    testCompile rootProject.ext.cucjava
+    testCompile rootProject.ext.cucjunit
+    testCompile rootProject.ext.picocontainer
 }
 

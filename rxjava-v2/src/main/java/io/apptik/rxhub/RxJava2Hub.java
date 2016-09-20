@@ -1,7 +1,6 @@
 package io.apptik.rxhub;
 
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
 /**
@@ -12,7 +11,7 @@ import io.reactivex.Observable;
  * exception in case {@link #getProxyType(Object)} returns incompatible proxy.
  * 
  */
-public interface RxJava2Hub extends RxHub<Flowable> {
+public interface RxJava2Hub extends RxHub {
 
     /**
      * Subscribes Proxy to {@link Observable}.

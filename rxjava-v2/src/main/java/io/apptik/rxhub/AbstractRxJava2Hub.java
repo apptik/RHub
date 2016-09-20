@@ -101,13 +101,19 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     }
 
     @Override
-    public final void addPub(final Object tag,final Flowable publisher) {
+    public final void addPub(final Object tag, final Publisher publisher) {
         checkIfPublisherProxy(tag);
+        Flowable pub;
+        if (Flowable.class.isAssignableFrom(publisher.getClass())) {
+            pub = (Flowable) publisher;
+        } else {
+            pub = Flowable.fromPublisher(publisher);
+        }
         if (getProxyType(tag) == PublisherRefProxy) {
-            publisherProxyMap.put(tag, publisher);
+            publisherProxyMap.put(tag, pub);
         } else {
             Publisher proxy = getPublisherProxyInternal(tag);
-            ConnectableFlowable cFlowable = publisher.publish();
+            ConnectableFlowable cFlowable = pub.publish();
             //check if we are still cool
             if (Processor.class.isAssignableFrom(proxy.getClass())) {
                 cFlowable.subscribe((Subscriber) proxy);
@@ -169,7 +175,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     }
 
     @Override
-    public final void removePub(Object tag, Flowable publisher) {
+    public final void removePub(Object tag, Publisher publisher) {
         checkIfPublisherProxy(tag);
         if (getProxyType(tag) == PublisherRefProxy) {
             publisherProxyMap.remove(tag);
@@ -291,7 +297,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
                 default:
                     throw new IllegalStateException("Unknown ProxyType");
             }
-        } else if (proxyType instanceof RxJava2ProxyType) {
+        } else if (proxyType instanceof CoreProxyType) {
             switch ((CoreProxyType) proxyType) {
                 case PublisherRefProxy:
                     throw new IllegalStateException("Cannot create ObservableRefProxy, " +
@@ -363,4 +369,13 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
         publisherSubscriptionMap.clear();
     }
 
+    @Override
+    public void resetProxy(Object tag) {
+        //TODO
+    }
+
+    @Override
+    public void removeAllPub(Object tag) {
+        //todo
+    }
 }
