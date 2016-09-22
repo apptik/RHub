@@ -98,7 +98,7 @@ public abstract class AbstractReactorHub implements ReactorHub {
     @Override
     @SuppressWarnings("unchecked")
     public final <T> Publisher<T> getPub(Object tag, final Class<T> filterClass) {
-        Publisher res = getPub(tag);
+        Publisher res = getPublisherProxyInternal(tag);
         ProxyType proxyType = getProxyType(tag);
         Predicate predicate = new Predicate() {
             @Override

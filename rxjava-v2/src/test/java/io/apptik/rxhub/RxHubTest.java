@@ -37,7 +37,7 @@ public class RxHubTest {
     @Given("^Consumer\"([^\"]*)\"$")
     public void consumer(String consumer) throws Throwable {
         if (helper.isObservableType()) {
-            helper.obsrvabpleConsumers.put(consumer, getDummyConsumer());
+            helper.obsrvableConsumers.put(consumer, getDummyConsumer());
         } else {
             helper.publisherConsumers.put(consumer, new TestSubscriber());
         }
@@ -60,7 +60,7 @@ public class RxHubTest {
             throws Throwable {
         try {
             if (helper.isObservableType()) {
-                helper.hubs.get(hub).getObservable(tag).subscribe(helper.obsrvabpleConsumers.get
+                helper.hubs.get(hub).getObservable(tag).subscribe(helper.obsrvableConsumers.get
                         (consumer));
             } else {
                 helper.hubs.get(hub).getPub(tag).subscribe(helper.publisherConsumers.get(consumer));
@@ -79,7 +79,7 @@ public class RxHubTest {
         try {
             if (helper.isObservableType()) {
                 helper.hubs.get(hub).getObservable(tag, Class.forName(filter))
-                        .subscribe(helper.obsrvabpleConsumers.get(consumer));
+                        .subscribe(helper.obsrvableConsumers.get(consumer));
             } else {
                 helper.hubs.get(hub).getPub(tag, Class.forName(filter))
                         .subscribe(helper.publisherConsumers.get(consumer));
@@ -101,7 +101,7 @@ public class RxHubTest {
     @Then("^Consumer\"([^\"]*)\" should receive Event\"([^\"]*)\"$")
     public void consumer_should_receive_Event(String consumer, String event) throws Throwable {
         if (helper.isObservableType()) {
-            assertThat(helper.obsrvabpleConsumers.get(consumer).events).contains(event);
+            assertThat(helper.obsrvableConsumers.get(consumer).events).contains(event);
         } else {
             assertThat(helper.publisherConsumers.get(consumer).values()).contains(event);
         }
@@ -110,7 +110,7 @@ public class RxHubTest {
     @Then("^Consumer\"([^\"]*)\" should not receive Event\"([^\"]*)\"$")
     public void consumer_should_not_receive_Event(String consumer, String event) throws Throwable {
         if (helper.isObservableType()) {
-            assertThat(helper.obsrvabpleConsumers.get(consumer).events).doesNotContain(event);
+            assertThat(helper.obsrvableConsumers.get(consumer).events).doesNotContain(event);
         } else {
             assertThat(helper.publisherConsumers.get(consumer).values()).doesNotContain(event);
         }
@@ -123,8 +123,8 @@ public class RxHubTest {
         helper.proxyType = nodeType;
         helper.hubs.put(hub, new AbstractRxJava2Hub() {
             @Override
-            public RxJava2ProxyType getProxyType(Object tag) {
-                return RxJava2ProxyType.valueOf(nodeType);
+            public ProxyType getProxyType(Object tag) {
+                return Helper.getProxyType(nodeType);
             }
 
             @Override
@@ -145,8 +145,8 @@ public class RxHubTest {
         helper.proxyType = nodeType;
         helper.hubs.put(hub, new AbstractRxJava2Hub() {
             @Override
-            public RxJava2ProxyType getProxyType(Object tag) {
-                return RxJava2ProxyType.valueOf(nodeType);
+            public ProxyType getProxyType(Object tag) {
+                return Helper.getProxyType(nodeType);
             }
 
             @Override
@@ -207,7 +207,7 @@ public class RxHubTest {
         //use subjects  so we can easily emit events when needed
         public Map<String, PublishProcessor> processorProviders = new HashMap<>();
         public Map<String, PublishSubject> subjectProviders = new HashMap<>();
-        public Map<String, DummyConsumer> obsrvabpleConsumers = new HashMap<>();
+        public Map<String, DummyConsumer> obsrvableConsumers = new HashMap<>();
         public Map<String, TestSubscriber> publisherConsumers = new HashMap<>();
         public Throwable error;
 
@@ -216,7 +216,21 @@ public class RxHubTest {
         }
 
         public boolean isObservableType() {
-            return proxyType.contains("Subject") || proxyType.contains("Observable");
+            return isObservableType(proxyType);
+        }
+        public static boolean isObservableType(String proxyType) {
+            return proxyType.contains("Subject") || proxyType.contains("Observable")
+                    || proxyType.contains("ObsSafe");
+        }
+
+        public static RxHub.ProxyType getProxyType(String proxyType) {
+            if(proxyType.equals("PublisherRefProxy")) {
+                return RxHub.CoreProxyType.valueOf(proxyType);
+            } else if(isObservableType(proxyType)){
+                return RxJava2Hub.RxJava2ObsProxyType.valueOf(proxyType);
+            } else {
+                return RxJava2Hub.RxJava2PubProxyType.valueOf(proxyType);
+            }
         }
     }
 

@@ -16,13 +16,13 @@ public class RxJava2 {
     public static void main(String[] args) {
         RxJava2Hub rxJava2Hub = new DefaultRxJava2Hub() {
             @Override
-            public RxJava2ProxyType getProxyType(Object tag) {
+            public ProxyType getProxyType(Object tag) {
                 if (tag.equals("src2")) {
-                    return RxJava2ProxyType.ObservableRefProxy;
+                    return RxJava2ObsProxyType.ObservableRefProxy;
                 } else if (tag.equals("topic1Obs")) {
-                    return RxJava2ProxyType.BehaviorSubjectProxy;
+                    return RxJava2ObsProxyType.BehaviorSubjectProxy;
                 }
-                return RxJava2ProxyType.BehaviorProcessorProxy;
+                return RxJava2PubProxyType.BehaviorProcessorProxy;
             }
         };
         // generalExample(rxHub);

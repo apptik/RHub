@@ -3,7 +3,6 @@ package io.apptik.rxhub;
 
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
 
 import java.util.Locale;
 import java.util.Map;
@@ -12,12 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.flowables.ConnectableFlowable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
-import io.reactivex.observables.ConnectableObservable;
 import io.reactivex.processors.BehaviorProcessor;
 import io.reactivex.processors.FlowableProcessor;
 import io.reactivex.processors.PublishProcessor;
@@ -28,13 +22,7 @@ import io.reactivex.subjects.ReplaySubject;
 import io.reactivex.subjects.Subject;
 
 import static io.apptik.rxhub.RxHub.CoreProxyType.PublisherRefProxy;
-import static io.apptik.rxhub.RxJava2Hub.RxJava2ProxyType.BehaviorProcessorProxy;
-import static io.apptik.rxhub.RxJava2Hub.RxJava2ProxyType.BehaviorSubjectProxy;
-import static io.apptik.rxhub.RxJava2Hub.RxJava2ProxyType.ObservableRefProxy;
-import static io.apptik.rxhub.RxJava2Hub.RxJava2ProxyType.PublishProcessorProxy;
-import static io.apptik.rxhub.RxJava2Hub.RxJava2ProxyType.PublishSubjectProxy;
-import static io.apptik.rxhub.RxJava2Hub.RxJava2ProxyType.ReplayProcessorProxy;
-import static io.apptik.rxhub.RxJava2Hub.RxJava2ProxyType.ReplaySubjectProxy;
+import static io.apptik.rxhub.RxJava2Hub.RxJava2ObsProxyType.ObservableRefProxy;
 
 
 /**
@@ -61,99 +49,44 @@ import static io.apptik.rxhub.RxJava2Hub.RxJava2ProxyType.ReplaySubjectProxy;
  */
 public abstract class AbstractRxJava2Hub implements RxJava2Hub {
 
-    private final Map<Object, Flowable> publisherProxyMap = new ConcurrentHashMap<>();
-    private final Map<Object, Observable> observableProxyMap = new ConcurrentHashMap<>();
-    private final Map<Source, Disposable>
-            publisherSubscriptionMap = new ConcurrentHashMap<>();
-    private final Map<ObservableSource, Disposable>
-            observableSubscriptionMap = new ConcurrentHashMap<>();
-    private final CompositeDisposable publisherDisposables = new CompositeDisposable();
-    private final CompositeDisposable observableDisposables = new CompositeDisposable();
-
+    private final Map<Object, Proxy> proxyPubMap = new ConcurrentHashMap<>();
+    private final Map<Object, Publisher> directPubMap = new ConcurrentHashMap<>();
+    private final Map<Object, ObsProxy> proxyObsMap = new ConcurrentHashMap<>();
+    private final Map<Object, Observable> directObsMap = new ConcurrentHashMap<>();
 
     @Override
     public final void addObservable(final Object tag, final Observable observable) {
         checkIfObservableProxy(tag);
         if (getProxyType(tag) == ObservableRefProxy) {
-            observableProxyMap.put(tag, observable);
+            directObsMap.put(tag, observable);
         } else {
-            Observable proxy = getObservableProxyInternal(tag);
-            ConnectableObservable cObs = observable.publish();
-
-            //check if we are still cool
-            if (Subject.class.isAssignableFrom(proxy.getClass())) {
-                cObs.subscribe((Observer) proxy);
-                cObs.connect(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        observableDisposables.add(disposable);
-                        observableSubscriptionMap.put(
-                                new ObservableSource(observable, tag), disposable);
-                    }
-                });
-            } else {
-                //should not happen
-                throw new IllegalStateException(String.format(Locale.ENGLISH,
-                        "Proxy(%s) type(%s) is not supported! Do we have an alien injection?",
-                        tag, observable.getClass()));
-            }
+            getObservableProxyInternal(tag);
+            proxyObsMap.get(tag).addObs(tag, observable);
         }
     }
 
     @Override
     public final void addPub(final Object tag, final Publisher publisher) {
         checkIfPublisherProxy(tag);
-        Flowable pub;
-        if (Flowable.class.isAssignableFrom(publisher.getClass())) {
-            pub = (Flowable) publisher;
-        } else {
-            pub = Flowable.fromPublisher(publisher);
-        }
         if (getProxyType(tag) == PublisherRefProxy) {
-            publisherProxyMap.put(tag, pub);
+            directPubMap.put(tag, publisher);
         } else {
-            Publisher proxy = getPublisherProxyInternal(tag);
-            ConnectableFlowable cFlowable = pub.publish();
-            //check if we are still cool
-            if (Processor.class.isAssignableFrom(proxy.getClass())) {
-                cFlowable.subscribe((Subscriber) proxy);
-                cFlowable.connect(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        publisherDisposables.add(disposable);
-                        publisherSubscriptionMap.put(
-                                new Source(publisher, tag), disposable);
-                    }
-                });
-            } else {
-                //should not happen
-                throw new IllegalStateException(String.format(Locale.ENGLISH,
-                        "Proxy(%s) type(%s) is not supported! Do we have an alien injection?",
-                        tag, publisher.getClass()));
-            }
+            getPublisherProxyInternal(tag);
+            proxyPubMap.get(tag).addPub(tag, publisher);
         }
     }
 
     private void checkIfPublisherProxy(Object tag) {
         ProxyType proxyType = getProxyType(tag);
-        if (ObservableRefProxy.equals(proxyType)
-                || BehaviorSubjectProxy.equals(proxyType)
-                || PublishSubjectProxy.equals(proxyType)
-                || ReplaySubjectProxy.equals(proxyType)
-                ) {
+        if (!(proxyType instanceof RxJava2PubProxyType || proxyType instanceof CoreProxyType)) {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
-                    "Tag(%s) does not support Publisher proxy type(%s) !",
-                    tag, proxyType));
+                    "Tag(%s) does not support Publisher proxy type(%s) !", tag, proxyType));
         }
     }
 
     private void checkIfObservableProxy(Object tag) {
         ProxyType proxyType = getProxyType(tag);
-        if (PublisherRefProxy.equals(proxyType)
-                || BehaviorProcessorProxy.equals(proxyType)
-                || PublishProcessorProxy.equals(proxyType)
-                || ReplayProcessorProxy.equals(proxyType)
-                ) {
+        if (!(proxyType instanceof RxJava2ObsProxyType)) {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
                     "Tag(%s) does not support Observable proxy type(%s) !",
                     tag, proxyType));
@@ -164,12 +97,11 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     public final void removeObservable(Object tag, Observable observable) {
         checkIfObservableProxy(tag);
         if (getProxyType(tag) == ObservableRefProxy) {
-            observableProxyMap.remove(tag);
+            directObsMap.remove(tag);
         } else {
-            ObservableSource s = new ObservableSource(observable, tag);
-            if (observableSubscriptionMap.containsKey(s)) {
-                observableDisposables.remove(observableSubscriptionMap.get(s));
-                observableSubscriptionMap.remove(s);
+            ObsProxy proxy = proxyObsMap.get(tag);
+            if (proxy != null) {
+                proxy.removeObs(tag, observable);
             }
         }
     }
@@ -178,32 +110,44 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     public final void removePub(Object tag, Publisher publisher) {
         checkIfPublisherProxy(tag);
         if (getProxyType(tag) == PublisherRefProxy) {
-            publisherProxyMap.remove(tag);
+            directPubMap.remove(tag);
         } else {
-            Source s = new Source(publisher, tag);
-            if (publisherSubscriptionMap.containsKey(s)) {
-                publisherDisposables.remove(publisherSubscriptionMap.get(s));
-                publisherSubscriptionMap.remove(s);
+            Proxy proxy = proxyPubMap.get(tag);
+            if (proxy != null) {
+                proxy.removePub(tag, publisher);
             }
         }
     }
 
     @Override
     public final Observable getObservable(Object tag) {
-        //make sure we expose it as Observable hide proxy's identity
-        return getObservableProxyInternal(tag).hide();
+        checkIfObservableProxy(tag);
+        Observable res = getObservableProxyInternal(tag);
+        if (getProxyType(tag) == ObservableRefProxy) {
+            return res;
+        } else {
+            //make sure we expose it as Observable hide proxy's identity
+            return res.hide();
+        }
     }
 
     @Override
-    public final Flowable getPub(Object tag) {
-        //make sure we expose it as Publisher hide proxy's identity
-        return getPublisherProxyInternal(tag).hide();
+    public final Publisher getPub(Object tag) {
+        checkIfPublisherProxy(tag);
+        Publisher res = getPublisherProxyInternal(tag);
+        if (getProxyType(tag) == PublisherRefProxy) {
+            return res;
+        } else {
+            //make sure we expose it as Publisher hide proxy's identity
+            return ((Flowable<Object>) res).hide();
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final <T> Observable<T> getObservable(Object tag, final Class<T> filterClass) {
-        return getObservable(tag).filter(new Predicate() {
+        checkIfObservableProxy(tag);
+        return getObservableProxyInternal(tag).filter(new Predicate() {
             @Override
             public boolean test(Object obj) throws Exception {
                 return filterClass.isAssignableFrom(obj.getClass());
@@ -213,26 +157,48 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <T> Flowable<T> getPub(Object tag, final Class<T> filterClass) {
-        return getPub(tag).filter(new Predicate() {
+    public final <T> Publisher<T> getPub(Object tag, final Class<T> filterClass) {
+        checkIfPublisherProxy(tag);
+        Publisher res = getPublisherProxyInternal(tag);
+        Predicate predicate = new Predicate() {
             @Override
-            public boolean test(Object obj) throws Exception {
-                return filterClass.isAssignableFrom(obj.getClass());
+            public boolean test(Object o) {
+                return filterClass.isAssignableFrom(o.getClass());
             }
-        });
+        };
+        if (Flowable.class.isAssignableFrom(res.getClass())) {
+            return ((Flowable) res).filter(predicate);
+        } else {
+            return Flowable.fromPublisher(res).filter(predicate);
+        }
     }
 
-
     private Observable getObservableProxyInternal(Object tag) {
-        Observable res = observableProxyMap.get(tag);
+        checkIfObservableProxy(tag);
+        Observable res = null;
+        if (getProxyType(tag) == ObservableRefProxy) {
+            res = directObsMap.get(tag);
+        } else {
+            if (proxyObsMap.containsKey(tag)) {
+                res = proxyObsMap.get(tag).proc;
+            }
+        }
         if (res == null) {
             res = createObservableProxy(tag);
         }
         return res;
     }
 
-    private Flowable getPublisherProxyInternal(Object tag) {
-        Flowable res = publisherProxyMap.get(tag);
+    private Publisher getPublisherProxyInternal(Object tag) {
+        checkIfPublisherProxy(tag);
+        Publisher res = null;
+        if (getProxyType(tag) == PublisherRefProxy) {
+            res = directPubMap.get(tag);
+        } else {
+            if (proxyPubMap.containsKey(tag)) {
+                res = proxyPubMap.get(tag).proc;
+            }
+        }
         if (res == null) {
             res = createPublisherProxy(tag);
         }
@@ -240,16 +206,24 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     }
 
     private Observable createObservableProxy(Object tag) {
+        checkIfObservableProxy(tag);
         Subject res;
+        boolean isSafe = false;
         ProxyType proxyType = getProxyType(tag);
-        if (proxyType instanceof RxJava2ProxyType) {
-            switch ((RxJava2ProxyType) proxyType) {
+        if (proxyType instanceof RxJava2ObsProxyType) {
+            switch ((RxJava2ObsProxyType) proxyType) {
+                case BehaviorObsSafeProxy:
+                    isSafe = true;
                 case BehaviorSubjectProxy:
                     res = BehaviorSubject.create();
                     break;
+                case PublishObsSafeProxy:
+                    isSafe = true;
                 case PublishSubjectProxy:
                     res = PublishSubject.create();
                     break;
+                case ReplayObsSafeProxy:
+                    isSafe = true;
                 case ReplaySubjectProxy:
                     res = ReplaySubject.create();
                     break;
@@ -266,30 +240,32 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
         }
 
         if (isProxyThreadsafe(tag)) {
-            switch ((RxJava2ProxyType) proxyType) {
-                case BehaviorSubjectProxy:
-                case PublishSubjectProxy:
-                case ReplaySubjectProxy:
-                    res = res.toSerialized();
-                    break;
-            }
+            res = res.toSerialized();
         }
-        observableProxyMap.put(tag, res);
+        proxyObsMap.put(tag, new ObsProxy(res, isSafe));
         return res;
     }
 
 
     private Flowable createPublisherProxy(Object tag) {
+        checkIfPublisherProxy(tag);
         FlowableProcessor res;
+        boolean isSafe = false;
         ProxyType proxyType = getProxyType(tag);
-        if (proxyType instanceof RxJava2ProxyType) {
-            switch ((RxJava2ProxyType) proxyType) {
+        if (proxyType instanceof RxJava2PubProxyType) {
+            switch ((RxJava2PubProxyType) proxyType) {
+                case BehaviorSafeProxy:
+                    isSafe = true;
                 case BehaviorProcessorProxy:
                     res = BehaviorProcessor.create();
                     break;
+                case PublishSafeProxy:
+                    isSafe = true;
                 case PublishProcessorProxy:
                     res = PublishProcessor.create();
                     break;
+                case ReplaySafeProxy:
+                    isSafe = true;
                 case ReplayProcessorProxy:
                     res = ReplayProcessor.create();
                     break;
@@ -312,15 +288,9 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
         }
 
         if (isProxyThreadsafe(tag)) {
-            switch ((RxJava2ProxyType) proxyType) {
-                case BehaviorProcessorProxy:
-                case PublishProcessorProxy:
-                case ReplayProcessorProxy:
-                    res = res.toSerialized();
-                    break;
-            }
+            res = res.toSerialized();
         }
-        publisherProxyMap.put(tag, res);
+        proxyPubMap.put(tag, new Proxy(res, isSafe));
         return res;
     }
 
@@ -338,13 +308,12 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
                     "Emitting event not possible. Tag(%s) represents immutable stream.", tag));
         }
         Object proxy;
-        if (proxyType == BehaviorProcessorProxy
-                || proxyType == PublishProcessorProxy
-                || proxyType == ReplayProcessorProxy) {
+        if (proxyType instanceof RxJava2PubProxyType) {
             proxy = getPublisherProxyInternal(tag);
         } else {
             proxy = getObservableProxyInternal(tag);
         }
+
         if (Subject.class.isAssignableFrom(proxy.getClass())) {
             ((Observer) proxy).onNext(event);
         } else if (Processor.class.isAssignableFrom(proxy.getClass())) {
@@ -359,23 +328,89 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
 
     @Override
     public final void clearObservables() {
-        observableDisposables.clear();
-        observableSubscriptionMap.clear();
+        for (Map.Entry<Object, ObsProxy> entries : proxyObsMap.entrySet()) {
+            ProxyType proxyType = getProxyType(entries.getKey());
+            ObsProxy proxy = entries.getValue();
+            if (proxyType instanceof RxJava2ObsProxyType) {
+                proxy.clear();
+            }
+        }
+        directObsMap.clear();
     }
 
     @Override
     public final void clearPublishers() {
-        publisherDisposables.clear();
-        publisherSubscriptionMap.clear();
+        for (Map.Entry<Object, Proxy> entries : proxyPubMap.entrySet()) {
+            ProxyType proxyType = getProxyType(entries.getKey());
+            Proxy proxy = entries.getValue();
+            if (proxyType instanceof RxJava2PubProxyType) {
+                proxy.clear();
+            }
+        }
+        directPubMap.clear();
     }
 
     @Override
     public void resetProxy(Object tag) {
-        //TODO
+        checkIfPublisherProxy(tag);
+        ProxyType proxyType = getProxyType(tag);
+        if (proxyType instanceof RxJava2PubProxyType) {
+            Proxy proxy = proxyPubMap.get(tag);
+            if (proxy != null) {
+                proxy.clear();
+                proxy.proc.onComplete();
+                proxyPubMap.remove(tag);
+            }
+        } else {
+            directPubMap.remove(tag);
+        }
+    }
+
+    @Override
+    public void resetObsProxy(Object tag) {
+        checkIfObservableProxy(tag);
+        ProxyType proxyType = getProxyType(tag);
+        if (proxyType instanceof RxJava2ObsProxyType) {
+            ObsProxy proxy = proxyObsMap.get(tag);
+            if (proxy != null) {
+                proxy.clear();
+                proxy.proc.onComplete();
+                proxyObsMap.remove(tag);
+            }
+        } else {
+            directObsMap.remove(tag);
+        }
     }
 
     @Override
     public void removeAllPub(Object tag) {
-        //todo
+        checkIfPublisherProxy(tag);
+        ProxyType proxyType = getProxyType(tag);
+        if (proxyType instanceof RxJava2PubProxyType) {
+            Proxy proxy = proxyPubMap.get(tag);
+            if (proxy != null) {
+                proxy.clear();
+                proxyPubMap.remove(tag);
+            }
+        } else {
+            directPubMap.remove(tag);
+        }
     }
+
+    @Override
+    public void removeAllObservables(Object tag) {
+        checkIfObservableProxy(tag);
+        ProxyType proxyType = getProxyType(tag);
+        if (proxyType instanceof RxJava2ObsProxyType) {
+            ObsProxy proxy = proxyObsMap.get(tag);
+            if (proxy != null) {
+                proxy.clear();
+                proxyObsMap.remove(tag);
+            }
+        } else {
+            directObsMap.remove(tag);
+        }
+    }
+
+
 }

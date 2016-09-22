@@ -1,6 +1,8 @@
 package io.apptik.rxhub;
 
 
+import org.reactivestreams.Publisher;
+
 import io.reactivex.Observable;
 
 /**
@@ -55,6 +57,20 @@ public interface RxJava2Hub extends RxHub {
      */
     <T> Observable<T> getObservable(Object tag, Class<T> filterClass);
 
+
+    /**
+     * removes the Proxy and frees the topic space of {@param tag} and send onComplete
+     * (if the proxy allows it) to all its Subscribers
+     */
+    void resetObsProxy(Object tag);
+
+    /**
+     * Unsubscribe all upstream {@link Observable} from a Proxy
+     * @param tag      the ID of the Proxy
+     */
+    void removeAllObservables(Object tag);
+
+
     class ObservableSource {
         final Observable observable;
         final Object tag;
@@ -84,18 +100,22 @@ public interface RxJava2Hub extends RxHub {
         }
     }
 
-    enum RxJava2ProxyType implements ProxyType {
+    enum RxJava2PubProxyType implements ProxyType {
         BehaviorProcessorProxy,
         PublishProcessorProxy,
         ReplayProcessorProxy,
+        BehaviorSafeProxy,
+        PublishSafeProxy,
+        ReplaySafeProxy
+    }
 
+    enum RxJava2ObsProxyType implements ProxyType {
         BehaviorSubjectProxy,
         PublishSubjectProxy,
         ReplaySubjectProxy,
-        //TODO possibly coming up later, reminder to check
-//        BehaviorRelay,
-//        PublishRelay,
-//        ReplayRelay,
+        BehaviorObsSafeProxy,
+        PublishObsSafeProxy,
+        ReplayObsSafeProxy,
         ObservableRefProxy
     }
 }
