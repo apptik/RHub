@@ -8,6 +8,7 @@ import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = {"pretty"}, glue = "io.apptik.rxhub",
-        features = {"src/test/resources/features/"})
+        features = {"src/test/resources/features/"},
+        format = {"html:./build/cuc-report/html"})
 public class BaseTest {
 }
