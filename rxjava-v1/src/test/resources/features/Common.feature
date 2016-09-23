@@ -1,8 +1,5 @@
 Feature: Common behaviour of RxHub
 
-  Scenario:
-    Given P
-
   Scenario Outline: Consumer subscription after subscribed to provider
     Given Provider"P"
     And Consumer"C"
