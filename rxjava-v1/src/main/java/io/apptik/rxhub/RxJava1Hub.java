@@ -89,6 +89,13 @@ public interface RxJava1Hub {
      */
     boolean canTriggerEmit(Object tag);
 
+
+    /**
+     * removes the Proxy and frees the topic space of {@param tag} and send onComplete
+     * (if the proxy allows it) to all its Subscribers
+     */
+    void resetObsProxy(Object tag);
+
     class Source {
         final Observable observable;
         final Object tag;
