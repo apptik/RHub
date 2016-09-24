@@ -19,7 +19,7 @@ import rx.Observable;
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Thread)
-public class PublishProxyEmitPerf {
+public class PublishProxyPerf {
 
     @State(Scope.Thread)
     public static class Params {
@@ -54,7 +54,7 @@ public class PublishProxyEmitPerf {
     }
 
     @Benchmark
-    public void benchmark(Params p, Blackhole bh) {
+    public void emit(Params p, Blackhole bh) {
         AtomicLong aLong = new AtomicLong();
         int s = p.subscribers;
         for (int i = 0; i < s; i++) {
