@@ -23,11 +23,12 @@ import rx.Observer;
 
 public class LatchedObserver<T> implements Observer<T> {
 
-    public CountDownLatch latch = new CountDownLatch(1);
+    public final CountDownLatch latch;
     private final Blackhole bh;
 
-    public LatchedObserver(Blackhole bh) {
+    public LatchedObserver(Blackhole bh, CountDownLatch latch) {
         this.bh = bh;
+        this.latch = latch;
     }
 
     @Override
@@ -42,6 +43,7 @@ public class LatchedObserver<T> implements Observer<T> {
 
     @Override
     public void onNext(T t) {
+        //System.out.println(t);
         bh.consume(t);
     }
 
