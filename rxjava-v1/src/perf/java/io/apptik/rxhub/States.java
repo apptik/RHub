@@ -1,4 +1,4 @@
-package rhub.jmh;
+package io.apptik.rxhub;
 
 
 import org.openjdk.jmh.annotations.Level;
@@ -8,14 +8,14 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
-import io.apptik.rxhub.RxJava1Hub;
 import rx.Observable;
 import rx.observables.ConnectableObservable;
 import rx.subjects.PublishSubject;
 
 public class States {
 
-    private States(){}
+    private States() {
+    }
 
     @State(Scope.Thread)
     public static class ProxyParamsEmit {
@@ -23,7 +23,8 @@ public class States {
         @Param({"1", "2", "4", "8"})
         public int subscribers;
 
-        @Param({"1",
+        @Param({
+                "1",
                 "1000",
                 "1000000"
         })
@@ -33,7 +34,7 @@ public class States {
 
         public Observable obs;
 
-        RxJava1Hub hub;
+        AbstractRxJava1Hub hub;
 
         @Setup(Level.Iteration)
         public void setup() {
@@ -43,12 +44,12 @@ public class States {
 
         @TearDown(Level.Iteration)
         public void tearDown() {
-            //no need proxy is already reset in order for the latch to pass
+            hub.resetObsProxy(tag);
         }
     }
 
     @State(Scope.Thread)
-    public static class ProxyParamsEmitUpstream extends ProxyParamsEmit {
+    public static class ProxyParamsUpstream extends ProxyParamsEmit {
         public ConnectableObservable<Integer> upstream;
 
         @Setup(Level.Iteration)
@@ -56,7 +57,7 @@ public class States {
             hub = new UniJavaRx1Hub(RxJava1Hub.RxJava1ProxyType.PublishSubjectProxy);
             obs = hub.getObservable(tag);
             upstream = Observable.range(0, count).publish();
-            hub.addObservable(tag, upstream);
+            hub.addObsUpstream(tag, upstream);
         }
 
         @TearDown(Level.Iteration)
@@ -93,7 +94,7 @@ public class States {
     }
 
     @State(Scope.Thread)
-    public static class SubjectParamsEmitUpstream extends SubjectParamsEmit {
+    public static class SubjectParamsUpstream extends SubjectParamsEmit {
         public ConnectableObservable<Integer> upstream;
 
         @Setup(Level.Iteration)

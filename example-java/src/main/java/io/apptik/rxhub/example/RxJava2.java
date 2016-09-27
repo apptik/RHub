@@ -32,7 +32,7 @@ public class RxJava2 {
     private static void generalExample(RxJava2Hub rxJava2Hub) {
         Observable src1 = Observable.fromArray(new Integer[]{1, 3, 5, 7, 11, 13});
         Observable src2 = Observable.interval(1, TimeUnit.SECONDS);
-        rxJava2Hub.addObservable("src1", src1);
+        rxJava2Hub.addObsUpstream("src1", src1);
 
         rxJava2Hub.getObservable("src1").subscribe(o -> {
             System.out.println("consumer1 (src1) got: " + o);
@@ -43,8 +43,8 @@ public class RxJava2 {
             System.out.println("consumer1 (src1.1) got: " + o);
         });
 
-        rxJava2Hub.addObservable("src1.1", src1.repeat(1));
-        rxJava2Hub.addObservable("src2", src2.buffer(Integer.MAX_VALUE));
+        rxJava2Hub.addObsUpstream("src1.1", src1.repeat(1));
+        rxJava2Hub.addObsUpstream("src2", src2.buffer(Integer.MAX_VALUE));
 
         rxJava2Hub.getObservable("src1").subscribe(o -> {
             System.out.println("consumer2 (src1) got: " + o);
@@ -59,9 +59,9 @@ public class RxJava2 {
         new Thread(() -> {
             try {
                 Thread.sleep(5000);
-                rxJava2Hub.addObservable("src1.1", Observable.interval(1, TimeUnit.SECONDS));
+                rxJava2Hub.addObsUpstream("src1.1", Observable.interval(1, TimeUnit.SECONDS));
                 Thread.sleep(5000);
-                rxJava2Hub.clearObservables();
+                rxJava2Hub.clearObsUpstream();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -99,7 +99,7 @@ public class RxJava2 {
             System.out.println(String.format("consumer2(%s) got:%s",
                     Thread.currentThread().getName(), o));
             if (o.equals(301l)) {
-                rxJava2Hub.removeObservable("topic1Obs", srcIntObs);
+                rxJava2Hub.removeObsUpstream("topic1Obs", srcIntObs);
             }
         });
 
@@ -134,7 +134,7 @@ public class RxJava2 {
                         System.out.println(String.format("Subscriber2(%s) got:%s",
                                 Thread.currentThread().getName(), aLong));
                         if (aLong.equals(301l)) {
-                            rxJava2Hub.removePub("topic1", srcIntPub);
+                            rxJava2Hub.removeUpstream("topic1", srcIntPub);
                         }
                     }
 
@@ -153,10 +153,10 @@ public class RxJava2 {
                     }
                 });
 
-        rxJava2Hub.addObservable("topic1Obs", srcIntObs);
-        rxJava2Hub.addObservable("topic1Obs", srcStringObs);
-        rxJava2Hub.addPub("topic1", srcIntPub);
-        rxJava2Hub.addPub("topic1", srcStringPub);
+        rxJava2Hub.addObsUpstream("topic1Obs", srcIntObs);
+        rxJava2Hub.addObsUpstream("topic1Obs", srcStringObs);
+        rxJava2Hub.addUpstream("topic1", srcIntPub);
+        rxJava2Hub.addUpstream("topic1", srcStringPub);
         // srcInt.subscribe(System.out::println);
 
         //wait a little

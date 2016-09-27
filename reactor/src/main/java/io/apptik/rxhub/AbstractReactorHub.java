@@ -24,7 +24,7 @@ public abstract class AbstractReactorHub implements ReactorHub {
     private final Map<Object, Publisher> directPubMap = new ConcurrentHashMap<>();
 
     @Override
-    public void removePub(Object tag, Publisher publisher) {
+    public void removeUpstream(Object tag, Publisher publisher) {
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof ReactorProxyType) {
             Proxy proxy = proxyPubMap.get(tag);
@@ -40,7 +40,7 @@ public abstract class AbstractReactorHub implements ReactorHub {
     }
 
     @Override
-    public void clearPublishers() {
+    public void clearUpstream() {
         for (Map.Entry<Object, Proxy> entries : proxyPubMap.entrySet()) {
             ProxyType proxyType = getProxyType(entries.getKey());
             Proxy proxy = entries.getValue();
@@ -74,7 +74,7 @@ public abstract class AbstractReactorHub implements ReactorHub {
     }
 
     @Override
-    public void addPub(Object tag, Publisher publisher) {
+    public void addUpstream(Object tag, Publisher publisher) {
         if (getProxyType(tag) == PublisherRefProxy) {
             directPubMap.put(tag, publisher);
         } else {
@@ -201,7 +201,7 @@ public abstract class AbstractReactorHub implements ReactorHub {
     }
 
     @Override
-    public void removeAllPub(Object tag) {
+    public void removeUpstream(Object tag) {
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof ReactorProxyType) {
             Proxy proxy = proxyPubMap.get(tag);

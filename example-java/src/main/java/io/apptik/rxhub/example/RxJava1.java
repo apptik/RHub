@@ -26,7 +26,7 @@ public class RxJava1 {
     private static void generalExample(RxJava1Hub rxJava1Hub) {
         Observable src1 = Observable.from(new Integer[]{1, 3, 5, 7, 11, 13});
         Observable src2 = Observable.interval(1, TimeUnit.SECONDS);
-        rxJava1Hub.addObservable("src1", src1);
+        rxJava1Hub.addObsUpstream("src1", src1);
 
         rxJava1Hub.getObservable("src1").subscribe(o -> {
             System.out.println("consumer1 (src1) got: " + o);
@@ -37,8 +37,8 @@ public class RxJava1 {
             System.out.println("consumer1 (src1.1) got: " + o);
         });
 
-        rxJava1Hub.addObservable("src1.1", src1.repeat(1));
-        rxJava1Hub.addObservable("src2", src2.onBackpressureBuffer());
+        rxJava1Hub.addObsUpstream("src1.1", src1.repeat(1));
+        rxJava1Hub.addObsUpstream("src2", src2.onBackpressureBuffer());
 
         rxJava1Hub.getObservable("src1").subscribe(o -> {
             System.out.println("consumer2 (src1) got: " + o);
@@ -53,9 +53,9 @@ public class RxJava1 {
         new Thread(() -> {
             try {
                 Thread.sleep(5000);
-                rxJava1Hub.addObservable("src1.1", Observable.interval(1, TimeUnit.SECONDS));
+                rxJava1Hub.addObsUpstream("src1.1", Observable.interval(1, TimeUnit.SECONDS));
                 Thread.sleep(5000);
-                rxJava1Hub.clearObservables();
+                rxJava1Hub.clearObsUpstream();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -83,16 +83,18 @@ public class RxJava1 {
 
         shield.getBigOnes()
                 .subscribe(o -> {
+                    if (o.equals(301l)) {
+                        rxJava1Hub.removeObsUpstream("topic1", srcLong);
+                    }
                     System.out.println(String.format("consumer2(%s) got:%s",
                             Thread.currentThread().getName(), o));
-                    if (o.equals(301l)) {
-                        rxJava1Hub.removeObservable("topic1", srcLong);
-                    }
+
                 });
 
 
-        rxJava1Hub.addObservable("topic1", srcLong);
-        rxJava1Hub.addObservable("topic1", srcString);
+        rxJava1Hub.addObsUpstream("topic1", srcLong);
+        rxJava1Hub.addObsUpstream("topic1", srcString);
+
 
         //wait a little
         new Thread(() -> {

@@ -1,8 +1,6 @@
 package io.apptik.rxhub;
 
 
-import org.reactivestreams.Publisher;
-
 import io.reactivex.Observable;
 
 /**
@@ -18,12 +16,12 @@ public interface RxJava2Hub extends RxHub {
     /**
      * Subscribes Proxy to {@link Observable}.
      * If there is no Proxy with the specific tag a new one will be created
-     * except if the Proxy is of type {@link RxJava2ProxyType#ObservableRefProxy}
+     * except if the Proxy is of type {@link RxJava2ObsProxyType#ObservableRefProxy}
      *
      * @param tag      the ID of the Proxy
      * @param observable the Observable to subscribe to
      */
-    void addObservable(Object tag, Observable observable);
+    void addObsUpstream(Object tag, Observable observable);
 
     /**
      * Unsubscribe {@link Observable} from a Proxy
@@ -31,12 +29,12 @@ public interface RxJava2Hub extends RxHub {
      * @param tag      the ID of the Proxy
      * @param observable the Observable to unsubscribe from
      */
-    void removeObservable(Object tag, Observable observable);
+    void removeObsUpstream(Object tag, Observable observable);
 
     /**
-     * Clears all subscriptions of all Proxys
+     * Clears all subscriptions of all Proxies
      */
-    void clearObservables();
+    void clearObsUpstream();
 
     /**
      * Returns the Proxy Observable identified by the tag
@@ -68,7 +66,7 @@ public interface RxJava2Hub extends RxHub {
      * Unsubscribe all upstream {@link Observable} from a Proxy
      * @param tag      the ID of the Proxy
      */
-    void removeAllObservables(Object tag);
+    void removeObsUpstream(Object tag);
 
 
     class ObservableSource {

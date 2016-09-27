@@ -14,14 +14,14 @@ import io.reactivex.subjects.Subject;
 
 import static io.apptik.rxhub.Proxy.Event.COMPLETE;
 
-class ObsProxy {
+class SubjProxy {
 
     final Subject proc;
     private final boolean wrapTE;
 
     private final Map<ObservableSource, Disposable> subscriptions = new ConcurrentHashMap<>();
 
-    ObsProxy(Subject proc, boolean wrapTE) {
+    SubjProxy(Subject proc, boolean wrapTE) {
         this.proc = proc;
         this.wrapTE = wrapTE;
     }

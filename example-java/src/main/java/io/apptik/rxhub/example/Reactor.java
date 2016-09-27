@@ -30,7 +30,7 @@ public class Reactor {
     private static void generalExample(RxHub rxHub) {
 //        Publisher src1 = Flux.fromArray(new Integer[]{1, 3, 5, 7, 11, 13});
 //        Publisher src2 = Flux.interval(1, TimeUnit.SECONDS);
-//        rxHub.addPub("src1", src1);
+//        rxHub.addUpstream("src1", src1);
 //
 //        rxHub.getPub("src1").subscribe(o -> {
 //            System.out.println("consumer1 (src1) got: " + o);
@@ -41,8 +41,8 @@ public class Reactor {
 //            System.out.println("consumer1 (src1.1) got: " + o);
 //        });
 //
-//        rxHub.addPub("src1.1", src1.repeat(1));
-//        rxHub.addPub("src2", src2.buffer(Integer.MAX_VALUE));
+//        rxHub.addUpstream("src1.1", src1.repeat(1));
+//        rxHub.addUpstream("src2", src2.buffer(Integer.MAX_VALUE));
 //
 //        rxHub.getPub("src1").subscribe(o -> {
 //            System.out.println("consumer2 (src1) got: " + o);
@@ -57,9 +57,9 @@ public class Reactor {
 //        new Thread(() -> {
 //            try {
 //                Thread.sleep(5000);
-//                rxHub.addPub("src1.1", Flux.interval(1, TimeUnit.SECONDS));
+//                rxHub.addUpstream("src1.1", Flux.interval(1, TimeUnit.SECONDS));
 //                Thread.sleep(5000);
-//                rxHub.clearPublishers();
+//                rxHub.clearUpstream();
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();
 //            }
@@ -116,7 +116,7 @@ public class Reactor {
                         System.out.println(String.format("Subscriber2(%s) got:%s",
                                 Thread.currentThread().getName(), aLong));
                         if (aLong > 300l) {
-                            rxHub.removePub("topic1", srcIntPub);
+                            rxHub.removeUpstream("topic1", srcIntPub);
                         }
                     }
 
@@ -136,8 +136,8 @@ public class Reactor {
                 });
 
 
-        rxHub.addPub("topic1", srcIntPub);
-        rxHub.addPub("topic1", srcStringPub);
+        rxHub.addUpstream("topic1", srcIntPub);
+        rxHub.addUpstream("topic1", srcStringPub);
 
         // srcInt.subscribe(System.out::println);
 
@@ -175,7 +175,7 @@ public class Reactor {
                         System.out.println(String.format("Subscriber4(%s) got:%s",
                                 Thread.currentThread().getName(), aLong));
                         if (aLong > 300l) {
-                            rxHub.removePub("topic1", srcInt2Pub);
+                            rxHub.removeUpstream("topic1", srcInt2Pub);
                         }
                     }
 
@@ -193,7 +193,7 @@ public class Reactor {
                                 Thread.currentThread().getName()));
                     }
                 });
-                rxHub.addPub("topic1", srcInt2Pub);
+                rxHub.addUpstream("topic1", srcInt2Pub);
                 rxHub.emit("topic1", 1000l);
                 rxHub.resetProxy("topic1");
                 //no more

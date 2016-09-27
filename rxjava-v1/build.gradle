@@ -67,7 +67,7 @@ task perf(type: JavaExec) {
         args '-f' // fork
         args '1'
         args '-wi' // warmup iterations
-        args '5'
+        args '7'
         args '-i' // test iterations
         args '5'
         args '-r' // time per execution in seconds

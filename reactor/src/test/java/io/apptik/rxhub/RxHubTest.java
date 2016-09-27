@@ -39,7 +39,7 @@ public class RxHubTest {
     @Given("^Hub\"([^\"]*)\" is subscribed to Provider\"([^\"]*)\" with tag \"([^\"]*)\"$")
     public void hub_is_subscribed_to_Provider_with_tag(String hub, String provider,
                                                        String tag) throws Throwable {
-        helper.hubs.get(hub).addPub(tag, helper.publishers.get(provider));
+        helper.hubs.get(hub).addUpstream(tag, helper.publishers.get(provider));
     }
 
     @When("^Consumer\"([^\"]*)\" subscribes to Hub\"([^\"]*)\" with tag \"([^\"]*)\"$")
@@ -149,13 +149,13 @@ public class RxHubTest {
             throws
             Throwable {
 
-        helper.hubs.get(hub).removePub(tag, helper.publishers.get(provider));
+        helper.hubs.get(hub).removeUpstream(tag, helper.publishers.get(provider));
 
     }
 
     @When("^providers are cleared from Hub\"([^\"]*)\"$")
     public void providers_are_cleared_from_Hub(String hub) throws Throwable {
-        helper.hubs.get(hub).clearPublishers();
+        helper.hubs.get(hub).clearUpstream();
     }
 
     @Then("^there should be Error \"([^\"]*)\"$")

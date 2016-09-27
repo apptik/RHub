@@ -59,7 +59,7 @@ public class ShieldClass {
             if (na.isInputNode()) {
                 methodSpec.addParameter(ParameterSpec.builder(na.paramType, "src").build());
                 methodSpec.addCode(CodeBlock.builder()
-                        .addStatement("rxHub.addObservable($S,$L)",
+                        .addStatement("rxHub.addObsUpstream($S,$L)",
                                 na.nodeTag,"src").build());
             } else {
                 if (na.hasEnclosedClassName()) {

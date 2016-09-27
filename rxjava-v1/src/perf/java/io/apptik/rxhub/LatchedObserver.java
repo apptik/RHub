@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package rhub.jmh;
+package io.apptik.rxhub;
 
 import org.openjdk.jmh.infra.Blackhole;
 

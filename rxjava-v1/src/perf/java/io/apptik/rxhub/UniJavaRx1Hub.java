@@ -1,7 +1,5 @@
-package rhub.jmh;
+package io.apptik.rxhub;
 
-
-import io.apptik.rxhub.AbstractRxJava1Hub;
 
 public class UniJavaRx1Hub extends AbstractRxJava1Hub {
 
@@ -10,7 +8,6 @@ public class UniJavaRx1Hub extends AbstractRxJava1Hub {
     public UniJavaRx1Hub(RxJava1ProxyType proxyType) {
         this.proxyType = proxyType;
     }
-
 
     @Override
     public RxJava1ProxyType getProxyType(Object tag) {

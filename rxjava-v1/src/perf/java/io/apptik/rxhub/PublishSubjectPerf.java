@@ -1,4 +1,4 @@
-package rhub.jmh;
+package io.apptik.rxhub;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -34,7 +34,7 @@ public class PublishSubjectPerf {
     }
 
    @Benchmark
-    public void observe(States.SubjectParamsEmitUpstream p, Blackhole bh) throws InterruptedException {
+    public void observe(States.SubjectParamsUpstream p, Blackhole bh) throws InterruptedException {
         int s = p.subscribers;
         CountDownLatch latch = new CountDownLatch(s);
         for (int i = 0; i < s; i++) {

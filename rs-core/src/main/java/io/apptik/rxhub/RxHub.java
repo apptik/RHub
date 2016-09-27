@@ -24,7 +24,7 @@ public interface RxHub {
      * @param tag      the ID of the Proxy
      * @param publisher the Publisher to subscribe to
      */
-    void addPub(Object tag, Publisher publisher);
+    void addUpstream(Object tag, Publisher publisher);
 
     /**
      * Unsubscribe upstream {@link Publisher} from a Proxy
@@ -32,18 +32,18 @@ public interface RxHub {
      * @param tag      the ID of the Proxy
      * @param publisher the Publisher to unsubscribe from
      */
-    void removePub(Object tag, Publisher publisher);
+    void removeUpstream(Object tag, Publisher publisher);
 
     /**
      * Unsubscribe all upstream {@link Publisher} from a Proxy
      * @param tag      the ID of the Proxy
      */
-    void removeAllPub(Object tag);
+    void removeUpstream(Object tag);
 
     /**
      * Clears all upstream subscriptions to all Publishers
      */
-    void clearPublishers();
+    void clearUpstream();
 
     /**
      * Returns the Proxy Publisher identified by the tag

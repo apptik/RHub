@@ -48,9 +48,9 @@ public class RxHubTest {
     public void hub_is_subscribed_to_Provider_with_tag(String hub, String provider,
                                                        String tag) throws Throwable {
         if (helper.isObservableType()) {
-            helper.hubs.get(hub).addObservable(tag, helper.subjectProviders.get(provider));
+            helper.hubs.get(hub).addObsUpstream(tag, helper.subjectProviders.get(provider));
         } else {
-            helper.hubs.get(hub).addPub(tag, helper.processorProviders.get(provider));
+            helper.hubs.get(hub).addUpstream(tag, helper.processorProviders.get(provider));
         }
     }
 
@@ -176,16 +176,16 @@ public class RxHubTest {
             throws
             Throwable {
         if (helper.isObservableType()) {
-            helper.hubs.get(hub).removeObservable(tag, helper.subjectProviders.get(provider));
+            helper.hubs.get(hub).removeObsUpstream(tag, helper.subjectProviders.get(provider));
         } else {
-            helper.hubs.get(hub).removePub(tag, helper.processorProviders.get(provider));
+            helper.hubs.get(hub).removeUpstream(tag, helper.processorProviders.get(provider));
         }
     }
 
     @When("^providers are cleared from Hub\"([^\"]*)\"$")
     public void providers_are_cleared_from_Hub(String hub) throws Throwable {
-        helper.hubs.get(hub).clearObservables();
-        helper.hubs.get(hub).clearPublishers();
+        helper.hubs.get(hub).clearObsUpstream();
+        helper.hubs.get(hub).clearUpstream();
     }
 
     @Then("^there should be Error \"([^\"]*)\"$")

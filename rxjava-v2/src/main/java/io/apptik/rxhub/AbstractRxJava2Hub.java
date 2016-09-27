@@ -51,11 +51,11 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
 
     private final Map<Object, Proxy> proxyPubMap = new ConcurrentHashMap<>();
     private final Map<Object, Publisher> directPubMap = new ConcurrentHashMap<>();
-    private final Map<Object, ObsProxy> proxyObsMap = new ConcurrentHashMap<>();
+    private final Map<Object, SubjProxy> proxyObsMap = new ConcurrentHashMap<>();
     private final Map<Object, Observable> directObsMap = new ConcurrentHashMap<>();
 
     @Override
-    public final void addObservable(final Object tag, final Observable observable) {
+    public final void addObsUpstream(final Object tag, final Observable observable) {
         checkIfObservableProxy(tag);
         if (getProxyType(tag) == ObservableRefProxy) {
             directObsMap.put(tag, observable);
@@ -66,7 +66,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     }
 
     @Override
-    public final void addPub(final Object tag, final Publisher publisher) {
+    public final void addUpstream(final Object tag, final Publisher publisher) {
         checkIfPublisherProxy(tag);
         if (getProxyType(tag) == PublisherRefProxy) {
             directPubMap.put(tag, publisher);
@@ -94,12 +94,12 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     }
 
     @Override
-    public final void removeObservable(Object tag, Observable observable) {
+    public final void removeObsUpstream(Object tag, Observable observable) {
         checkIfObservableProxy(tag);
         if (getProxyType(tag) == ObservableRefProxy) {
             directObsMap.remove(tag);
         } else {
-            ObsProxy proxy = proxyObsMap.get(tag);
+            SubjProxy proxy = proxyObsMap.get(tag);
             if (proxy != null) {
                 proxy.removeObs(tag, observable);
             }
@@ -107,7 +107,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     }
 
     @Override
-    public final void removePub(Object tag, Publisher publisher) {
+    public final void removeUpstream(Object tag, Publisher publisher) {
         checkIfPublisherProxy(tag);
         if (getProxyType(tag) == PublisherRefProxy) {
             directPubMap.remove(tag);
@@ -242,7 +242,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
         if (isProxyThreadsafe(tag)) {
             res = res.toSerialized();
         }
-        proxyObsMap.put(tag, new ObsProxy(res, isSafe));
+        proxyObsMap.put(tag, new SubjProxy(res, isSafe));
         return res;
     }
 
@@ -327,25 +327,20 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     }
 
     @Override
-    public final void clearObservables() {
-        for (Map.Entry<Object, ObsProxy> entries : proxyObsMap.entrySet()) {
-            ProxyType proxyType = getProxyType(entries.getKey());
-            ObsProxy proxy = entries.getValue();
-            if (proxyType instanceof RxJava2ObsProxyType) {
-                proxy.clear();
-            }
+    public final void clearObsUpstream() {
+        for (Map.Entry<Object, SubjProxy> entries : proxyObsMap.entrySet()) {
+            SubjProxy proxy = entries.getValue();
+            proxy.clear();
         }
         directObsMap.clear();
     }
 
     @Override
-    public final void clearPublishers() {
+    public final void clearUpstream() {
         for (Map.Entry<Object, Proxy> entries : proxyPubMap.entrySet()) {
             ProxyType proxyType = getProxyType(entries.getKey());
             Proxy proxy = entries.getValue();
-            if (proxyType instanceof RxJava2PubProxyType) {
-                proxy.clear();
-            }
+            proxy.clear();
         }
         directPubMap.clear();
     }
@@ -371,7 +366,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
         checkIfObservableProxy(tag);
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof RxJava2ObsProxyType) {
-            ObsProxy proxy = proxyObsMap.get(tag);
+            SubjProxy proxy = proxyObsMap.get(tag);
             if (proxy != null) {
                 proxy.clear();
                 proxy.proc.onComplete();
@@ -383,7 +378,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     }
 
     @Override
-    public void removeAllPub(Object tag) {
+    public void removeUpstream(Object tag) {
         checkIfPublisherProxy(tag);
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof RxJava2PubProxyType) {
@@ -398,11 +393,11 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     }
 
     @Override
-    public void removeAllObservables(Object tag) {
+    public void removeObsUpstream(Object tag) {
         checkIfObservableProxy(tag);
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof RxJava2ObsProxyType) {
-            ObsProxy proxy = proxyObsMap.get(tag);
+            SubjProxy proxy = proxyObsMap.get(tag);
             if (proxy != null) {
                 proxy.clear();
                 proxyObsMap.remove(tag);
