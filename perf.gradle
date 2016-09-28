@@ -1,0 +1,59 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [project.configurations.perfCompile]
+    }
+}
+
+task prepbench(dependsOn: perfClasses) {
+
+    shadowJar {
+        classifier = "benchmarks"
+
+        from sourceSets.perf.output
+        from sourceSets.main.output
+        from project.configurations.perfRuntime
+
+        shadowJar.doFirst {
+            shadowJar.manifest.attributes.put("Main-Class", "org.openjdk.jmh.Main")
+        }
+    }
+
+    doLast {
+        shadowJar.execute()
+    }
+}
+
+task perf(type: JavaExec) {
+    main = 'org.openjdk.jmh.Main'
+    classpath = project.sourceSets.perf.runtimeClasspath
+    maxHeapSize = "512m"
+    jvmArgs '-XX:+UnlockCommercialFeatures'
+    jvmArgs '-XX:+FlightRecorder'
+
+    if (project.hasProperty('jmh')) {
+        args(project.jmh.split(' '))
+    } else {
+        //args '-h' // help output
+        args '-f' // fork
+        args '1'
+        args '-wi' // warmup iterations
+        args '7'
+        args '-i' // test iterations
+        args '5'
+        args '-r' // time per execution in seconds
+        args '5'
+        //args '-prof' // profilers
+        //args 'HS_GC' // HotSpot (tm) memory manager (GC) profiling via implementation-specific MBeans
+        //args 'HS_RT' // HotSpot (tm) runtime profiling via implementation-specific MBeans
+        //args 'HS_THR' // HotSpot (tm) threading subsystem via implementation-specific MBeans
+        //args 'HS_COMP' // HotSpot (tm) JIT compiler profiling via implementation-specific MBeans
+        //args 'HS_CL' // HotSpot (tm) classloader profiling via implementation-specific MBeans
+        //args 'STACK' // Simple and naive Java stack profiler
+    }
+}
+
