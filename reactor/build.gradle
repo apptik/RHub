@@ -1,13 +1,21 @@
 apply plugin: 'java'
 
 compileJava {
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+sourceSets {
+    perf
 }
 
 dependencies {
     compile project(':rs-core')
     compile rootProject.ext.reactor
+
+    perfCompile rootProject.ext.jmhCore
+    perfCompile rootProject.ext.jmhGen
+    perfCompile project
 
     testCompile rootProject.ext.junit
     testCompile rootProject.ext.assertjCore2
@@ -16,3 +24,5 @@ dependencies {
     testCompile rootProject.ext.picocontainer
 }
 
+apply from: "../perf.gradle"
+apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push.gradle'

@@ -1,5 +1,6 @@
 package io.apptik.rxhub;
 
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Thread)
 public class PublishProcessorPerf {
 
-    //@Benchmark
+    @Benchmark
     public void onNext(States.ProcessorParamsEmit p, Blackhole bh) throws InterruptedException {
         int s = p.subscribers;
         CountDownLatch latch = new CountDownLatch(s);
@@ -32,7 +33,7 @@ public class PublishProcessorPerf {
         bh.consume(latch);
     }
 
-    //@Benchmark
+    @Benchmark
     public void observe(States.ProcessorParamsUpstream p, Blackhole bh) throws
             InterruptedException {
         int s = p.subscribers;

@@ -14,14 +14,14 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Thread)
-public class PublishSubjectPerf {
+public class EmitterProcessorPerf {
 
     @Benchmark
-    public void onNext(States.SubjectParamsEmit p, Blackhole bh) throws InterruptedException {
+    public void onNext(States.ProcessorParamsEmit p, Blackhole bh) throws InterruptedException {
         int s = p.subscribers;
         CountDownLatch latch = new CountDownLatch(s);
         for (int i = 0; i < s; i++) {
-            p.ps.subscribe(new LatchedObserver<>(bh, latch));
+            p.ps.subscribe(new LatchedSubscriber(bh, latch));
         }
 
         int c = p.count;
@@ -34,11 +34,12 @@ public class PublishSubjectPerf {
     }
 
     @Benchmark
-    public void observe(States.SubjectParamsUpstream p, Blackhole bh) throws InterruptedException {
+    public void observe(States.ProcessorParamsUpstream p, Blackhole bh) throws
+            InterruptedException {
         int s = p.subscribers;
         CountDownLatch latch = new CountDownLatch(s);
         for (int i = 0; i < s; i++) {
-            p.ps.subscribe(new LatchedObserver<>(bh, latch));
+            p.ps.subscribe(new LatchedSubscriber<>(bh, latch));
         }
 
         p.upstream.connect();
