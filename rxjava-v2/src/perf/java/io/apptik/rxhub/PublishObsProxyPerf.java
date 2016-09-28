@@ -13,31 +13,33 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Thread)
-public class PublishSubjectPerf {
+public class PublishObsProxyPerf {
 
     //@Benchmark
-    public void onNext(States.SubjectParamsEmit p, Blackhole bh) throws InterruptedException {
+    public void emit(States.ObjProxyParamsEmit p, Blackhole bh) throws InterruptedException {
         int s = p.subscribers;
         CountDownLatch latch = new CountDownLatch(s);
+
         for (int i = 0; i < s; i++) {
-            p.ps.subscribe(new LatchedObserver<>(bh, latch));
+            p.obs.subscribe(new LatchedObserver<Integer>(bh, latch));
         }
 
         int c = p.count;
         for (int i = 0; i < c; i++) {
-            p.ps.onNext(i);
+            p.hub.emit(p.tag, 777);
         }
-        p.ps.onComplete();
+        p.hub.resetObsProxy(p.tag);
         latch.await();
         bh.consume(latch);
     }
 
-   //@Benchmark
-    public void observe(States.SubjectParamsUpstream p, Blackhole bh) throws InterruptedException {
+    //@Benchmark
+    public void observe(States.ObjProxyParamsUpstream p, Blackhole bh) throws
+            InterruptedException {
         int s = p.subscribers;
         CountDownLatch latch = new CountDownLatch(s);
         for (int i = 0; i < s; i++) {
-            p.ps.subscribe(new LatchedObserver<>(bh, latch));
+            p.obs.subscribe(new LatchedObserver<Integer>(bh, latch));
         }
 
         p.upstream.connect();
