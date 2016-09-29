@@ -48,7 +48,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../io/apptik/rxhub/DefaultRxHub.html" title="class in io.apptik.rxhub"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../io/apptik/rxhub/DefaultRxHub.html" title="class in io.apptik.rhub"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?io/apptik/rxhub/AbstractRxHub.html" target="_top">Frames</a></li>
@@ -90,7 +90,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">io.apptik.rxhub</div>
+<div class="subTitle">io.apptik.rhub</div>
 <h2 title="Class AbstractRxHub" class="title">Class AbstractRxHub</h2>
 </div>
 <div class="contentContainer">
@@ -98,7 +98,7 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>io.apptik.rxhub.AbstractRxJava1Hub</li>
+<li>io.apptik.rhub.AbstractRxJava1Hub</li>
 </ul>
 </li>
 </ul>
@@ -107,24 +107,24 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></dd>
+<dd><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub">RxHub</a></dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><a href="../../../io/apptik/rxhub/DefaultRxHub.html" title="class in io.apptik.rxhub">DefaultRxHub</a></dd>
+<dd><a href="../../../io/apptik/rxhub/DefaultRxHub.html" title="class in io.apptik.rhub">DefaultRxHub</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public abstract class <span class="typeNameLabel">AbstractRxHub</span>
 extends java.lang.Object
-implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></pre>
-<div class="block">Base implementation of <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub"><code>RxHub</code></a>
+implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub">RxHub</a></pre>
+<div class="block">Base implementation of <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub"><code>RxHub</code></a>
  Essentially this is a collection of <code>Observable</code> nodes which can also subscribe to other
  Observables and pass events to their Subscribers
  <p/>
  Nodes can be either <code>Subject</code> or <code>Relay</code>. Nodes are identified by their Tags.
  Nodes subscribes to Observables however each subscription created is
- per <a href="../../../io/apptik/rxhub/RxHub.Source.html" title="class in io.apptik.rxhub"><code>RxHub.Source</code></a>. A Source is identified by Observable and a Tag.
+ per <a href="../../../io/apptik/rxhub/RxHub.Source.html" title="class in io.apptik.rhub"><code>RxHub.Source</code></a>. A Source is identified by Observable and a Tag.
  For example when Observable A is added with Tag T1 and Tag T2. Two nodes are created receiving
  the same events. Each of those nodes can be used and unsubscribed from Observable A
  independently.
@@ -149,11 +149,11 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 </a>
 <h3>Nested Class Summary</h3>
 <ul class="blockList">
-<li class="blockList"><a name="nested.classes.inherited.from.class.io.apptik.rxhub.rxjava1.RxJava1Hub">
+<li class="blockList"><a name="nested.classes.inherited.from.class.io.apptik.rhub.rxjava1.RxJava1Hub">
 <!--   -->
 </a>
-<h3>Nested classes/interfaces inherited from interface&nbsp;io.apptik.rxhub.<a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></h3>
-<code><a href="../../../io/apptik/rxhub/RxHub.NodeType.html" title="enum in io.apptik.rxhub">RxHub.NodeType</a>, <a href="../../../io/apptik/rxhub/RxHub.Source.html" title="class in io.apptik.rxhub">RxHub.Source</a></code></li>
+<h3>Nested classes/interfaces inherited from interface&nbsp;io.apptik.rhub.<a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub">RxHub</a></h3>
+<code><a href="../../../io/apptik/rxhub/RxHub.NodeType.html" title="enum in io.apptik.rhub">RxHub.NodeType</a>, <a href="../../../io/apptik/rxhub/RxHub.Source.html" title="class in io.apptik.rhub">RxHub.Source</a></code></li>
 </ul>
 </li>
 </ul>
@@ -235,10 +235,10 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 <ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.io.apptik.rxhub.rxjava1.RxJava1Hub">
+<li class="blockList"><a name="methods.inherited.from.class.io.apptik.rhub.rxjava1.RxJava1Hub">
 <!--   -->
 </a>
-<h3>Methods inherited from interface&nbsp;io.apptik.rxhub.<a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></h3>
+<h3>Methods inherited from interface&nbsp;io.apptik.rhub.<a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub">RxHub</a></h3>
 <code><a href="../../../io/apptik/rxhub/RxHub.html#getProxyType-java.lang.Object-">getProxyType</a>, <a href="../../../io/apptik/rxhub/RxHub.html#isNodeThreadsafe-java.lang.Object-">isNodeThreadsafe</a></code></li>
 </ul>
 </li>
@@ -286,7 +286,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
  except if the node is of returnType <a href="../../../io/apptik/rxhub/RxHub.NodeType.html#ObservableRef"><code>RxHub.NodeType.ObservableRef</code></a></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#addProvider-java.lang.Object-rx.Observable-">addProvider</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></code></dd>
+<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#addProvider-java.lang.Object-rx.Observable-">addProvider</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub">RxHub</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>tag</code> - the ID of the Node</dd>
 <dd><code>publisher</code> - the Observable to subscribe to</dd>
@@ -305,7 +305,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <div class="block">Unsubscribe <code>Observable</code> from a Node</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#removeProvider-java.lang.Object-rx.Observable-">removeProvider</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></code></dd>
+<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#removeProvider-java.lang.Object-rx.Observable-">removeProvider</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub">RxHub</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>tag</code> - the ID of the Node</dd>
 <dd><code>publisher</code> - the Observable to unsubscribe from</dd>
@@ -323,7 +323,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <div class="block">Returns the Node Observable identified by the tag</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#getNode-java.lang.Object-">getNode</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></code></dd>
+<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#getNode-java.lang.Object-">getNode</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub">RxHub</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>tag</code> - the ID of the Node</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -344,7 +344,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
  Returns the Node Observable identified by the tag and filtered by the Class provided</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#getNodeFiltered-java.lang.Object-java.lang.Class-">getNodeFiltered</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></code></dd>
+<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#getNodeFiltered-java.lang.Object-java.lang.Class-">getNodeFiltered</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub">RxHub</a></code></dd>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>T</code> - the Type of the events the returned Observable will emit</dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -367,7 +367,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <div class="block">Manually emit event to a specific Node. In order to prohibit this behaviour override this</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#emit-java.lang.Object-java.lang.Object-">emit</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></code></dd>
+<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#emit-java.lang.Object-java.lang.Object-">emit</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub">RxHub</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>tag</code> - the ID of the Node</dd>
 <dd><code>event</code> - the Event to emit</dd>
@@ -385,7 +385,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <div class="block">Clears all subscriptions of all Nodes</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#clearProviders--">clearProviders</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rxhub">RxHub</a></code></dd>
+<dd><code><a href="../../../io/apptik/rxhub/RxHub.html#clearProviders--">clearProviders</a></code>&nbsp;in interface&nbsp;<code><a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.apptik.rhub">RxHub</a></code></dd>
 </dl>
 </li>
 </ul>
@@ -416,7 +416,7 @@ implements <a href="../../../io/apptik/rxhub/RxHub.html" title="interface in io.
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../io/apptik/rxhub/DefaultRxHub.html" title="class in io.apptik.rxhub"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../io/apptik/rxhub/DefaultRxHub.html" title="class in io.apptik.rhub"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../index.html?io/apptik/rxhub/AbstractRxHub.html" target="_top">Frames</a></li>

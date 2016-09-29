@@ -6,6 +6,7 @@ compileJava {
 }
 
 dependencies {
+    compile project(':core')
     compile rootProject.ext.rs
 }
 

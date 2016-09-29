@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(':core')
+    compile project(':shield:shield-annotations')
+    compile rootProject.ext.autoservice
+    compile rootProject.ext.autocommon
+    compile rootProject.ext.javapoet
+    compileOnly files(org.gradle.internal.jvm.Jvm.current().getToolsJar())
+
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

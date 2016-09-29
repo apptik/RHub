@@ -4,8 +4,8 @@ dependencies {
     compile project(":rxjava-v1")
     compile project(":rxjava-v2")
     compile project(":reactor")
-    compile project(":shield:shield-processor")
-    compile project(":shield:shield-maker")
+    compile project(":shield:shield-processor-rxjava1")
+    compile project(":shield:shield-maker-rxjava1")
 
 }
 

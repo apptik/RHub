@@ -3,8 +3,8 @@
 [JavaDocs](http://apptik.github.io/rxHub/)
 
 [![Build Status](https://travis-ci.org/apptik/rxHub.svg?branch=master)](https://travis-ci.org/apptik/rxHub)
-[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rxhub/core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rxhub/core)
-[![VersionEye](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.2/badge.svg)](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.2)
+[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/core)
+[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:core/0.0.2/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:core/0.0.2)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-rxHub-green.svg?style=true)](https://android-arsenal.com/details/1/4260)
 
 
@@ -20,14 +20,14 @@ UI updates, logging, alerting, monitoring, security, etc.
 Find [the latest JARs][mvn] or grab via Maven:
 ```xml
 <dependency>
-  <groupId>io.apptik.rxhub</groupId>
+  <groupId>io.apptik.rhub</groupId>
   <artifactId>core</artifactId>
   <version>0.0.2</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'io.apptik.rxhub:core:0.0.2'
+compile 'io.apptik.rhub:core:0.0.2'
 ```
 
 Downloads of the released versions are available in [Sonatype's `releases` repository][release].
@@ -105,7 +105,7 @@ Backpressure strategy interface could be used and applied to nodes in the hub
     limitations under the License.
 
 
-[mvn]: http://search.maven.org/#search|ga|1|io.apptik.rxhub.core
+[mvn]: http://search.maven.org/#search|ga|1|io.apptik.rhub.core
  [release]: https://oss.sonatype.org/content/repositories/releases/io/apptik/rxhub/core
  [snap]: https://oss.sonatype.org/content/repositories/snapshots/io/apptik/rxhub/core
  [features]: https://github.com/apptik/rxHub/tree/master/rxjava-v1/src/test/resources/features

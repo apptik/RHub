@@ -11,6 +11,7 @@ sourceSets {
 }
 
 dependencies {
+    compile project(':core')
     compile rootProject.ext.rxjava1
     compile rootProject.ext.rxrelay
 
@@ -27,4 +28,4 @@ dependencies {
 
 
 apply from: "../perf.gradle"
-apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push.gradle'
+//apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push.gradle'
