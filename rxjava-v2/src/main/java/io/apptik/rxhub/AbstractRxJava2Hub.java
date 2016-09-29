@@ -55,7 +55,7 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
     private final Map<Object, Observable> directObsMap = new ConcurrentHashMap<>();
 
     @Override
-    public final void addObsUpstream(final Object tag, final Observable observable) {
+    public final Removable addObsUpstream(final Object tag, final Observable observable) {
         checkIfObservableProxy(tag);
         if (getProxyType(tag) == ObservableRefProxy) {
             directObsMap.put(tag, observable);
@@ -63,10 +63,16 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
             getObservableProxyInternal(tag);
             proxyObsMap.get(tag).addObs(tag, observable);
         }
+        return new Removable() {
+            @Override
+            public void remove() {
+                AbstractRxJava2Hub.this.removeObsUpstream(tag, observable);
+            }
+        };
     }
 
     @Override
-    public final void addUpstream(final Object tag, final Publisher publisher) {
+    public final Removable addUpstream(final Object tag, final Publisher publisher) {
         checkIfPublisherProxy(tag);
         if (getProxyType(tag) == PublisherRefProxy) {
             directPubMap.put(tag, publisher);
@@ -74,6 +80,12 @@ public abstract class AbstractRxJava2Hub implements RxJava2Hub {
             getPublisherProxyInternal(tag);
             proxyPubMap.get(tag).addPub(tag, publisher);
         }
+        return new Removable() {
+            @Override
+            public void remove() {
+                AbstractRxJava2Hub.this.removeUpstream(tag, publisher);
+            }
+        };
     }
 
     private void checkIfPublisherProxy(Object tag) {

@@ -21,7 +21,7 @@ public interface RxJava2Hub extends RxHub {
      * @param tag      the ID of the Proxy
      * @param observable the Observable to subscribe to
      */
-    void addObsUpstream(Object tag, Observable observable);
+    Removable addObsUpstream(Object tag, Observable observable);
 
     /**
      * Unsubscribe {@link Observable} from a Proxy

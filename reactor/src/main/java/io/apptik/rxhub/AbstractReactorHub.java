@@ -74,13 +74,14 @@ public abstract class AbstractReactorHub implements ReactorHub {
     }
 
     @Override
-    public void addUpstream(Object tag, Publisher publisher) {
+    public Removable addUpstream(Object tag, Publisher publisher) {
         if (getProxyType(tag) == PublisherRefProxy) {
             directPubMap.put(tag, publisher);
         } else {
             getPublisherProxyInternal(tag);
             proxyPubMap.get(tag).addPub(tag, publisher);
         }
+        return () -> AbstractReactorHub.this.removeUpstream(tag, publisher);
     }
 
     @Override

@@ -24,7 +24,7 @@ public interface RxHub {
      * @param tag      the ID of the Proxy
      * @param publisher the Publisher to subscribe to
      */
-    void addUpstream(Object tag, Publisher publisher);
+    Removable addUpstream(Object tag, Publisher publisher);
 
     /**
      * Unsubscribe upstream {@link Publisher} from a Proxy
