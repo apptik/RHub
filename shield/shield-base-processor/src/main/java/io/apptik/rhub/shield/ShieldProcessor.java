@@ -38,6 +38,7 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
 
 
     abstract Class<H> hubClass();
+
     abstract Class<P> pubClass();
 
 
@@ -64,6 +65,11 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
         return types;
     }
 
+    @Override
+    public Set<String> getSupportedOptions() {
+        return super.getSupportedOptions();
+    }
+
     private Set<Class<? extends Annotation>> getSupportedAnnotations() {
         Set<Class<? extends Annotation>> annotations = new LinkedHashSet<>();
         annotations.add(ProxyTag.class);
@@ -85,7 +91,7 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
             }
         }
 
-        return true;
+        return false;
     }
 
     private Map<TypeElement, ShieldClass> findAndParseNodes(RoundEnvironment env) {
@@ -93,38 +99,41 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
         for (Element annotatedElement : env.getElementsAnnotatedWith(ProxyTag.class)) {
             checkIfOK1(annotatedElement);
             ExecutableElement annotatedNode = (ExecutableElement) annotatedElement;
-            checkIfOK2(annotatedNode);
-            TypeElement shieldInterface = (TypeElement) annotatedElement.getEnclosingElement();
-            ShieldClass shieldClass = shields.get(shieldInterface);
-            if (shieldClass == null) {
-                String packageName = getPackageName(shieldInterface);
-                String className = getClassName(shieldInterface, packageName);
-                ClassName shiledInterfaceName = ClassName.get(packageName, className);
-                ClassName shieldImplName = ClassName.get(packageName, className + "_Impl");
+            if (checkIfOK2(annotatedNode)) {
+                TypeElement shieldInterface = (TypeElement) annotatedElement.getEnclosingElement();
+                ShieldClass shieldClass = shields.get(shieldInterface);
+                if (shieldClass == null) {
+                    String packageName = getPackageName(shieldInterface);
+                    String className = getClassName(shieldInterface, packageName);
+                    ClassName shiledInterfaceName = ClassName.get(packageName, className);
+                    ClassName shieldImplName = ClassName.get(packageName, className + "_Impl");
 
-                shieldClass = new ShieldClass(shieldImplName, shiledInterfaceName, hubClass());
-                shields.put(shieldInterface, shieldClass);
+                    shieldClass = new ShieldClass(shieldImplName, shiledInterfaceName, hubClass());
+                    shields.put(shieldInterface, shieldClass);
+                }
+                TypeName param = null;
+                if (annotatedNode.getParameters().size() > 0) {
+                    param = TypeName.get(annotatedNode.getParameters().get(0).asType());
+                }
+                ProxyTagAnnotation na = new ProxyTagAnnotation(
+                        annotatedNode.getAnnotation(ProxyTag.class).value(),
+                        TypeName.get(annotatedNode.getReturnType()), param);
+                shieldClass.nodes.put(annotatedNode, na);
             }
-            TypeName param = null;
-            if (annotatedNode.getParameters().size() > 0) {
-                param = TypeName.get(annotatedNode.getParameters().get(0).asType());
-            }
-            ProxyTagAnnotation na = new ProxyTagAnnotation(
-                    annotatedNode.getAnnotation(ProxyTag.class).value(),
-                    TypeName.get(annotatedNode.getReturnType()), param);
-            shieldClass.nodes.put(annotatedNode, na);
         }
 
         return shields;
     }
 
-    private void checkIfOK2(ExecutableElement annotatedNode) {
+    private boolean checkIfOK2(ExecutableElement annotatedNode) {
+        final String pubClass = pubClass().getName();
         if (typeUtils.erasure(annotatedNode.getReturnType()).toString()
-                .equals(pubClass().getName())) {
+                .equals(pubClass)) {
             if (annotatedNode.getParameters().size() > 0) {
                 throw new IllegalStateException(
-                        String.format("Methods that return Observable must have 0 " +
+                        String.format("Methods that return %s must have 0 " +
                                         "params to be annotated with @%s. Got : %s",
+                                pubClass,
                                 ProxyTag.class.getSimpleName(),
                                 annotatedNode.getReturnType()
 
@@ -135,31 +144,49 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
                     annotatedNode.getParameters().size() < 1) {
                 throw new IllegalStateException(
                         String.format("void methods must accept exactly 1 param of returnType " +
-                                        "Observable to be annotated with @%s. Got : %s",
+                                        "%s to be annotated with @%s. Got : %s",
+                                pubClass,
                                 ProxyTag.class.getSimpleName(),
                                 annotatedNode.getParameters()
 
                         ));
             }
             if (!typeUtils.erasure(annotatedNode.getParameters().get(0).asType()).toString()
-                    .equals(pubClass().getName())) {
-                throw new IllegalStateException(
-                        String.format("void methods must accept exactly 1 param of returnType " +
-                                        "Observable to be annotated with @%s. Got : %s",
-                                ProxyTag.class.getSimpleName(),
-                                typeUtils.erasure(annotatedNode.getParameters().get(0).asType())
-
-                        ));
+                    .equals(pubClass)) {
+                warn(annotatedNode, "void methods must accept exactly 1 param of returnType " +
+                                "%s to be annotated with @%s. Got : %s",
+                        pubClass,
+                        ProxyTag.class.getSimpleName(),
+                        typeUtils.erasure(annotatedNode.getParameters().get(0).asType()));
+                return false;
+//                throw new IllegalStateException(
+//                        String.format("void methods must accept exactly 1 param of returnType " +
+//                                        "%s to be annotated with @%s. Got : %s",
+//                                pubClass,
+//                                ProxyTag.class.getSimpleName(),
+//                                typeUtils.erasure(annotatedNode.getParameters().get(0).asType())
+//
+//                        ));
             }
         } else {
-            throw new IllegalStateException(
-                    String.format("Only void methods or that return Observable can " +
-                                    "be annotated with @%s. Got : %s",
-                            ProxyTag.class.getSimpleName(),
-                            annotatedNode.getReturnType()
-
-                    ));
+            //just ignore and warn
+            warn(annotatedNode, "Only void methods or that return %s can " +
+                            "be annotated with @%s. Got : %s",
+                    pubClass,
+                    ProxyTag.class.getSimpleName(),
+                    annotatedNode.getReturnType());
+            return false;
+//            throw new IllegalStateException(
+//                    String.format("Only void methods or that return %s can " +
+//                                    "be annotated with @%s. Got : %s",
+//                            pubClass,
+//                            ProxyTag.class.getSimpleName(),
+//                            annotatedNode.getReturnType()
+//
+//                    ));
         }
+
+        return true;
     }
 
     private void checkIfOK1(Element annotatedElement) {
@@ -193,6 +220,10 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
      */
     private void error(Element el, String msg, Object... args) {
         printMessage(Diagnostic.Kind.ERROR, el, msg, args);
+    }
+
+    private void warn(Element el, String msg, Object... args) {
+        printMessage(Diagnostic.Kind.WARNING, el, msg, args);
     }
 
     private void note(Element el, String msg, Object... args) {

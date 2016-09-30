@@ -37,7 +37,6 @@ public class ShieldClass<H extends RHub> {
     public JavaFile generateShield() {
         return JavaFile.builder(shieldImplName.packageName(), generateShieldImpl())
                 .addFileComment("Generated code from RHub. Do not modify!")
-                .addFileComment("Generated code from RHub. Do not modify!")
                 .build();
     }
 

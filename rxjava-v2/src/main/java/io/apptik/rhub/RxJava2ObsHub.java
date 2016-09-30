@@ -7,11 +7,11 @@ import io.reactivex.Observable;
  * RxJava 2.x extends RSHub so that it supports Observables and Subjects as proxy implementations.
  * Working with Observables is done in a similar manner however there should be a single tag
  * shared between Publisher based proxies and Observable based proxies. Thus
- * {@link #getPub(Object)}, {@link #getObservable(Object) and other related methods} may throw an
+ * {@link #getPub(Object)}, {@link #getPub(Object) and other related methods} may throw an
  * exception in case {@link #getProxyType(Object)} returns incompatible proxy.
  * 
  */
-public interface RxJava2Hub extends RSHub {
+public interface RxJava2ObsHub extends RHub<Observable> {
 
     /**
      * Subscribes Proxy to {@link Observable}.
@@ -21,7 +21,7 @@ public interface RxJava2Hub extends RSHub {
      * @param tag      the ID of the Proxy
      * @param observable the Observable to subscribe to
      */
-    Removable addObsUpstream(Object tag, Observable observable);
+    Removable addUpstream(Object tag, Observable observable);
 
     /**
      * Unsubscribe {@link Observable} from a Proxy
@@ -29,12 +29,12 @@ public interface RxJava2Hub extends RSHub {
      * @param tag      the ID of the Proxy
      * @param observable the Observable to unsubscribe from
      */
-    void removeObsUpstream(Object tag, Observable observable);
+    void removeUpstream(Object tag, Observable observable);
 
     /**
      * Clears all subscriptions of all Proxies
      */
-    void clearObsUpstream();
+    void clearUpstream();
 
     /**
      * Returns the Proxy Observable identified by the tag
@@ -42,7 +42,7 @@ public interface RxJava2Hub extends RSHub {
      * @param tag the ID of the Proxy
      * @return the Proxy Observable
      */
-    Observable getObservable(Object tag);
+    Observable getPub(Object tag);
 
     /**
      * Type safe variant of {@link #getPub(Object)}.
@@ -53,20 +53,20 @@ public interface RxJava2Hub extends RSHub {
      * @param <T>         the Type of the events the returned Observable will emit
      * @return the Filtered Proxy Observable
      */
-    <T> Observable<T> getObservable(Object tag, Class<T> filterClass);
+    <T> Observable<T> getPub(Object tag, Class<T> filterClass);
 
 
     /**
      * removes the Proxy and frees the topic space of {@param tag} and send onComplete
      * (if the proxy allows it) to all its Subscribers
      */
-    void resetObsProxy(Object tag);
+    void resetProxy(Object tag);
 
     /**
      * Unsubscribe all upstream {@link Observable} from a Proxy
      * @param tag      the ID of the Proxy
      */
-    void removeObsUpstream(Object tag);
+    void removeUpstream(Object tag);
 
 
     class ObservableSource {

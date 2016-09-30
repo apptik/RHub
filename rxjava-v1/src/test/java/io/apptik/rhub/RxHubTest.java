@@ -36,7 +36,7 @@ public class RxHubTest {
     @Given("^Hub\"([^\"]*)\" is subscribed to Provider\"([^\"]*)\" with tag \"([^\"]*)\"$")
     public void hub_is_subscribed_to_Provider_with_tag(String hub, String provider,
                                                        String tag) throws Throwable {
-        helper.hubs.get(hub).addObsUpstream(tag, helper.providers.get(provider));
+        helper.hubs.get(hub).addUpstream(tag, helper.providers.get(provider));
     }
 
     @When("^Consumer\"([^\"]*)\" subscribes to Hub\"([^\"]*)\" with tag \"([^\"]*)\"$")
@@ -44,7 +44,7 @@ public class RxHubTest {
     public void consumer_subscribes_to_Hub_with_tag(String consumer, String hub, String tag)
             throws Throwable {
         try {
-            helper.hubs.get(hub).getObservable(tag).subscribe(helper.consumers.get(consumer));
+            helper.hubs.get(hub).getPub(tag).subscribe(helper.consumers.get(consumer));
         } catch (Exception ex) {
             helper.error = ex;
         }
@@ -57,7 +57,7 @@ public class RxHubTest {
     public void consumer_is_subscribed_to_Hub_with_tag_and_filter(
             String consumer, String hub, String tag, String filter) throws Throwable {
         try {
-            helper.hubs.get(hub).getObservable(tag, Class.forName(filter))
+            helper.hubs.get(hub).getPub(tag, Class.forName(filter))
                     .subscribe(helper.consumers.get(consumer));
         } catch (Exception ex) {
             helper.error = ex;
@@ -136,12 +136,12 @@ public class RxHubTest {
     public void provider_with_tag_is_removed_from_Hub(String provider, String tag, String hub)
             throws
             Throwable {
-        helper.hubs.get(hub).removeObsUpstream(tag, helper.providers.get(provider));
+        helper.hubs.get(hub).removeUpstream(tag, helper.providers.get(provider));
     }
 
     @When("^providers are cleared from Hub\"([^\"]*)\"$")
     public void providers_are_cleared_from_Hub(String hub) throws Throwable {
-        helper.hubs.get(hub).clearObsUpstream();
+        helper.hubs.get(hub).clearUpstream();
     }
 
     @Then("^there should be Error \"([^\"]*)\"$")

@@ -4,7 +4,7 @@ package io.apptik.rhub.example;
 import io.apptik.rhub.shield.ProxyTag;
 import rx.Observable;
 
-public interface TestShield {
+public interface TestShieldRxJava1 {
 
     @ProxyTag(value = "tag1")
     Observable<String> getTag1String();

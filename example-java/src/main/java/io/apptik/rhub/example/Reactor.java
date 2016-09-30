@@ -67,9 +67,9 @@ public class Reactor {
     }
 
     /**
-     * this example demonstrates the Concept os a "Shield". Shield could be seen and a
+     * this example demonstrates the Concept os a "ShieldObs". ShieldObs could be seen and a
      * abstraction layer or contract for the consumers. Its purpose is to filter, secure and/or
-     * adapt the data coming from the RxJava2Hub and to relieve the consumer from this tasks.
+     * adapt the data coming from the RxJava2ObsHub and to relieve the consumer from this tasks.
      * <p>
      * It can compared to an Arduino shield :)
      */

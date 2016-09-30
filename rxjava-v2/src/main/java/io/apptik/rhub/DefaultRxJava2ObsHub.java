@@ -1,12 +1,13 @@
 package io.apptik.rhub;
 
-import static io.apptik.rhub.RxJava2Hub.RxJava2PubProxyType.BehaviorSafeProxy;
 
-public class DefaultRxJava2Hub extends AbstractRxJava2Hub {
+import static io.apptik.rhub.RxJava2ObsHub.RxJava2ObsProxyType.BehaviorObsSafeProxy;
+
+public class DefaultRxJava2ObsHub extends AbstractRxJava2ObsHub {
 
     @Override
     public ProxyType getProxyType(Object tag) {
-        return BehaviorSafeProxy;
+        return BehaviorObsSafeProxy;
     }
 
     @Override

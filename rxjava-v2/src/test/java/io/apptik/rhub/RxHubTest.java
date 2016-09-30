@@ -48,9 +48,9 @@ public class RxHubTest {
     public void hub_is_subscribed_to_Provider_with_tag(String hub, String provider,
                                                        String tag) throws Throwable {
         if (helper.isObservableType()) {
-            helper.hubs.get(hub).addObsUpstream(tag, helper.subjectProviders.get(provider));
+            helper.subjHubs.get(hub).addUpstream(tag, helper.subjectProviders.get(provider));
         } else {
-            helper.hubs.get(hub).addUpstream(tag, helper.processorProviders.get(provider));
+            helper.procHubs.get(hub).addUpstream(tag, helper.processorProviders.get(provider));
         }
     }
 
@@ -60,10 +60,11 @@ public class RxHubTest {
             throws Throwable {
         try {
             if (helper.isObservableType()) {
-                helper.hubs.get(hub).getObservable(tag).subscribe(helper.obsrvableConsumers.get
+                helper.subjHubs.get(hub).getPub(tag).subscribe(helper.obsrvableConsumers.get
                         (consumer));
             } else {
-                helper.hubs.get(hub).getPub(tag).subscribe(helper.publisherConsumers.get(consumer));
+                helper.procHubs.get(hub).getPub(tag).subscribe(helper.publisherConsumers.get
+                        (consumer));
             }
         } catch (Exception ex) {
             helper.error = ex;
@@ -78,10 +79,10 @@ public class RxHubTest {
             String consumer, String hub, String tag, String filter) throws Throwable {
         try {
             if (helper.isObservableType()) {
-                helper.hubs.get(hub).getObservable(tag, Class.forName(filter))
+                helper.subjHubs.get(hub).getPub(tag, Class.forName(filter))
                         .subscribe(helper.obsrvableConsumers.get(consumer));
             } else {
-                helper.hubs.get(hub).getPub(tag, Class.forName(filter))
+                helper.procHubs.get(hub).getPub(tag, Class.forName(filter))
                         .subscribe(helper.publisherConsumers.get(consumer));
             }
         } catch (Exception ex) {
@@ -121,51 +122,93 @@ public class RxHubTest {
     public void hub_with_ProxyType_(String hub, final String nodeType, final boolean emmitable)
             throws Throwable {
         helper.proxyType = nodeType;
-        helper.hubs.put(hub, new AbstractRxJava2Hub() {
-            @Override
-            public ProxyType getProxyType(Object tag) {
-                return Helper.getProxyType(nodeType);
-            }
+        if (helper.isObservableType()) {
+            helper.subjHubs.put(hub, new AbstractRxJava2ObsHub() {
+                @Override
+                public ProxyType getProxyType(Object tag) {
+                    return Helper.getProxyType(nodeType);
+                }
 
-            @Override
-            public boolean isProxyThreadsafe(Object tag) {
-                return true;
-            }
+                @Override
+                public boolean isProxyThreadsafe(Object tag) {
+                    return true;
+                }
 
-            @Override
-            public boolean canTriggerEmit(Object tag) {
-                return emmitable;
-            }
-        });
+                @Override
+                public boolean canTriggerEmit(Object tag) {
+                    return emmitable;
+                }
+            });
+        } else {
+            helper.procHubs.put(hub, new AbstractRxJava2PubHub() {
+                @Override
+                public ProxyType getProxyType(Object tag) {
+                    return Helper.getProxyType(nodeType);
+                }
+
+                @Override
+                public boolean isProxyThreadsafe(Object tag) {
+                    return true;
+                }
+
+                @Override
+                public boolean canTriggerEmit(Object tag) {
+                    return emmitable;
+                }
+            });
+        }
     }
 
     @Given("^Hub\"([^\"]*)\" with ProxyType ([^\\s]*)$")
     public void hub_with_ProxyType_(String hub, final String nodeType)
             throws Throwable {
         helper.proxyType = nodeType;
-        helper.hubs.put(hub, new AbstractRxJava2Hub() {
-            @Override
-            public ProxyType getProxyType(Object tag) {
-                return Helper.getProxyType(nodeType);
-            }
+        if (helper.isObservableType()) {
+            helper.subjHubs.put(hub, new AbstractRxJava2ObsHub() {
+                @Override
+                public ProxyType getProxyType(Object tag) {
+                    return Helper.getProxyType(nodeType);
+                }
 
-            @Override
-            public boolean isProxyThreadsafe(Object tag) {
-                return true;
-            }
+                @Override
+                public boolean isProxyThreadsafe(Object tag) {
+                    return true;
+                }
 
-            @Override
-            public boolean canTriggerEmit(Object tag) {
-                return true;
-            }
-        });
+                @Override
+                public boolean canTriggerEmit(Object tag) {
+                    return true;
+                }
+            });
+        } else {
+            helper.procHubs.put(hub, new AbstractRxJava2PubHub() {
+                @Override
+                public ProxyType getProxyType(Object tag) {
+                    return Helper.getProxyType(nodeType);
+                }
+
+                @Override
+                public boolean isProxyThreadsafe(Object tag) {
+                    return true;
+                }
+
+                @Override
+                public boolean canTriggerEmit(Object tag) {
+                    return true;
+                }
+            });
+        }
     }
 
     @When("^Event\"([^\"]*)\" with tag \"([^\"]*)\" is emitted on Hub\"([^\"]*)\"$")
     public void event_with_tag_is_emitted_on_Hub(String event, String tag, String hub) throws
             Throwable {
         try {
-            helper.hubs.get(hub).emit(tag, event);
+            if (helper.isObservableType()) {
+                helper.subjHubs.get(hub).emit(tag, event);
+            } else {
+                helper.procHubs.get(hub).emit(tag, event);
+            }
         } catch (Exception ex) {
             helper.error = ex;
         }
@@ -176,16 +219,19 @@ public class RxHubTest {
             throws
             Throwable {
         if (helper.isObservableType()) {
-            helper.hubs.get(hub).removeObsUpstream(tag, helper.subjectProviders.get(provider));
+            helper.subjHubs.get(hub).removeUpstream(tag, helper.subjectProviders.get(provider));
         } else {
-            helper.hubs.get(hub).removeUpstream(tag, helper.processorProviders.get(provider));
+            helper.procHubs.get(hub).removeUpstream(tag, helper.processorProviders.get(provider));
         }
     }
 
     @When("^providers are cleared from Hub\"([^\"]*)\"$")
     public void providers_are_cleared_from_Hub(String hub) throws Throwable {
-        helper.hubs.get(hub).clearObsUpstream();
-        helper.hubs.get(hub).clearUpstream();
+        if (helper.isObservableType()) {
+            helper.subjHubs.get(hub).clearUpstream();
+        } else {
+            helper.procHubs.get(hub).clearUpstream();
+        }
     }
 
     @Then("^there should be Error \"([^\"]*)\"$")
@@ -202,7 +248,8 @@ public class RxHubTest {
 
 
     public static class Helper {
-        public Map<String, RxJava2Hub> hubs = new HashMap<>();
+        public Map<String, RxJava2ObsHub> subjHubs = new HashMap<>();
+        public Map<String, RSHub> procHubs = new HashMap<>();
         public String proxyType;
         //use subjects  so we can easily emit events when needed
         public Map<String, PublishProcessor> processorProviders = new HashMap<>();
@@ -218,18 +265,19 @@ public class RxHubTest {
         public boolean isObservableType() {
             return isObservableType(proxyType);
         }
+
         public static boolean isObservableType(String proxyType) {
             return proxyType.contains("Subject") || proxyType.contains("Observable")
                     || proxyType.contains("ObsSafe");
         }
 
         public static RSHub.ProxyType getProxyType(String proxyType) {
-            if(proxyType.equals("PublisherRefProxy")) {
+            if (proxyType.equals("PublisherRefProxy")) {
                 return RSHub.CoreProxyType.valueOf(proxyType);
-            } else if(isObservableType(proxyType)){
-                return RxJava2Hub.RxJava2ObsProxyType.valueOf(proxyType);
+            } else if (isObservableType(proxyType)) {
+                return RxJava2ObsHub.RxJava2ObsProxyType.valueOf(proxyType);
             } else {
-                return RxJava2Hub.RxJava2PubProxyType.valueOf(proxyType);
+                return RxJava2ObsHub.RxJava2PubProxyType.valueOf(proxyType);
             }
         }
     }

@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.apptik.rhub.Proxy.Event.ErrorEvent;
-import io.apptik.rhub.RxJava2Hub.ObservableSource;
-import io.apptik.rhub.RxJava2Hub.RxJava2ObsProxyType;
+import io.apptik.rhub.RxJava2ObsHub.ObservableSource;
+import io.apptik.rhub.RxJava2ObsHub.RxJava2ObsProxyType;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;

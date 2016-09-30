@@ -1,11 +1,11 @@
 package io.apptik.rhub;
 
 
-public class UniJavaRx2Hub extends AbstractRxJava2Hub {
+public class UniJavaRx2PubHub extends AbstractRxJava2PubHub {
 
     public final ProxyType proxyType;
 
-    public UniJavaRx2Hub(ProxyType proxyType) {
+    public UniJavaRx2PubHub(ProxyType proxyType) {
         this.proxyType = proxyType;
     }
 

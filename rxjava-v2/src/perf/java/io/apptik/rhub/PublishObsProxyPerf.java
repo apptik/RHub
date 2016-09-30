@@ -29,7 +29,7 @@ public class PublishObsProxyPerf {
         for (int i = 0; i < c; i++) {
             p.hub.emit(p.tag, 777);
         }
-        p.hub.resetObsProxy(p.tag);
+        p.hub.resetProxy(p.tag);
         latch.await();
         bh.consume(latch);
     }

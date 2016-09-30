@@ -16,8 +16,8 @@ import io.reactivex.observables.ConnectableObservable;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.subjects.PublishSubject;
 
-import static io.apptik.rhub.RxJava2Hub.RxJava2ObsProxyType.PublishSubjectProxy;
-import static io.apptik.rhub.RxJava2Hub.RxJava2PubProxyType.PublishProcessorProxy;
+import static io.apptik.rhub.RxJava2ObsHub.RxJava2ObsProxyType.PublishSubjectProxy;
+import static io.apptik.rhub.RxJava2ObsHub.RxJava2PubProxyType.PublishProcessorProxy;
 
 public class States {
 
@@ -41,17 +41,17 @@ public class States {
 
         public Observable obs;
 
-        AbstractRxJava2Hub hub;
+        AbstractRxJava2ObsHub hub;
 
         @Setup(Level.Iteration)
         public void setup() {
-            hub = new UniJavaRx2Hub(PublishSubjectProxy);
-            obs = hub.getObservable(tag);
+            hub = new UniJavaRx2ObsHub(PublishSubjectProxy);
+            obs = hub.getPub(tag);
         }
 
         @TearDown(Level.Iteration)
         public void tearDown() {
-            hub.resetObsProxy(tag);
+            hub.resetProxy(tag);
         }
     }
 
@@ -61,15 +61,15 @@ public class States {
 
         @Setup(Level.Iteration)
         public void setup() {
-            hub = new UniJavaRx2Hub(PublishSubjectProxy);
-            obs = hub.getObservable(tag);
+            hub = new UniJavaRx2ObsHub(PublishSubjectProxy);
+            obs = hub.getPub(tag);
             upstream = Observable.range(0, count).publish();
-            hub.addObsUpstream(tag, upstream);
+            hub.addUpstream(tag, upstream);
         }
 
         @TearDown(Level.Iteration)
         public void tearDown() {
-            hub.resetObsProxy(tag);
+            hub.resetProxy(tag);
         }
     }
 
@@ -90,11 +90,11 @@ public class States {
 
         public Publisher obs;
 
-        AbstractRxJava2Hub hub;
+        AbstractRxJava2PubHub hub;
 
         @Setup(Level.Iteration)
         public void setup() {
-            hub = new UniJavaRx2Hub(PublishProcessorProxy);
+            hub = new UniJavaRx2PubHub(PublishProcessorProxy);
             obs = hub.getPub(tag);
         }
 
@@ -110,7 +110,7 @@ public class States {
 
         @Setup(Level.Iteration)
         public void setup() {
-            hub = new UniJavaRx2Hub(PublishProcessorProxy);
+            hub = new UniJavaRx2PubHub(PublishProcessorProxy);
             obs = hub.getPub(tag);
             upstream = Flowable.range(0, count).publish();
             hub.addUpstream(tag, upstream);

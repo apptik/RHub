@@ -33,7 +33,7 @@ public class PublishSubjectPerf {
         bh.consume(latch);
     }
 
-   @Benchmark
+    @Benchmark
     public void observe(States.SubjectParamsUpstream p, Blackhole bh) throws InterruptedException {
         int s = p.subscribers;
         CountDownLatch latch = new CountDownLatch(s);

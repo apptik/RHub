@@ -63,7 +63,7 @@ public class RxJava1 {
     }
 
     /**
-     * this example demonstrates the Concept os a "Shield". Shield could be seen and a
+     * this example demonstrates the Concept os a "ShieldObs". ShieldObs could be seen and a
      * abstraction layer or contract for the consumers. Its purpose is to filter, secure and/or
      * adapt the data coming from the RxJava1Hub and to relieve the consumer from this tasks.
      * <p>
