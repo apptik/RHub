@@ -14,37 +14,6 @@ import io.reactivex.Observable;
 public interface RxJava2ObsHub extends RHub<Observable> {
 
     /**
-     * Subscribes Proxy to {@link Observable}.
-     * If there is no Proxy with the specific tag a new one will be created
-     * except if the Proxy is of type {@link RxJava2ObsProxyType#ObservableRefProxy}
-     *
-     * @param tag      the ID of the Proxy
-     * @param observable the Observable to subscribe to
-     */
-    Removable addUpstream(Object tag, Observable observable);
-
-    /**
-     * Unsubscribe {@link Observable} from a Proxy
-     *
-     * @param tag      the ID of the Proxy
-     * @param observable the Observable to unsubscribe from
-     */
-    void removeUpstream(Object tag, Observable observable);
-
-    /**
-     * Clears all subscriptions of all Proxies
-     */
-    void clearUpstream();
-
-    /**
-     * Returns the Proxy Observable identified by the tag
-     *
-     * @param tag the ID of the Proxy
-     * @return the Proxy Observable
-     */
-    Observable getPub(Object tag);
-
-    /**
      * Type safe variant of {@link #getPub(Object)}.
      * Returns the Proxy Observable identified by the tag and filtered by the Class provided
      *
@@ -54,20 +23,6 @@ public interface RxJava2ObsHub extends RHub<Observable> {
      * @return the Filtered Proxy Observable
      */
     <T> Observable<T> getPub(Object tag, Class<T> filterClass);
-
-
-    /**
-     * removes the Proxy and frees the topic space of {@param tag} and send onComplete
-     * (if the proxy allows it) to all its Subscribers
-     */
-    void resetProxy(Object tag);
-
-    /**
-     * Unsubscribe all upstream {@link Observable} from a Proxy
-     * @param tag      the ID of the Proxy
-     */
-    void removeUpstream(Object tag);
-
 
     class ObservableSource {
         final Observable observable;
