@@ -15,43 +15,14 @@ public interface RxJava2ObsHub extends RHub<Observable> {
 
     /**
      * Type safe variant of {@link #getPub(Object)}.
-     * Returns the Proxy Observable identified by the tag and filtered by the Class provided
+     * Returns the RSProxy Observable identified by the tag and filtered by the Class provided
      *
-     * @param tag         the ID of the Proxy
+     * @param tag         the ID of the RSProxy
      * @param filterClass the Class to filter the observable by
      * @param <T>         the Type of the events the returned Observable will emit
-     * @return the Filtered Proxy Observable
+     * @return the Filtered RSProxy Observable
      */
     <T> Observable<T> getPub(Object tag, Class<T> filterClass);
-
-    class ObservableSource {
-        final Observable observable;
-        final Object tag;
-
-        ObservableSource(Observable observable, Object tag) {
-            this.observable = observable;
-            this.tag = tag;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            ObservableSource source = (ObservableSource) o;
-
-            if (!observable.equals(source.observable)) return false;
-            return tag.equals(source.tag);
-
-        }
-
-        @Override
-        public int hashCode() {
-            int result = observable.hashCode();
-            result = 31 * result + tag.hashCode();
-            return result;
-        }
-    }
 
     enum RxJava2PubProxyType implements ProxyType {
         BehaviorProcessorProxy,

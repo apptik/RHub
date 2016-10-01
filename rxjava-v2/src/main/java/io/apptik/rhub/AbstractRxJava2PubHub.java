@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.apptik.rhub.RxJava2ObsHub.RxJava2PubProxyType;
+import io.apptik.roxy.RSProxy;
+import io.apptik.roxy.Removable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.functions.Predicate;
@@ -19,6 +21,8 @@ import io.reactivex.processors.ReplayProcessor;
 import io.reactivex.subjects.Subject;
 
 import static io.apptik.rhub.RSHub.CoreProxyType.PublisherRefProxy;
+import static io.apptik.roxy.Roxy.TePolicy.PASS;
+import static io.apptik.roxy.Roxy.TePolicy.WRAP;
 
 
 /**
@@ -34,19 +38,19 @@ import static io.apptik.rhub.RSHub.CoreProxyType.PublisherRefProxy;
  * the same events. Each of those proxies can be used and unsubscribed from Observable A
  * independently.
  * <p/>
- * Observers subscribe to a Proxy. Observers does not need to know about the source of the Events
+ * Observers subscribe to a RSProxy. Observers does not need to know about the source of the Events
  * i.e the Observers that the Proxies is subscribed to.
  * <p/>
- * To fetch the Proxy to subscribe to {@link AbstractRxJava2PubHub#getObservable(Object)} must be
+ * To fetch the RSProxy to subscribe to {@link AbstractRxJava2PubHub#getPub(Object)} must be
  * called.
  * <p/>
  * Non-Rx code can also call {@link AbstractRxJava2PubHub#emit(Object, Object)} to manually emit
  * Events
- * through specific Proxy.
+ * through specific RSProxy.
  */
 public abstract class AbstractRxJava2PubHub implements RSHub {
 
-    private final Map<Object, Proxy> proxyPubMap = new ConcurrentHashMap<>();
+    private final Map<Object, RSProxy> proxyPubMap = new ConcurrentHashMap<>();
     private final Map<Object, Publisher> directPubMap = new ConcurrentHashMap<>();
 
 
@@ -56,7 +60,7 @@ public abstract class AbstractRxJava2PubHub implements RSHub {
             directPubMap.put(tag, publisher);
         } else {
             getPublisherProxyInternal(tag);
-            proxyPubMap.get(tag).addPub(tag, publisher);
+            proxyPubMap.get(tag).addUpstream(publisher);
         }
         return new Removable() {
             @Override
@@ -71,9 +75,9 @@ public abstract class AbstractRxJava2PubHub implements RSHub {
         if (getProxyType(tag) == PublisherRefProxy) {
             directPubMap.remove(tag);
         } else {
-            Proxy proxy = proxyPubMap.get(tag);
+            RSProxy proxy = proxyPubMap.get(tag);
             if (proxy != null) {
-                proxy.removePub(tag, publisher);
+                proxy.removeUpstream(publisher);
             }
         }
     }
@@ -113,7 +117,7 @@ public abstract class AbstractRxJava2PubHub implements RSHub {
             res = directPubMap.get(tag);
         } else {
             if (proxyPubMap.containsKey(tag)) {
-                res = proxyPubMap.get(tag).proc;
+                res = proxyPubMap.get(tag).pub();
             }
         }
         if (res == null) {
@@ -165,7 +169,7 @@ public abstract class AbstractRxJava2PubHub implements RSHub {
         if (isProxyThreadsafe(tag)) {
             res = res.toSerialized();
         }
-        proxyPubMap.put(tag, new Proxy(res, isSafe));
+        proxyPubMap.put(tag, new RSProxy(res, isSafe ? WRAP : PASS));
         return res;
     }
 
@@ -188,9 +192,9 @@ public abstract class AbstractRxJava2PubHub implements RSHub {
 
     @Override
     public final void clearUpstream() {
-        for (Map.Entry<Object, Proxy> entries : proxyPubMap.entrySet()) {
+        for (Map.Entry<Object, RSProxy> entries : proxyPubMap.entrySet()) {
             ProxyType proxyType = getProxyType(entries.getKey());
-            Proxy proxy = entries.getValue();
+            RSProxy proxy = entries.getValue();
             proxy.clear();
         }
         directPubMap.clear();
@@ -200,10 +204,10 @@ public abstract class AbstractRxJava2PubHub implements RSHub {
     public void resetProxy(Object tag) {
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof RxJava2PubProxyType) {
-            Proxy proxy = proxyPubMap.get(tag);
+            RSProxy proxy = proxyPubMap.get(tag);
             if (proxy != null) {
                 proxy.clear();
-                proxy.proc.onComplete();
+                proxy.complete();
                 proxyPubMap.remove(tag);
             }
         } else {
@@ -215,7 +219,7 @@ public abstract class AbstractRxJava2PubHub implements RSHub {
     public void removeUpstream(Object tag) {
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof RxJava2PubProxyType) {
-            Proxy proxy = proxyPubMap.get(tag);
+            RSProxy proxy = proxyPubMap.get(tag);
             if (proxy != null) {
                 proxy.clear();
                 proxyPubMap.remove(tag);

@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import io.apptik.roxy.RSProxy;
+import io.apptik.roxy.Removable;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxProcessor;
@@ -17,19 +19,21 @@ import reactor.core.publisher.TopicProcessor;
 import reactor.core.publisher.WorkQueueProcessor;
 
 import static io.apptik.rhub.RSHub.CoreProxyType.PublisherRefProxy;
+import static io.apptik.roxy.Roxy.TePolicy.PASS;
+import static io.apptik.roxy.Roxy.TePolicy.WRAP;
 
 public abstract class AbstractReactorHub implements ReactorHub {
 
-    private final Map<Object, Proxy> proxyPubMap = new ConcurrentHashMap<>();
+    private final Map<Object, RSProxy> proxyPubMap = new ConcurrentHashMap<>();
     private final Map<Object, Publisher> directPubMap = new ConcurrentHashMap<>();
 
     @Override
     public void removeUpstream(Object tag, Publisher publisher) {
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof ReactorProxyType) {
-            Proxy proxy = proxyPubMap.get(tag);
+            RSProxy proxy = proxyPubMap.get(tag);
             if (proxy != null) {
-                proxy.removePub(tag, publisher);
+                proxy.removeUpstream(publisher);
             }
         } else if (proxyType instanceof CoreProxyType) {
             directPubMap.remove(tag);
@@ -41,9 +45,9 @@ public abstract class AbstractReactorHub implements ReactorHub {
 
     @Override
     public void clearUpstream() {
-        for (Map.Entry<Object, Proxy> entries : proxyPubMap.entrySet()) {
+        for (Map.Entry<Object, RSProxy> entries : proxyPubMap.entrySet()) {
             ProxyType proxyType = getProxyType(entries.getKey());
-            Proxy proxy = entries.getValue();
+            RSProxy proxy = entries.getValue();
             if (proxyType instanceof ReactorProxyType) {
                 proxy.clear();
             }
@@ -62,15 +66,9 @@ public abstract class AbstractReactorHub implements ReactorHub {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
                     "Emitting event not possible. Tag(%s) represents immutable stream.", tag));
         }
-        Object proxy = getPublisherProxyInternal(tag);
-        if (Processor.class.isAssignableFrom(proxy.getClass())) {
-            ((Processor) proxy).onNext(event);
-        } else {
-            //should not happen
-            throw new IllegalStateException(String.format(Locale.ENGLISH,
-                    "Proxy(%s) type(%s) is not supported! Do we have an alien injection?",
-                    tag, proxy.getClass()));
-        }
+        Publisher proxy = getPublisherProxyInternal(tag);
+        ((Processor) proxy).onNext(event);
+
     }
 
     @Override
@@ -79,7 +77,7 @@ public abstract class AbstractReactorHub implements ReactorHub {
             directPubMap.put(tag, publisher);
         } else {
             getPublisherProxyInternal(tag);
-            proxyPubMap.get(tag).addPub(tag, publisher);
+            proxyPubMap.get(tag).addUpstream(publisher);
         }
         return () -> AbstractReactorHub.this.removeUpstream(tag, publisher);
     }
@@ -119,7 +117,7 @@ public abstract class AbstractReactorHub implements ReactorHub {
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof ReactorProxyType) {
             if (proxyPubMap.containsKey(tag)) {
-                res = proxyPubMap.get(tag).proc;
+                res = proxyPubMap.get(tag).pub();
             }
         } else {
             res = directPubMap.get(tag);
@@ -182,7 +180,7 @@ public abstract class AbstractReactorHub implements ReactorHub {
         if (isProxyThreadsafe(tag)) {
             res = res.serialize();
         }
-        proxyPubMap.put(tag, new Proxy(res, isSafe));
+        proxyPubMap.put(tag, new RSProxy(res, isSafe ? WRAP : PASS));
         return res;
     }
 
@@ -190,10 +188,10 @@ public abstract class AbstractReactorHub implements ReactorHub {
     public void resetProxy(Object tag) {
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof ReactorProxyType) {
-            Proxy proxy = proxyPubMap.get(tag);
+            RSProxy proxy = proxyPubMap.get(tag);
             if (proxy != null) {
                 proxy.clear();
-                proxy.proc.onComplete();
+                proxy.complete();
                 proxyPubMap.remove(tag);
             }
         } else {
@@ -205,7 +203,7 @@ public abstract class AbstractReactorHub implements ReactorHub {
     public void removeUpstream(Object tag) {
         ProxyType proxyType = getProxyType(tag);
         if (proxyType instanceof ReactorProxyType) {
-            Proxy proxy = proxyPubMap.get(tag);
+            RSProxy proxy = proxyPubMap.get(tag);
             if (proxy != null) {
                 proxy.clear();
                 proxyPubMap.remove(tag);

@@ -30,35 +30,6 @@ public interface RxJava1Hub extends RHub<Observable> {
      */
     <T> Observable<T> getPub(Object tag, Class<T> filterClass);
 
-    class Source {
-        final Observable observable;
-        final Object tag;
-
-        Source(Observable observable, Object tag) {
-            this.observable = observable;
-            this.tag = tag;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Source source = (Source) o;
-
-            if (!observable.equals(source.observable)) return false;
-            return tag.equals(source.tag);
-
-        }
-
-        @Override
-        public int hashCode() {
-            int result = observable.hashCode();
-            result = 31 * result + tag.hashCode();
-            return result;
-        }
-    }
-
     enum RxJava1ProxyType implements ProxyType {
         BehaviorSubjectProxy,
         PublishSubjectProxy,

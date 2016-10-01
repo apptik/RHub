@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.apptik.roxy.Removable;
+import io.apptik.roxy.SubjProxy;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.functions.Predicate;
@@ -17,6 +19,8 @@ import io.reactivex.subjects.ReplaySubject;
 import io.reactivex.subjects.Subject;
 
 import static io.apptik.rhub.RxJava2ObsHub.RxJava2ObsProxyType.ObservableRefProxy;
+import static io.apptik.roxy.Roxy.TePolicy.PASS;
+import static io.apptik.roxy.Roxy.TePolicy.WRAP;
 
 
 /**
@@ -27,20 +31,20 @@ import static io.apptik.rhub.RxJava2ObsHub.RxJava2ObsProxyType.ObservableRefProx
  * <p/>
  * Proxies can be either {@link Subject} or {@link Processor}. Proxies are identified by their Tags.
  * Proxies subscribes to Observables however each subscription created is
- * per {@link ObservableSource}. A Source is identified by Observable and a Tag.
+ * per 'Source'. A 'Source' is a combination of an Observable and a Tag.
  * For example when Observable A is added with Tag T1 and Tag T2. Two proxies are created receiving
  * the same events. Each of those proxies can be used and unsubscribed from Observable A
  * independently.
  * <p/>
- * Observers subscribe to a Proxy. Observers does not need to know about the source of the Events
+ * Observers subscribe to a RSProxy. Observers does not need to know about the source of the Events
  * i.e the Observers that the Proxies is subscribed to.
  * <p/>
- * To fetch the Proxy to subscribe to {@link AbstractRxJava2ObsHub#getPub(Object)} must be
+ * To fetch the RSProxy to subscribe to {@link AbstractRxJava2ObsHub#getPub(Object)} must be
  * called.
  * <p/>
  * Non-Rx code can also call {@link AbstractRxJava2ObsHub#emit(Object, Object)} to manually emit
  * Events
- * through specific Proxy.
+ * through specific RSProxy.
  */
 public abstract class AbstractRxJava2ObsHub implements RxJava2ObsHub {
 
@@ -53,7 +57,7 @@ public abstract class AbstractRxJava2ObsHub implements RxJava2ObsHub {
             directObsMap.put(tag, observable);
         } else {
             getObservableProxyInternal(tag);
-            proxyObsMap.get(tag).addObs(tag, observable);
+            proxyObsMap.get(tag).addUpstream(observable);
         }
         return new Removable() {
             @Override
@@ -70,7 +74,7 @@ public abstract class AbstractRxJava2ObsHub implements RxJava2ObsHub {
         } else {
             SubjProxy proxy = proxyObsMap.get(tag);
             if (proxy != null) {
-                proxy.removeObs(tag, observable);
+                proxy.removeUpstream(observable);
             }
         }
     }
@@ -103,7 +107,7 @@ public abstract class AbstractRxJava2ObsHub implements RxJava2ObsHub {
             res = directObsMap.get(tag);
         } else {
             if (proxyObsMap.containsKey(tag)) {
-                res = proxyObsMap.get(tag).proc;
+                res = proxyObsMap.get(tag).pub();
             }
         }
         if (res == null) {
@@ -149,7 +153,7 @@ public abstract class AbstractRxJava2ObsHub implements RxJava2ObsHub {
         if (isProxyThreadsafe(tag)) {
             res = res.toSerialized();
         }
-        proxyObsMap.put(tag, new SubjProxy(res, isSafe));
+        proxyObsMap.put(tag, new SubjProxy(res, isSafe ? WRAP : PASS));
         return res;
     }
 
@@ -186,7 +190,7 @@ public abstract class AbstractRxJava2ObsHub implements RxJava2ObsHub {
             SubjProxy proxy = proxyObsMap.get(tag);
             if (proxy != null) {
                 proxy.clear();
-                proxy.proc.onComplete();
+                proxy.complete();
                 proxyObsMap.remove(tag);
             }
         } else {

@@ -12,6 +12,8 @@ sourceSets {
 
 dependencies {
     compile project(':core')
+    compile project(':roxy:roxy-rxjava1')
+
     compile rootProject.ext.rxjava1
     compile rootProject.ext.rxrelay
 

@@ -11,6 +11,7 @@ sourceSets {
 
 dependencies {
     compile project(':rs-core')
+    compile project(':roxy:roxy-rxjava2')
     compile rootProject.ext.rxjava2
 
     perfCompile rootProject.ext.jmhCore

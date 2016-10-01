@@ -2,6 +2,8 @@ apply plugin: 'java'
 
 dependencies {
     compile project(":roxy:roxy-core")
+    compile rootProject.ext.rxjava1
+    compile rootProject.ext.rxrelay
 }
 
 sourceCompatibility = "1.7"

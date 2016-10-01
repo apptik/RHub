@@ -11,6 +11,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.apptik.roxy.RelayProxy;
+import io.apptik.roxy.Removable;
+import io.apptik.roxy.SubjV1Proxy;
 import rx.Observable;
 import rx.Observer;
 import rx.functions.Action1;
@@ -69,7 +72,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
                     || proxyType == ReplaySubjectProxy) {
                 SubjV1Proxy proxy = proxySubjMap.get(tag);
                 if (proxy != null) {
-                    proxy.addObs(tag, observable);
+                    proxy.addUpstream(observable);
                 }
             }
 
@@ -78,7 +81,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
                     || proxyType == ReplayRelayProxy) {
                 RelayProxy proxy = proxyRelayMap.get(tag);
                 if (proxy != null) {
-                    proxy.addObs(tag, observable);
+                    proxy.addUpstream(observable);
                 }
             }
         }
@@ -101,7 +104,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
                 || proxyType == ReplaySubjectProxy) {
             SubjV1Proxy proxy = proxySubjMap.get(tag);
             if (proxy != null) {
-                proxy.removeObs(tag, observable);
+                proxy.removeUpstream(observable);
             }
         }
 
@@ -110,7 +113,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
                 || proxyType == ReplayRelayProxy) {
             RelayProxy proxy = proxyRelayMap.get(tag);
             if (proxy != null) {
-                proxy.removeObs(tag, observable);
+                proxy.removeUpstream(observable);
             }
         }
     }
@@ -148,7 +151,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
                 || proxyType == ReplaySubjectProxy) {
             SubjV1Proxy proxy = proxySubjMap.get(tag);
             if (proxy != null) {
-                res = proxy.subj;
+                res = proxy.pub();
             }
 
         }
@@ -158,7 +161,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
                 || proxyType == ReplayRelayProxy) {
             RelayProxy proxy = proxyRelayMap.get(tag);
             if (proxy != null) {
-                res = proxy.relay;
+                res = proxy.pub();
             }
         }
 
@@ -275,7 +278,7 @@ public abstract class AbstractRxJava1Hub implements RxJava1Hub {
                 SubjV1Proxy proxy = proxySubjMap.get(tag);
                 if (proxy != null) {
                     proxy.clear();
-                    proxy.subj.onCompleted();
+                    proxy.complete();
                     proxySubjMap.remove(tag);
                 }
             }

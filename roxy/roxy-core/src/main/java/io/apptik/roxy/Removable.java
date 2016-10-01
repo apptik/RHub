@@ -1,4 +1,4 @@
-package io.apptik.rhub;
+package io.apptik.roxy;
 
 
 public interface Removable {

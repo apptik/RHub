@@ -2,6 +2,7 @@ apply plugin: 'java'
 
 dependencies {
     compile project(":roxy:roxy-core")
+    compile rootProject.ext.rs
 }
 
 sourceCompatibility = "1.7"
