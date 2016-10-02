@@ -107,7 +107,6 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
                     String className = getClassName(shieldInterface, packageName);
                     ClassName shiledInterfaceName = ClassName.get(packageName, className);
                     ClassName shieldImplName = ClassName.get(packageName, className + "_Impl");
-
                     shieldClass = new ShieldClass(shieldImplName, shiledInterfaceName, hubClass());
                     shields.put(shieldInterface, shieldClass);
                 }
@@ -127,19 +126,7 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
 
     private boolean checkIfOK2(ExecutableElement annotatedNode) {
         final String pubClass = pubClass().getName();
-        if (typeUtils.erasure(annotatedNode.getReturnType()).toString()
-                .equals(pubClass)) {
-            if (annotatedNode.getParameters().size() > 0) {
-                throw new IllegalStateException(
-                        String.format("Methods that return %s must have 0 " +
-                                        "params to be annotated with @%s. Got : %s",
-                                pubClass,
-                                ProxyTag.class.getSimpleName(),
-                                annotatedNode.getReturnType()
-
-                        ));
-            }
-        } else if (annotatedNode.getReturnType().getKind().equals(TypeKind.VOID)) {
+        if (annotatedNode.getReturnType().getKind().equals(TypeKind.VOID)) {
             if (annotatedNode.getParameters().size() > 1 ||
                     annotatedNode.getParameters().size() < 1) {
                 throw new IllegalStateException(
@@ -167,6 +154,18 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
 //                                typeUtils.erasure(annotatedNode.getParameters().get(0).asType())
 //
 //                        ));
+            }
+        } else if (typeUtils.erasure(annotatedNode.getReturnType()).toString()
+                .equals(pubClass)) {
+            if (annotatedNode.getParameters().size() > 0) {
+                throw new IllegalStateException(
+                        String.format("Methods that return %s must have 0 " +
+                                        "params to be annotated with @%s. Got : %s",
+                                pubClass,
+                                ProxyTag.class.getSimpleName(),
+                                annotatedNode.getReturnType()
+
+                        ));
             }
         } else {
             //just ignore and warn

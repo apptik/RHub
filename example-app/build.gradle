@@ -1,0 +1,68 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.3"
+
+    defaultConfig {
+        applicationId "io.apptik.rhub.exampleapp"
+        minSdkVersion 19
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        jackOptions {
+            enabled true
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'NOTICE.txt'
+        exclude 'META-INF/rxjava.properties'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    testCompile 'junit:junit:4.12'
+
+    compile project(":rxjava-v1")
+    compile project(":rxjava-v2")
+//    compile 'com.google.auto.value:auto-value:1.2'
+//    annotationProcessor 'com.google.auto.value:auto-value:1.2'
+//    compile rootProject.ext.autoservice
+//    annotationProcessor rootProject.ext.autoservice
+//    annotationProcessor project(":shield:shield-processor-rs")
+//    compile project(":shield:shield-maker-rs")
+//    annotationProcessor project(":shield:shield-processor-rxjava2")
+//    compile project(":shield:shield-maker-rxjava2")
+    compile project(":shield:shield-maker-rxjava1")
+    compile project(":shield:shield-annotations")
+    annotationProcessor project(":shield:shield-processor-rxjava1")
+    annotationProcessor project(':shield:shield-base-processor')
+
+
+    compile 'com.github.pwittchen:reactivesensors:0.1.2'
+    compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
+}

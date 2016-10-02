@@ -1,4 +1,4 @@
-include ':example-java',
+include ':example-java', ':example-app',
         ':roxy:roxy-core',
         ':roxy:roxy-rs',
         ':roxy:roxy-rxjava1',
