@@ -2,9 +2,9 @@
 
 [JavaDocs](http://apptik.github.io/rxHub/)
 
-[![Build Status](https://travis-ci.org/apptik/rxHub.svg?branch=master)](https://travis-ci.org/apptik/rxHub)
-[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/core)
-[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:core/0.0.2/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:core/0.0.2)
+[![Build Status](https://travis-ci.org/apptik/rHub.svg?branch=master)](https://travis-ci.org/apptik/rHub)
+[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rxhub/core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rxhub/core)
+[![VersionEye](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.2/badge.svg)](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.2)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-rxHub-green.svg?style=true)](https://android-arsenal.com/details/1/4260)
 
 
@@ -20,15 +20,17 @@ UI updates, logging, alerting, monitoring, security, etc.
 Find [the latest JARs][mvn] or grab via Maven:
 ```xml
 <dependency>
-  <groupId>io.apptik.rhub</groupId>
+  <groupId>io.apptik.rxhub</groupId>
   <artifactId>core</artifactId>
   <version>0.0.2</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'io.apptik.rhub:core:0.0.2'
+compile 'io.apptik.rxhub:core:0.0.2'
 ```
+
+Note next versions 0.1.x will have package 'io.apptik.rhub'.
 
 Downloads of the released versions are available in [Sonatype's `releases` repository][release].
 
@@ -55,7 +57,7 @@ Snapshots of the development versions are available in [Sonatype's `snapshots` r
 
 ## Overview
 
-![RxHub](https://raw.githubusercontent.com/apptik/rxhub/master/img/RxHub.png)
+![RxHub](https://raw.githubusercontent.com/apptik/rhub/master/img/RxHub.png)
 
 RxHub allows Publish/Subscribe pattern implementation and thus helps
 decouple components. This might be compared to an EventBus where:

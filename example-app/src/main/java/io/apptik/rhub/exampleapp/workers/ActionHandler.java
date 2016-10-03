@@ -20,19 +20,21 @@ public class ActionHandler implements Action1<DataShield.Action> {
 
     @Override
     public void call(DataShield.Action action) {
-        if (action.equals(DataShield.Action.AccOn)) {
+        if (action.equals(DataShield.Action.AccOn) &&  accPublisher==null) {
             accPublisher = Sensors.startAcc(context);
             DataShield.Inst.get().addSensor(accPublisher);
         } else if (action.equals(DataShield.Action.AccOff)) {
             if(DataShield.Inst.getHub()!=null && accPublisher!=null) {
                 DataShield.Inst.getHub().removeUpstream("Sensor", accPublisher);
+                accPublisher = null;
             }
-        } else if (action.equals(DataShield.Action.LightOn)) {
+        } else if (action.equals(DataShield.Action.LightOn) && lightPublisher==null) {
             lightPublisher = Sensors.startLight(context);
             DataShield.Inst.get().addSensor(lightPublisher);
         } else if (action.equals(DataShield.Action.LightOff)) {
             if(DataShield.Inst.getHub()!=null && lightPublisher!=null) {
                 DataShield.Inst.getHub().removeUpstream("Sensor", lightPublisher);
+                lightPublisher = null;
             }
         }
     }
