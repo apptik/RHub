@@ -1,10 +1,10 @@
 *.iml
 .gradle
-/.idea
-/local.properties
+.idea
+local.properties
 .DS_Store
-/build
-/captures
+build
+captures
 *.class
 
 # Mobile Tools for Java (J2ME)
