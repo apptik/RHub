@@ -2,7 +2,7 @@
 
 [JavaDocs](http://apptik.github.io/rxHub/)
 
-[![Build Status](https://travis-ci.org/apptik/rHub.svg?branch=master)](https://travis-ci.org/apptik/rHub)
+[![Build Status](https://travis-ci.org/apptik/RHub.svg?branch=master)](https://travis-ci.org/apptik/RHub)
 [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rxhub/core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rxhub/core)
 [![VersionEye](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.2/badge.svg)](https://www.versioneye.com/java/io.apptik.rxhub:core/0.0.2)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-rxHub-green.svg?style=true)](https://android-arsenal.com/details/1/4260)

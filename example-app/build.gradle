@@ -47,19 +47,19 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     testCompile 'junit:junit:4.12'
 
-    compile project(":rxjava-v1")
-    compile project(":rxjava-v2")
+    compile project(':rxjava-v1')
+    compile project(':rxjava-v2')
 //    compile 'com.google.auto.value:auto-value:1.2'
 //    annotationProcessor 'com.google.auto.value:auto-value:1.2'
 //    compile rootProject.ext.autoservice
 //    annotationProcessor rootProject.ext.autoservice
-//    annotationProcessor project(":shield:shield-processor-rs")
-//    compile project(":shield:shield-maker-rs")
-//    annotationProcessor project(":shield:shield-processor-rxjava2")
-//    compile project(":shield:shield-maker-rxjava2")
-    compile project(":shield:shield-maker-rxjava1")
-    compile project(":shield:shield-annotations")
-    annotationProcessor project(":shield:shield-processor-rxjava1")
+//    annotationProcessor project(':shield:shield-processor-rs')
+//    compile project(':shield:shield-maker-rs')
+//    annotationProcessor project(':shield:shield-processor-rxjava2')
+//    compile project(':shield:shield-maker-rxjava2')
+    compile project(':shield:shield-maker-rxjava1')
+    compile project(':shield:shield-annotations')
+    annotationProcessor project(':shield:shield-processor-rxjava1')
     annotationProcessor project(':shield:shield-base-processor')
 
 
