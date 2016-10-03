@@ -12,7 +12,7 @@ android:
     - sys-img-armeabi-v7a-android-18
 
 script:
-  - ./gradlew ":$MODULE:build"
+  - ./gradlew clean ":$MODULE:build"
 
 after_success:
   - .buildscript/deploy_snapshot.sh
