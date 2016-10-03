@@ -1,4 +1,4 @@
-# RxHub - WIP
+# RHub - WIP
 
 [JavaDocs](http://apptik.github.io/rxHub/)
 

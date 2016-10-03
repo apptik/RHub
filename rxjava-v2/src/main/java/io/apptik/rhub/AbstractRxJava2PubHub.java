@@ -33,7 +33,7 @@ import static io.apptik.roxy.Roxy.TePolicy.WRAP;
  * <p/>
  * Proxies can be either {@link Subject} or {@link Processor}. Proxies are identified by their Tags.
  * Proxies subscribes to Observables however each subscription created is
- * per {@link Source}. A Source is identified by Observable and a Tag.
+ * per Source. A Source is identified by Observable and a Tag.
  * For example when Observable A is added with Tag T1 and Tag T2. Two proxies are created receiving
  * the same events. Each of those proxies can be used and unsubscribed from Observable A
  * independently.

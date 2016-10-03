@@ -4,5 +4,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push.gradle'

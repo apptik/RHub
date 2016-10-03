@@ -6,7 +6,7 @@ jdk:
 android:
   components:
     - tools
-    - build-tools-24.0.1
+    - build-tools-24.0.3
     - android-24
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-18
@@ -19,7 +19,25 @@ after_success:
 
 env:
    matrix:
+     - MODULE=core
+     - MODULE=roxy:roxy-core
+     - MODULE=roxy:roxy-rs
+     - MODULE=roxy:roxy-reactor
+     - MODULE=roxy:roxy-rxjava1
+     - MODULE=roxy:roxy-rxjava2
+     - MODULE=shield:shield-annotations
+     - MODULE=shield:shield-base-maker
+     - MODULE=shield:shield-base-processor
+     - MODULE=shield:shield-maker-rs
+     - MODULE=shield:shield-maker-rxjava1
+     - MODULE=shield:shield-maker-rxjava2
+     - MODULE=shield:shield-processor-rs
+     - MODULE=shield:shield-processor-rxjava1
+     - MODULE=shield:shield-processor-rxjava2
+     - MODULE=rs-core
+     - MODULE=reactor
      - MODULE=rxjava-v1
+     - MODULE=rxjava-v2
 
 notifications:
   email: true

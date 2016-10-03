@@ -11,3 +11,6 @@ dependencies {
     compile rootProject.ext.rs
 }
 
+apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push' + '.gradle'
+
+

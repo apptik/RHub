@@ -103,33 +103,4 @@ public interface RHub<P> {
      */
     interface ProxyType {
     }
-
-    class Source<P> {
-        final P publisher;
-        final Object tag;
-
-        Source(P publisher, Object tag) {
-            this.publisher = publisher;
-            this.tag = tag;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Source source = (Source) o;
-
-            if (!publisher.equals(source.publisher)) return false;
-            return tag.equals(source.tag);
-
-        }
-
-        @Override
-        public int hashCode() {
-            int result = publisher.hashCode();
-            result = 31 * result + tag.hashCode();
-            return result;
-        }
-    }
 }
