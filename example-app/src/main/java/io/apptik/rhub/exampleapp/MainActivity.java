@@ -32,24 +32,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        TextView tv1 = (TextView) findViewById(R.id.txt1);
-        ToggleButton btnLight = (ToggleButton) findViewById(R.id.btnLight);
-        ToggleButton btnAcc = (ToggleButton) findViewById(R.id.btnAcc);
 
         dataShield = DataShield.Inst.get();
+        TextView tv1 = (TextView) findViewById(R.id.txt1);
         dataShield.sensorData().subscribe(new Worker1());
         dataShield.sensorData().subscribe(new Worker2(tv1));
         dataShield.actionEvents().subscribe(new ActionHandler(getApplicationContext()));
-
-        dataShield.addActionEvent(RxCompoundButton.checkedChanges(btnLight).map(aBoolean -> {
-            if (aBoolean) return DataShield.Action.LightOn;
-            else return DataShield.Action.LightOff;
-        }));
-        dataShield.addActionEvent(RxCompoundButton.checkedChanges(btnAcc).map(aBoolean -> {
-            if (aBoolean) return DataShield.Action.AccOn;
-            else return DataShield.Action.AccOff;
-        }));
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -126,5 +114,27 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ToggleButton btnLight = (ToggleButton) findViewById(R.id.btnLight);
+        ToggleButton btnAcc = (ToggleButton) findViewById(R.id.btnAcc);
+
+        dataShield.addActionEvent(RxCompoundButton.checkedChanges(btnLight).map(aBoolean -> {
+            if (aBoolean) return DataShield.Action.LightOn;
+            else return DataShield.Action.LightOff;
+        }));
+        dataShield.addActionEvent(RxCompoundButton.checkedChanges(btnAcc).map(aBoolean -> {
+            if (aBoolean) return DataShield.Action.AccOn;
+            else return DataShield.Action.AccOff;
+        }));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        DataShield.Inst.getHub().clearUpstream();
     }
 }

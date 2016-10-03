@@ -24,13 +24,17 @@
             android:id="@+id/btnAcc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Acc"/>
+            android:textOn="Acc ON"
+            android:textOff="Acc OFF"
+        />
 
         <ToggleButton
             android:id="@+id/btnLight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Light"/>
+            android:textOn="Light ON"
+            android:textOff="Light OFF"
+        />
     </LinearLayout>
 
     <TextView
