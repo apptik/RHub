@@ -11,7 +11,7 @@ import io.apptik.rhub.shield.ShieldMakerRxJava1;
 import io.apptik.roxy.Removable;
 import rx.Observable;
 
-public interface DataShield {
+public interface Shield {
 
     @ProxyTag("Sensor")
     Removable addSensor(Observable<String> observable);
@@ -33,9 +33,9 @@ public interface DataShield {
     }
 
     class Inst {
-        private static DataShield inst;
+        private static Shield inst;
         private static RxJava1Hub hub;
-        public static DataShield get() {
+        public static Shield get() {
             if(inst==null) {
                 hub = new DefaultRxJava1Hub() {
                     @Override
@@ -46,7 +46,7 @@ public interface DataShield {
                         return super.getProxyType(tag);
                     }
                 };
-                inst = ShieldMakerRxJava1.make(DataShield.class, hub);
+                inst = ShieldMakerRxJava1.make(Shield.class, hub);
             }
             return inst;
         }

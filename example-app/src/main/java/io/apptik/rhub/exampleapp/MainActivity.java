@@ -18,19 +18,19 @@ import android.widget.ToggleButton;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 
-import io.apptik.rhub.exampleapp.workers.ActionHandler;
-import io.apptik.rhub.exampleapp.workers.Worker1;
-import io.apptik.rhub.exampleapp.workers.Worker2;
+import io.apptik.rhub.exampleapp.components.ActionHandler;
+import io.apptik.rhub.exampleapp.components.Worker1;
+import io.apptik.rhub.exampleapp.components.Worker2;
 
-import static io.apptik.rhub.exampleapp.DataShield.Action.AccOff;
-import static io.apptik.rhub.exampleapp.DataShield.Action.AccOn;
-import static io.apptik.rhub.exampleapp.DataShield.Action.LightOff;
-import static io.apptik.rhub.exampleapp.DataShield.Action.LightOn;
+import static io.apptik.rhub.exampleapp.Shield.Action.AccOff;
+import static io.apptik.rhub.exampleapp.Shield.Action.AccOn;
+import static io.apptik.rhub.exampleapp.Shield.Action.LightOff;
+import static io.apptik.rhub.exampleapp.Shield.Action.LightOn;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    DataShield dataShield;
+    Shield shield;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +39,11 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        dataShield = DataShield.Inst.get();
+        shield = Shield.Inst.get();
         TextView tv1 = (TextView) findViewById(R.id.txt1);
-        dataShield.sensorData().subscribe(new Worker1());
-        dataShield.sensorData().subscribe(new Worker2(tv1));
-        dataShield.actionEvents().subscribe(new ActionHandler());
+        shield.sensorData().subscribe(new Worker1());
+        shield.sensorData().subscribe(new Worker2(tv1));
+        shield.actionEvents().subscribe(new ActionHandler());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -104,9 +104,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            //dataShield.addSensor(Sensors.startAcc(getApplicationContext()));
+            //shield.addSensor(Sensors.startAcc(getApplicationContext()));
         } else if (id == R.id.nav_gallery) {
-            //dataShield.addSensor(Sensors.startLight(getApplicationContext()));
+            //shield.addSensor(Sensors.startLight(getApplicationContext()));
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
@@ -128,11 +128,11 @@ public class MainActivity extends AppCompatActivity
         ToggleButton btnLight = (ToggleButton) findViewById(R.id.btnLight);
         ToggleButton btnAcc = (ToggleButton) findViewById(R.id.btnAcc);
 
-        dataShield.addActionEvent(RxCompoundButton.checkedChanges(btnLight).map(aBoolean -> {
+        shield.addActionEvent(RxCompoundButton.checkedChanges(btnLight).map(aBoolean -> {
             if (aBoolean) return new Pair<>(LightOn,btnLight.getContext());
             else return new Pair<>(LightOff,btnLight.getContext());
         }));
-        dataShield.addActionEvent(RxCompoundButton.checkedChanges(btnAcc).map(aBoolean -> {
+        shield.addActionEvent(RxCompoundButton.checkedChanges(btnAcc).map(aBoolean -> {
             if (aBoolean) return new Pair<>(AccOn,btnAcc.getContext());
             else return new Pair<>(AccOff,btnAcc.getContext());
         }));
@@ -141,6 +141,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        DataShield.Inst.getHub().clearUpstream();
+        Shield.Inst.getHub().clearUpstream();
     }
 }

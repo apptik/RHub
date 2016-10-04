@@ -1,4 +1,4 @@
-package io.apptik.rhub.exampleapp.workers;
+package io.apptik.rhub.exampleapp.components;
 
 import android.util.Log;
 
