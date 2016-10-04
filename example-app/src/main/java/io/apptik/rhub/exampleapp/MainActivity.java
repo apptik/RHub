@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.util.Pair;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,6 +22,11 @@ import io.apptik.rhub.exampleapp.workers.ActionHandler;
 import io.apptik.rhub.exampleapp.workers.Worker1;
 import io.apptik.rhub.exampleapp.workers.Worker2;
 
+import static io.apptik.rhub.exampleapp.DataShield.Action.AccOff;
+import static io.apptik.rhub.exampleapp.DataShield.Action.AccOn;
+import static io.apptik.rhub.exampleapp.DataShield.Action.LightOff;
+import static io.apptik.rhub.exampleapp.DataShield.Action.LightOn;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,7 +43,7 @@ public class MainActivity extends AppCompatActivity
         TextView tv1 = (TextView) findViewById(R.id.txt1);
         dataShield.sensorData().subscribe(new Worker1());
         dataShield.sensorData().subscribe(new Worker2(tv1));
-        dataShield.actionEvents().subscribe(new ActionHandler(getApplicationContext()));
+        dataShield.actionEvents().subscribe(new ActionHandler());
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -123,12 +129,12 @@ public class MainActivity extends AppCompatActivity
         ToggleButton btnAcc = (ToggleButton) findViewById(R.id.btnAcc);
 
         dataShield.addActionEvent(RxCompoundButton.checkedChanges(btnLight).map(aBoolean -> {
-            if (aBoolean) return DataShield.Action.LightOn;
-            else return DataShield.Action.LightOff;
+            if (aBoolean) return new Pair<>(LightOn,btnLight.getContext());
+            else return new Pair<>(LightOff,btnLight.getContext());
         }));
         dataShield.addActionEvent(RxCompoundButton.checkedChanges(btnAcc).map(aBoolean -> {
-            if (aBoolean) return DataShield.Action.AccOn;
-            else return DataShield.Action.AccOff;
+            if (aBoolean) return new Pair<>(AccOn,btnAcc.getContext());
+            else return new Pair<>(AccOff,btnAcc.getContext());
         }));
     }
 

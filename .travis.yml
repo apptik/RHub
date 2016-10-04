@@ -5,11 +5,10 @@ jdk:
 
 android:
   components:
-    - tools
-    - build-tools-24.0.3
-    - android-24
-    - extra-android-m2repository
-    - sys-img-armeabi-v7a-android-18
+#    - tools
+#    - build-tools-24.0.3
+#    - android-24
+#    - extra-android-m2repository
 
 script:
   - ./gradlew clean ":$MODULE:build"

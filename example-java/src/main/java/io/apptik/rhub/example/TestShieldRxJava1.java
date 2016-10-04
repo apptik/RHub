@@ -6,22 +6,22 @@ import rx.Observable;
 
 public interface TestShieldRxJava1 {
 
-    @ProxyTag(value = "tag1")
+    @ProxyTag("tag1")
     Observable<String> getTag1String();
 
-    @ProxyTag(value = "tag1")
+    @ProxyTag("tag1")
     Observable<Integer> getTag1Int();
 
-    @ProxyTag(value = "tag1")
+    @ProxyTag("tag1")
     Observable<?> getTag1Any();
 
-    @ProxyTag(value = "tag1")
+    @ProxyTag("tag1")
     Observable getTag1All();
 
-    @ProxyTag(value = "tag1")
+    @ProxyTag("tag1")
     void addTag1Provider(Observable p1);
 
-    @ProxyTag(value = "tag1")
+    @ProxyTag("tag1")
     void addTag1IntProvider(Observable<Integer> p1);
 
 }

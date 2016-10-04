@@ -63,8 +63,8 @@ public class ShieldClass<H extends RHub> {
             if (na.isInput()) {
                 methodSpec.addParameter(ParameterSpec.builder(na.paramType, "src").build());
                 methodSpec.addCode(CodeBlock.builder()
-                        .addStatement("rHub.addUpstream($S,$L)",
-                                na.nodeTag,"src").build());
+                        .addStatement((na.isInputWithRemovable() ? "return " : "")
+                                + "rHub.addUpstream($S,$L)", na.nodeTag, "src").build());
             } else {
                 if (na.hasEnclosedClassName()) {
                     methodSpec.addCode(CodeBlock.builder()

@@ -27,6 +27,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import io.apptik.rhub.RHub;
+import io.apptik.roxy.Removable;
 
 public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProcessor {
 
@@ -126,7 +127,9 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
 
     private boolean checkIfOK2(ExecutableElement annotatedNode) {
         final String pubClass = pubClass().getName();
-        if (annotatedNode.getReturnType().getKind().equals(TypeKind.VOID)) {
+        if (annotatedNode.getReturnType().getKind().equals(TypeKind.VOID)
+                || typeUtils.isSameType(annotatedNode.getReturnType(),
+                elementUtils.getTypeElement(Removable.class.getCanonicalName()).asType())) {
             if (annotatedNode.getParameters().size() > 1 ||
                     annotatedNode.getParameters().size() < 1) {
                 throw new IllegalStateException(

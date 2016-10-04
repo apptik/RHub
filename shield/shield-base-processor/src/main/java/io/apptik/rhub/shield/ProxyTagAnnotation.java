@@ -5,6 +5,8 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 
+import io.apptik.roxy.Removable;
+
 public class ProxyTagAnnotation {
 
     final String nodeTag;
@@ -30,8 +32,14 @@ public class ProxyTagAnnotation {
     }
 
     public boolean isInput() {
-        return returnType.equals(TypeName.VOID);
+        return returnType.equals(TypeName.VOID) || isInputWithRemovable();
     }
+
+    public boolean isInputWithRemovable() {
+        return ClassName.get(Removable.class).equals(getRawClassName());
+    }
+
+
 
     public boolean hasEnclosedClassName() {
         if (returnType instanceof ParameterizedTypeName) {
