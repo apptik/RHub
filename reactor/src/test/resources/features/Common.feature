@@ -99,12 +99,10 @@ Feature: Common behaviour of RxHub
       | BehaviorProcessorProxy  | receive     |
       | ReplayProcessorProxy    | receive     |
       | TopicProcessorProxy     | receive     |
-      | WorkQueueProcessorProxy | not receive |
       | EmitterSafeProxy        | receive     |
       | BehaviorSafeProxy       | receive     |
       | ReplaySafeProxy         | receive     |
       | TopicSafeProxy          | receive     |
-      | WorkQueueSafeProxy      | not receive |
       | PublisherRefProxy       | receive     |
 
   Scenario Outline: 2 consumers + manual emit on the Proxy
@@ -126,12 +124,10 @@ Feature: Common behaviour of RxHub
       | BehaviorProcessorProxy  | receive     |
       | ReplayProcessorProxy    | receive     |
       | TopicProcessorProxy     | receive     |
-      | WorkQueueProcessorProxy | not receive |
       | EmitterSafeProxy        | receive     |
       | BehaviorSafeProxy       | receive     |
       | ReplaySafeProxy         | receive     |
       | TopicSafeProxy          | receive     |
-      | WorkQueueSafeProxy      | not receive |
 
   Scenario: manual emit on ProxyType ObservableRef
     Given Hub"H" with ProxyType PublisherRefProxy

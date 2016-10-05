@@ -1,11 +1,7 @@
 package io.apptik.rhub;
 
 
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
@@ -85,7 +81,7 @@ public class RxHubTest {
 
     @Then("^Consumer\"([^\"]*)\" should receive Event\"([^\"]*)\"$")
     public void consumer_should_receive_Event(String consumer, String event) throws Throwable {
-        helper.consumers.get(consumer).await(Duration.ofSeconds(1),
+        helper.consumers.get(consumer).await(Duration.ofSeconds(3),
                 "consumer " + consumer + " should_receive_Event: " + event,
                 new BooleanSupplier() {
                     @Override
@@ -97,10 +93,8 @@ public class RxHubTest {
 
     @Then("^Consumer\"([^\"]*)\" should not receive Event\"([^\"]*)\"$")
     public void consumer_should_not_receive_Event(String consumer, String event) throws Throwable {
-
         helper.consumers.get(consumer).assertDoesNotContainValue(event);
     }
-
 
     @Given("^Hub\"([^\"]*)\" with ProxyType ([^\\s]*) and Emittability \"([^\"]*)\"$")
     public void hub_with_ProxyType_(String hub, final String nodeType, final boolean emmitable)
@@ -205,36 +199,5 @@ public class RxHubTest {
             }
         }
     }
-
-    public static class DummyConsumer implements Subscriber<Object> {
-        ArrayList<String> events = new ArrayList<>();
-
-        @Override
-        public void onError(Throwable e) {
-            System.err.println("GOT ERR: " + e);
-
-        }
-
-        @Override
-        public void onComplete() {
-            System.err.println("GOT: COMPLETE");
-
-        }
-
-        @Override
-        public void onSubscribe(Subscription s) {
-            System.err.println("GOT Subscription: " + s);
-            s.request(Long.MAX_VALUE);
-        }
-
-        @Override
-        public void onNext(Object o) {
-            System.err.println("GOT: " + o);
-            synchronized (this) {
-                events.add(o.toString());
-            }
-        }
-    }
-
 
 }

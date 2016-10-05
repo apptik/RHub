@@ -38,9 +38,9 @@ ext {
     mockito = 'org.mockito:mockito-core:2.0.99-beta'
     assertjCore2 = 'org.assertj:assertj-core:2.5.0'
     assertjCore3 = 'org.assertj:assertj-core:3.5.2'
-    cucjava = 'info.cukes:cucumber-java:1.2.4'
-    cucjunit = 'info.cukes:cucumber-junit:1.2.4'
-    picocontainer = 'info.cukes:cucumber-picocontainer:1.2.4'
+    cucjava = 'info.cukes:cucumber-java:1.2.5'
+    cucjunit = 'info.cukes:cucumber-junit:1.2.5'
+    picocontainer = 'info.cukes:cucumber-picocontainer:1.2.5'
 
     javapoet = 'com.squareup:javapoet:1.7.0'
     javaparser = 'com.github.javaparser:javaparser-core:2.4.0'
