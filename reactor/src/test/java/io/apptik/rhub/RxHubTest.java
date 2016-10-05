@@ -4,10 +4,13 @@ package io.apptik.rhub;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
+import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -22,6 +25,11 @@ public class RxHubTest {
 
     public RxHubTest(Helper helper) {
         this.helper = helper;
+    }
+
+    @After
+    public void complete() {
+
     }
 
     @Given("^Provider\"([^\"]*)\"$")
@@ -77,16 +85,20 @@ public class RxHubTest {
 
     @Then("^Consumer\"([^\"]*)\" should receive Event\"([^\"]*)\"$")
     public void consumer_should_receive_Event(String consumer, String event) throws Throwable {
-
-        assertThat(helper.consumers.get(consumer).events).contains(event);
-
+        helper.consumers.get(consumer).await(Duration.ofSeconds(1),
+                "consumer " + consumer + " should_receive_Event: " + event,
+                new BooleanSupplier() {
+                    @Override
+                    public boolean getAsBoolean() {
+                        return helper.consumers.get(consumer).values().contains(event);
+                    }
+                });
     }
 
     @Then("^Consumer\"([^\"]*)\" should not receive Event\"([^\"]*)\"$")
     public void consumer_should_not_receive_Event(String consumer, String event) throws Throwable {
 
-        assertThat(helper.consumers.get(consumer).events).doesNotContain(event);
-
+        helper.consumers.get(consumer).assertDoesNotContainValue(event);
     }
 
 
@@ -176,16 +188,17 @@ public class RxHubTest {
         public String proxyType;
         //use subjects  so we can easily emit events when needed
         public Map<String, DirectProcessor> publishers = new HashMap<>();
-        public Map<String, DummyConsumer> consumers = new HashMap<>();
+        public Map<String, TestSubscriber> consumers = new HashMap<>();
         public Throwable error;
 
-        public static DummyConsumer getDummyConsumer() {
+        public static TestSubscriber getDummyConsumer() {
             System.err.println("GOT: getDummyConsumer");
-            return new DummyConsumer();
+            //return new DummyConsumer();
+            return new TestSubscriber();
         }
 
         public static RSHub.ProxyType getProxyType(String proxyType) {
-            if(proxyType.equals("PublisherRefProxy")) {
+            if (proxyType.equals("PublisherRefProxy")) {
                 return RSHub.CoreProxyType.valueOf(proxyType);
             } else {
                 return ReactorHub.ReactorProxyType.valueOf(proxyType);
