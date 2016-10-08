@@ -107,11 +107,6 @@ public class RxHubTest {
             }
 
             @Override
-            public boolean isProxyThreadsafe(Object tag) {
-                return true;
-            }
-
-            @Override
             public boolean canTriggerEmit(Object tag) {
                 return emmitable;
             }
@@ -126,11 +121,6 @@ public class RxHubTest {
             @Override
             public ProxyType getProxyType(Object tag) {
                 return Helper.getProxyType(nodeType);
-            }
-
-            @Override
-            public boolean isProxyThreadsafe(Object tag) {
-                return true;
             }
 
             @Override
@@ -178,7 +168,7 @@ public class RxHubTest {
 
 
     public static class Helper {
-        public Map<String, RSHub> hubs = new HashMap<>();
+        public Map<String, AbstractReactorHub> hubs = new HashMap<>();
         public String proxyType;
         //use subjects  so we can easily emit events when needed
         public Map<String, DirectProcessor> publishers = new HashMap<>();
@@ -192,11 +182,7 @@ public class RxHubTest {
         }
 
         public static RSHub.ProxyType getProxyType(String proxyType) {
-            if (proxyType.equals("PublisherRefProxy")) {
-                return RSHub.CoreProxyType.valueOf(proxyType);
-            } else {
-                return ReactorHub.ReactorProxyType.valueOf(proxyType);
-            }
+            return ReactorProxyType.valueOf(proxyType);
         }
     }
 

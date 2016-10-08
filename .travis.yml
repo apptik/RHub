@@ -30,9 +30,10 @@ env:
      - MODULE=shield:shield-maker-rs
      - MODULE=shield:shield-maker-rxjava1
      - MODULE=shield:shield-maker-rxjava2
-     - MODULE=shield:shield-processor-rs
+     - MODULE=shield:shield-processor-reactor
      - MODULE=shield:shield-processor-rxjava1
-     - MODULE=shield:shield-processor-rxjava2
+     - MODULE=shield:shield-processor-rxjava2-proc
+     - MODULE=shield:shield-processor-rxjava2-subj
      - MODULE=rs-core
      - MODULE=reactor
      - MODULE=rxjava-v1

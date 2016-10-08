@@ -6,7 +6,6 @@ import org.reactivestreams.Publisher;
 import io.apptik.rhub.DefaultReactorHub;
 import io.apptik.rhub.DefaultRxJava1Hub;
 import io.apptik.rhub.DefaultRxJava2ObsHub;
-import io.apptik.rhub.DefaultRxJava2PubHub;
 import io.apptik.rhub.RSHub;
 import io.apptik.rhub.RxJava1Hub;
 import io.apptik.rhub.RxJava2ObsHub;
@@ -21,8 +20,8 @@ public class ShieldMakerExample {
     public static void main(String[] args) {
         exampleRxJava1();
         exampleRxJava2();
-        exampleRxJava2RS();
-        exampleReactorRS();
+        exampleRxReactorRS();
+        exampleReactor();
     }
 
     private static void exampleRxJava1() {
@@ -56,36 +55,36 @@ public class ShieldMakerExample {
         testShieldRxJava2.addTag1IntProvider(io.reactivex.Observable.just(1));
     }
 
-    private static void exampleRxJava2RS() {
-        RSHub rxJava2Hub = new DefaultRxJava2PubHub();
+    private static void exampleRxReactorRS() {
+        RSHub defaultReactorHub = new DefaultReactorHub();
         TestShieldRS testShieldRS = ShieldMakerRS.make(TestShieldRS.class,
-                rxJava2Hub);
+                defaultReactorHub);
 
         Publisher<String> tag1String =  testShieldRS.getTag1String();
         tag1String.subscribe(new SimpleOne());
-        rxJava2Hub.emit("tag1", "Here we go :)");
-        rxJava2Hub.emit("tag1",777);
+        defaultReactorHub.emit("tag1", "Here we go :)");
+        defaultReactorHub.emit("tag1",777);
         Publisher<Integer> tag1Int =  testShieldRS.getTag1Int();
         tag1Int.subscribe(new SimpleOne());
-        rxJava2Hub.emit("tag1",999);
+        defaultReactorHub.emit("tag1",999);
         testShieldRS.addTag1Provider(Flowable.just(1,2,3,4,"a","b","c","d"));
         testShieldRS.addTag1IntProvider(Flowable.just(1));
     }
 
-    private static void exampleReactorRS() {
+    private static void exampleReactor() {
         RSHub reactorHub = new DefaultReactorHub();
-        TestShieldRS testShieldRS = ShieldMakerRS.make(TestShieldRS.class,
+        TestShieldReacotr testShieldReacotr = ShieldMakerRS.make(TestShieldReacotr.class,
                 reactorHub);
 
-        Publisher<String> tag1String =  testShieldRS.getTag1String();
+        Publisher<String> tag1String =  testShieldReacotr.getTag1String();
         tag1String.subscribe(new SimpleOne());
         reactorHub.emit("tag1", "Here we go :)");
         reactorHub.emit("tag1",777);
-        Publisher<Integer> tag1Int =  testShieldRS.getTag1Int();
+        Publisher<Integer> tag1Int =  testShieldReacotr.getTag1Int();
         tag1Int.subscribe(new SimpleOne());
         reactorHub.emit("tag1",999);
-        testShieldRS.addTag1Provider(Flowable.just(1,2,3,4,"a","b","c","d"));
-        testShieldRS.addTag1IntProvider(Flowable.just(1));
+        testShieldReacotr.addTag1Provider(Flowable.just(1,2,3,4,"a","b","c","d"));
+        testShieldReacotr.addTag1IntProvider(Flowable.just(1));
     }
 
 

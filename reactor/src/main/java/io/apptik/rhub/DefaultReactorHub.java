@@ -5,12 +5,7 @@ public class DefaultReactorHub extends AbstractReactorHub {
 
     @Override
     public ProxyType getProxyType(Object tag) {
-        return ReactorProxyType.BehaviorSafeProxy;
-    }
-
-    @Override
-    public boolean isProxyThreadsafe(Object tag) {
-        return true;
+        return ReactorProxyType.SafeBehaviorProcessorProxy;
     }
 
     @Override

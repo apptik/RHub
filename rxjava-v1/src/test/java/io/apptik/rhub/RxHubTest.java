@@ -90,11 +90,6 @@ public class RxHubTest {
             }
 
             @Override
-            public boolean isProxyThreadsafe(Object tag) {
-                return true;
-            }
-
-            @Override
             public boolean canTriggerEmit(Object tag) {
                 return emmitable;
             }
@@ -108,11 +103,6 @@ public class RxHubTest {
             @Override
             public RxJava1ProxyType getProxyType(Object tag) {
                 return RxJava1ProxyType.valueOf(nodeType);
-            }
-
-            @Override
-            public boolean isProxyThreadsafe(Object tag) {
-                return true;
             }
 
             @Override

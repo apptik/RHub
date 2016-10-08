@@ -9,18 +9,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.apptik.roxy.Removable;
-import io.apptik.roxy.SubjProxy;
+import io.apptik.roxy.Roxy;
+import io.apptik.roxy.RxJava2SubjProxy;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.functions.Predicate;
-import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.ReplaySubject;
 import io.reactivex.subjects.Subject;
-
-import static io.apptik.rhub.RxJava2ObsHub.RxJava2ObsProxyType.ObservableRefProxy;
-import static io.apptik.roxy.Roxy.TePolicy.PASS;
-import static io.apptik.roxy.Roxy.TePolicy.WRAP;
 
 
 /**
@@ -36,29 +28,24 @@ import static io.apptik.roxy.Roxy.TePolicy.WRAP;
  * the same events. Each of those proxies can be used and unsubscribed from Observable A
  * independently.
  * <p/>
- * Observers subscribe to a RSProxy. Observers does not need to know about the source of the Events
+ * Observers subscribe to a RSProcProxy. Observers does not need to know about the source of the
+ * Events
  * i.e the Observers that the Proxies is subscribed to.
  * <p/>
- * To fetch the RSProxy to subscribe to {@link AbstractRxJava2ObsHub#getPub(Object)} must be
+ * To fetch the RSProcProxy to subscribe to {@link AbstractRxJava2ObsHub#getPub(Object)} must be
  * called.
  * <p/>
  * Non-Rx code can also call {@link AbstractRxJava2ObsHub#emit(Object, Object)} to manually emit
  * Events
- * through specific RSProxy.
+ * through specific RSProcProxy.
  */
 public abstract class AbstractRxJava2ObsHub implements RxJava2ObsHub {
 
-    private final Map<Object, SubjProxy> proxyObsMap = new ConcurrentHashMap<>();
-    private final Map<Object, Observable> directObsMap = new ConcurrentHashMap<>();
+    private final Map<Object, RxJava2SubjProxy> proxyMap = new ConcurrentHashMap<>();
 
     @Override
     public final Removable addUpstream(final Object tag, final Observable observable) {
-        if (getProxyType(tag) == ObservableRefProxy) {
-            directObsMap.put(tag, observable);
-        } else {
-            getObservableProxyInternal(tag);
-            proxyObsMap.get(tag).addUpstream(observable);
-        }
+        getProxyInternal(tag).addUpstream(observable);
         return new Removable() {
             @Override
             public void remove() {
@@ -69,94 +56,37 @@ public abstract class AbstractRxJava2ObsHub implements RxJava2ObsHub {
 
     @Override
     public final void removeUpstream(Object tag, Observable observable) {
-        if (getProxyType(tag) == ObservableRefProxy) {
-            directObsMap.remove(tag);
-        } else {
-            SubjProxy proxy = proxyObsMap.get(tag);
-            if (proxy != null) {
-                proxy.removeUpstream(observable);
-            }
+        Roxy<Observable> proxy = proxyMap.get(tag);
+        if (proxy != null) {
+            proxy.removeUpstream(observable);
         }
     }
 
     @Override
     public final Observable getPub(Object tag) {
-        Observable res = getObservableProxyInternal(tag);
-        if (getProxyType(tag) == ObservableRefProxy) {
-            return res;
-        } else {
-            //make sure we expose it as Observable hide proxy's identity
-            return res.hide();
-        }
+        return getProxyInternal(tag).pub();
+
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <T> Observable<T> getPub(Object tag, final Class<T> filterClass) {
-        return getObservableProxyInternal(tag).filter(new Predicate() {
-            @Override
-            public boolean test(Object obj) throws Exception {
-                return filterClass.isAssignableFrom(obj.getClass());
-            }
-        });
+    public final <T> Observable<T> getPub(Object tag, Class<T> filterClass) {
+        return getProxyInternal(tag).pub(filterClass);
     }
 
-    private Observable getObservableProxyInternal(Object tag) {
-        Observable res = null;
-        if (getProxyType(tag) == ObservableRefProxy) {
-            res = directObsMap.get(tag);
-        } else {
-            if (proxyObsMap.containsKey(tag)) {
-                res = proxyObsMap.get(tag).pub();
-            }
+    private Roxy<Observable> getProxyInternal(Object tag) {
+        Roxy<Observable> proxy = proxyMap.get(tag);
+        if (proxy == null) {
+            proxy = createProxy(tag);
         }
-        if (res == null) {
-            res = createObservableProxy(tag);
-        }
-        return res;
+        return proxy;
     }
 
-
-    private Observable createObservableProxy(Object tag) {
-        Subject res;
-        boolean isSafe = false;
-        ProxyType proxyType = getProxyType(tag);
-        if (proxyType instanceof RxJava2ObsProxyType) {
-            switch ((RxJava2ObsProxyType) proxyType) {
-                case BehaviorObsSafeProxy:
-                    isSafe = true;
-                case BehaviorSubjectProxy:
-                    res = BehaviorSubject.create();
-                    break;
-                case PublishObsSafeProxy:
-                    isSafe = true;
-                case PublishSubjectProxy:
-                    res = PublishSubject.create();
-                    break;
-                case ReplayObsSafeProxy:
-                    isSafe = true;
-                case ReplaySubjectProxy:
-                    res = ReplaySubject.create();
-                    break;
-                case ObservableRefProxy:
-                    throw new IllegalStateException("Cannot create ObservableRefProxy, " +
-                            "it must be added before.");
-                    //should not happen;
-                default:
-                    throw new IllegalStateException("Unknown ProxyType");
-            }
-        } else {
-            //should not happen;
-            throw new IllegalStateException("Unknown ProxyType");
-        }
-
-        if (isProxyThreadsafe(tag)) {
-            res = res.toSerialized();
-        }
-        proxyObsMap.put(tag, new SubjProxy(res, isSafe ? WRAP : PASS));
-        return res;
+    private RxJava2SubjProxy createProxy(Object tag) {
+        RxJava2SubjProxy roxy = getProxyType(tag).getRoxy();
+        proxyMap.put(tag, roxy);
+        return roxy;
     }
-
 
     @Override
     public final void emit(Object tag, Object event) {
@@ -164,53 +94,34 @@ public abstract class AbstractRxJava2ObsHub implements RxJava2ObsHub {
             throw new IllegalStateException(String.format(Locale.ENGLISH,
                     "Emitting events on Tag(%s) not allowed.", tag));
         }
-        ProxyType proxyType = getProxyType(tag);
-        if (proxyType == ObservableRefProxy) {
-            throw new IllegalStateException(String.format(Locale.ENGLISH,
-                    "Emitting event not possible. Tag(%s) represents immutable stream.", tag));
-        }
-        Observable proxy = getObservableProxyInternal(tag);
-        ((Observer) proxy).onNext(event);
+        getProxyInternal(tag).emit(event);
     }
+
 
     @Override
     public final void clearUpstream() {
-        for (Map.Entry<Object, SubjProxy> entries : proxyObsMap.entrySet()) {
-            SubjProxy proxy = entries.getValue();
+        for (Map.Entry<Object, RxJava2SubjProxy> entries : proxyMap.entrySet()) {
+            Roxy proxy = entries.getValue();
             proxy.clear();
         }
-        directObsMap.clear();
     }
-
 
     @Override
     public void resetProxy(Object tag) {
-        ProxyType proxyType = getProxyType(tag);
-        if (proxyType instanceof RxJava2ObsProxyType) {
-            SubjProxy proxy = proxyObsMap.get(tag);
-            if (proxy != null) {
-                proxy.clear();
-                proxy.complete();
-                proxyObsMap.remove(tag);
-            }
-        } else {
-            directObsMap.remove(tag);
+        Roxy proxy = proxyMap.get(tag);
+        if (proxy != null) {
+            proxy.clear();
+            proxy.complete();
+            proxyMap.remove(tag);
         }
     }
 
     @Override
     public void removeUpstream(Object tag) {
-        ProxyType proxyType = getProxyType(tag);
-        if (proxyType instanceof RxJava2ObsProxyType) {
-            SubjProxy proxy = proxyObsMap.get(tag);
-            if (proxy != null) {
-                proxy.clear();
-                proxyObsMap.remove(tag);
-            }
-        } else {
-            directObsMap.remove(tag);
+        Roxy proxy = proxyMap.get(tag);
+        if (proxy != null) {
+            proxy.clear();
+            proxyMap.remove(tag);
         }
     }
-
-
 }

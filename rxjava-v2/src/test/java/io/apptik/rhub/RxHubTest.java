@@ -130,11 +130,6 @@ public class RxHubTest {
                 }
 
                 @Override
-                public boolean isProxyThreadsafe(Object tag) {
-                    return true;
-                }
-
-                @Override
                 public boolean canTriggerEmit(Object tag) {
                     return emmitable;
                 }
@@ -144,11 +139,6 @@ public class RxHubTest {
                 @Override
                 public ProxyType getProxyType(Object tag) {
                     return Helper.getProxyType(nodeType);
-                }
-
-                @Override
-                public boolean isProxyThreadsafe(Object tag) {
-                    return true;
                 }
 
                 @Override
@@ -171,11 +161,6 @@ public class RxHubTest {
                 }
 
                 @Override
-                public boolean isProxyThreadsafe(Object tag) {
-                    return true;
-                }
-
-                @Override
                 public boolean canTriggerEmit(Object tag) {
                     return true;
                 }
@@ -185,11 +170,6 @@ public class RxHubTest {
                 @Override
                 public ProxyType getProxyType(Object tag) {
                     return Helper.getProxyType(nodeType);
-                }
-
-                @Override
-                public boolean isProxyThreadsafe(Object tag) {
-                    return true;
                 }
 
                 @Override
@@ -249,7 +229,7 @@ public class RxHubTest {
 
     public static class Helper {
         public Map<String, RxJava2ObsHub> subjHubs = new HashMap<>();
-        public Map<String, RSHub> procHubs = new HashMap<>();
+        public Map<String, AbstractRxJava2PubHub> procHubs = new HashMap<>();
         public String proxyType;
         //use subjects  so we can easily emit events when needed
         public Map<String, PublishProcessor> processorProviders = new HashMap<>();
@@ -272,12 +252,10 @@ public class RxHubTest {
         }
 
         public static RSHub.ProxyType getProxyType(String proxyType) {
-            if (proxyType.equals("PublisherRefProxy")) {
-                return RSHub.CoreProxyType.valueOf(proxyType);
-            } else if (isObservableType(proxyType)) {
-                return RxJava2ObsHub.RxJava2ObsProxyType.valueOf(proxyType);
+           if (isObservableType(proxyType)) {
+                return RxJava2SubjProxyType.valueOf(proxyType);
             } else {
-                return RxJava2ObsHub.RxJava2PubProxyType.valueOf(proxyType);
+                return RxJava2ProcProxyType.valueOf(proxyType);
             }
         }
     }

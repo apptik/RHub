@@ -40,13 +40,16 @@ public class ShieldMakerBase<H extends RHub> {
         try {
             Class<?> shieldImpl = Class.forName(clsName + "_Impl");
             //noinspection unchecked
-            shieldConstructor = (Constructor<T>) shieldImpl.getConstructor(rHubClass);
+            Constructor<?>[] constructors = shieldImpl.getDeclaredConstructors();
+            shieldConstructor = (Constructor<T>) constructors[0];
+           // shieldConstructor = (Constructor<T>) shieldImpl.getConstructor(rHubClass);
             System.out.println("Shield Impl found for: " + shieldClass.getName());
         } catch (ClassNotFoundException e) {
             System.out.println("Shield Impl Not found for: " + shieldClass.getName());
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Unable to find binding constructor for " + clsName, e);
         }
+//        catch (NoSuchMethodException e) {
+//            throw new RuntimeException("Unable to find binding constructor for " + clsName, e);
+//        }
         return shieldConstructor;
     }
 }

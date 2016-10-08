@@ -19,8 +19,9 @@ import android.widget.ToggleButton;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 
 import io.apptik.rhub.exampleapp.components.ActionHandler;
-import io.apptik.rhub.exampleapp.components.Worker1;
-import io.apptik.rhub.exampleapp.components.Worker2;
+import io.apptik.rhub.exampleapp.components.Comp1;
+import io.apptik.rhub.exampleapp.components.Comp2;
+import rx.subscriptions.CompositeSubscription;
 
 import static io.apptik.rhub.exampleapp.Shield.Action.AccOff;
 import static io.apptik.rhub.exampleapp.Shield.Action.AccOn;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Shield shield;
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +43,9 @@ public class MainActivity extends AppCompatActivity
 
         shield = Shield.Inst.get();
         TextView tv1 = (TextView) findViewById(R.id.txt1);
-        shield.sensorData().subscribe(new Worker1());
-        shield.sensorData().subscribe(new Worker2(tv1));
-        shield.actionEvents().subscribe(new ActionHandler());
+        compositeSubscription.add(shield.sensorData().subscribe(new Comp1()));
+        compositeSubscription.add(shield.sensorData().subscribe(new Comp2(tv1)));
+        compositeSubscription.add(shield.actionEvents().subscribe(new ActionHandler()));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -142,5 +144,11 @@ public class MainActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         Shield.Inst.getHub().clearUpstream();
+    }
+
+    @Override
+    protected void onDestroy() {
+        compositeSubscription.unsubscribe();
+        super.onDestroy();
     }
 }

@@ -11,7 +11,7 @@ sourceSets {
 
 dependencies {
     compile project(':rs-core')
-    compile project(':roxy:roxy-rs')
+    compile project(':roxy:roxy-reactor')
     compile rootProject.ext.reactor
 
     perfCompile rootProject.ext.jmhCore

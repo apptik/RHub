@@ -1,6 +1,7 @@
 package io.apptik.rhub;
 
 
+import io.apptik.roxy.RxJava2SubjProxy;
 import io.reactivex.Observable;
 
 /**
@@ -9,37 +10,21 @@ import io.reactivex.Observable;
  * shared between Publisher based proxies and Observable based proxies. Thus
  * {@link #getPub(Object)}, {@link #getPub(Object) and other related methods} may throw an
  * exception in case {@link #getProxyType(Object)} returns incompatible proxy.
- * 
  */
 public interface RxJava2ObsHub extends RHub<Observable> {
 
     /**
      * Type safe variant of {@link #getPub(Object)}.
-     * Returns the RSProxy Observable identified by the tag and filtered by the Class provided
+     * Returns the RSProcProxy Observable identified by the tag and filtered by the Class provided
      *
-     * @param tag         the ID of the RSProxy
+     * @param tag         the ID of the RSProcProxy
      * @param filterClass the Class to filter the observable by
      * @param <T>         the Type of the events the returned Observable will emit
-     * @return the Filtered RSProxy Observable
+     * @return the Filtered RSProcProxy Observable
      */
     <T> Observable<T> getPub(Object tag, Class<T> filterClass);
 
-    enum RxJava2PubProxyType implements ProxyType {
-        BehaviorProcessorProxy,
-        PublishProcessorProxy,
-        ReplayProcessorProxy,
-        BehaviorSafeProxy,
-        PublishSafeProxy,
-        ReplaySafeProxy
-    }
+    @Override
+    ProxyType<RxJava2SubjProxy> getProxyType(Object tag);
 
-    enum RxJava2ObsProxyType implements ProxyType {
-        BehaviorSubjectProxy,
-        PublishSubjectProxy,
-        ReplaySubjectProxy,
-        BehaviorObsSafeProxy,
-        PublishObsSafeProxy,
-        ReplayObsSafeProxy,
-        ObservableRefProxy
-    }
 }

@@ -38,7 +38,7 @@ public class States {
 
         @Setup(Level.Iteration)
         public void setup() {
-            hub = new UniJavaRx1Hub(RxJava1Hub.RxJava1ProxyType.PublishSubjectProxy);
+            hub = new UniJavaRx1Hub(RxJava1ProxyType.PublishSubjectProxy);
             obs = hub.getPub(tag);
         }
 
@@ -54,7 +54,7 @@ public class States {
 
         @Setup(Level.Iteration)
         public void setup() {
-            hub = new UniJavaRx1Hub(RxJava1Hub.RxJava1ProxyType.PublishSubjectProxy);
+            hub = new UniJavaRx1Hub(RxJava1ProxyType.PublishSubjectProxy);
             obs = hub.getPub(tag);
             upstream = Observable.range(0, count).publish();
             hub.addUpstream(tag, upstream);

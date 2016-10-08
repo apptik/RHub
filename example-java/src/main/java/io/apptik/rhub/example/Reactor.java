@@ -3,24 +3,24 @@ package io.apptik.rhub.example;
 
 import org.reactivestreams.Publisher;
 
+import io.apptik.rhub.AbstractReactorHub;
 import io.apptik.rhub.DefaultReactorHub;
 import io.apptik.rhub.RSHub;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.DefaultSubscriber;
 import reactor.core.publisher.Flux;
 
+import static io.apptik.rhub.RxJava2ProcProxyType.SafeBehaviorProcessorProxy;
+
 
 public class Reactor {
 
     public static void main(String[] args) {
-        RSHub rxHub = new DefaultReactorHub() {
+        AbstractReactorHub rxHub = new DefaultReactorHub() {
             @Override
             public ProxyType getProxyType(Object tag) {
-                if (tag.equals("src2")) {
-                    return CoreProxyType.PublisherRefProxy;
-                }
-                //return ReactorProxyType.BehaviorProcessorProxy;
-                return ReactorProxyType.BehaviorSafeProxy;
+                //return ReactorProxyType.behaviorProcessorProxy;
+                return SafeBehaviorProcessorProxy;
             }
         };
         // generalExample(rxHub);
@@ -73,7 +73,7 @@ public class Reactor {
      * <p>
      * It can compared to an Arduino shield :)
      */
-    private static void shieldExample(RSHub rxHub) {
+    private static void shieldExample(AbstractReactorHub rxHub) {
 
         Shield shield = new Shield(rxHub);
         Flowable srcIntPub = Flowable.fromArray(
@@ -205,9 +205,9 @@ public class Reactor {
     }
 
     private static class Shield {
-        final RSHub rxHub;
+        final AbstractReactorHub rxHub;
 
-        Shield(RSHub rxHub) {
+        Shield(AbstractReactorHub rxHub) {
             this.rxHub = rxHub;
         }
 

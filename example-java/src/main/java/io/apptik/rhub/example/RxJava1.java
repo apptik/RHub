@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.apptik.rhub.DefaultRxJava1Hub;
 import io.apptik.rhub.RxJava1Hub;
+import io.apptik.rhub.RxJava1ProxyType;
 import rx.Observable;
 
 public class RxJava1 {
@@ -13,15 +14,13 @@ public class RxJava1 {
         RxJava1Hub rxJava1Hub = new DefaultRxJava1Hub() {
             @Override
             public RxJava1ProxyType getProxyType(Object tag) {
-                if (tag.equals("src2")) {
-                    return RxJava1ProxyType.ObservableRefProxy;
-                }
                 return RxJava1ProxyType.BehaviorRelayProxy;
             }
         };
         // generalExample(rxJava1Hub);
         shieldExample(rxJava1Hub);
     }
+
 
     private static void generalExample(RxJava1Hub rxJava1Hub) {
         Observable src1 = Observable.from(new Integer[]{1, 3, 5, 7, 11, 13});

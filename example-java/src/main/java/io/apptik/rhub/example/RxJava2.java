@@ -5,15 +5,16 @@ import org.reactivestreams.Publisher;
 
 import java.util.concurrent.TimeUnit;
 
+import io.apptik.rhub.AbstractRxJava2PubHub;
 import io.apptik.rhub.DefaultRxJava2ObsHub;
 import io.apptik.rhub.DefaultRxJava2PubHub;
-import io.apptik.rhub.RSHub;
 import io.apptik.rhub.RxJava2ObsHub;
+import io.apptik.rhub.RxJava2SubjProxyType;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.subscribers.DefaultSubscriber;
 
-import static io.apptik.rhub.RxJava2ObsHub.RxJava2PubProxyType.BehaviorProcessorProxy;
+import static io.apptik.rhub.RxJava2ProcProxyType.BehaviorProcessorProxy;
 
 public class RxJava2 {
 
@@ -21,20 +22,16 @@ public class RxJava2 {
         RxJava2ObsHub rxJava2ObsHub = new DefaultRxJava2ObsHub() {
             @Override
             public ProxyType getProxyType(Object tag) {
-                if (tag.equals("src2")) {
-                    return RxJava2ObsProxyType.ObservableRefProxy;
-                } else if (tag.equals("topic1Obs")) {
-                    return RxJava2ObsProxyType.BehaviorSubjectProxy;
+                if (tag.equals("topic1Obs")) {
+                    return RxJava2SubjProxyType.BehaviorSubjectProxy;
                 }
-                return RxJava2ObsProxyType.BehaviorSubjectProxy;
+                return RxJava2SubjProxyType.BehaviorSubjectProxy;
             }
         };
-        RSHub rxJava2PubHub = new DefaultRxJava2PubHub() {
+        AbstractRxJava2PubHub rxJava2PubHub = new DefaultRxJava2PubHub() {
             @Override
             public ProxyType getProxyType(Object tag) {
-                if (tag.equals("src2")) {
-                    return CoreProxyType.PublisherRefProxy;
-                } else if (tag.equals("topic1Obs")) {
+                if (tag.equals("topic1Obs")) {
                     return BehaviorProcessorProxy;
                 }
                 return BehaviorProcessorProxy;
@@ -90,7 +87,8 @@ public class RxJava2 {
      * <p>
      * It can compared to an Arduino shield :)
      */
-    private static void shieldExample(RxJava2ObsHub rxJava2ObsHub, RSHub rxJava2PubHub) {
+    private static void shieldExample(RxJava2ObsHub rxJava2ObsHub, AbstractRxJava2PubHub
+            rxJava2PubHub) {
 
         ShieldObs shieldObs = new ShieldObs(rxJava2ObsHub);
         ShieldPub shieldPub = new ShieldPub(rxJava2PubHub);
@@ -203,9 +201,9 @@ public class RxJava2 {
     }
 
     private static class ShieldPub {
-        final RSHub rxJava2Hub;
+        final AbstractRxJava2PubHub rxJava2Hub;
 
-        ShieldPub(RSHub rxJava2Hub) {
+        ShieldPub(AbstractRxJava2PubHub rxJava2Hub) {
             this.rxJava2Hub = rxJava2Hub;
         }
 
@@ -214,7 +212,7 @@ public class RxJava2 {
         }
 
         Publisher<Long> getBigOnesPublisher() {
-            return ((Flowable<Long>) rxJava2Hub.getPub("topic1", Long.class))
+            return rxJava2Hub.getPub("topic1", Long.class)
                     .filter(o -> o > 100);
         }
     }

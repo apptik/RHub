@@ -10,14 +10,19 @@ Feature: Common behaviour of RxHub
     Then Consumer"C" should receive Event"E"
 
     Examples:
-      | proxyType        |
-      | BehaviorSubjectProxy |
-      | PublishSubjectProxy  |
-      | ReplaySubjectProxy   |
-      | BehaviorRelayProxy   |
-      | PublishRelayProxy    |
-      | ReplayRelayProxy     |
-      | ObservableRefProxy   |
+      | proxyType                      |
+      | BehaviorSubjectProxy           |
+      | PublishSubjectProxy            |
+      | ReplaySubjectProxy             |
+      | BehaviorRelayProxy             |
+      | PublishRelayProxy              |
+      | ReplayRelayProxy               |
+      | SerializedBehaviorSubjectProxy |
+      | SerializedPublishSubjectProxy  |
+      | SerializedReplaySubjectProxy   |
+      | SerializedBehaviorRelayProxy   |
+      | SerializedPublishRelayProxy    |
+      | SerializedReplayRelayProxy     |
 
   Scenario Outline: Consumer subscription before subscribed to provider
     Given Provider"P"
@@ -29,19 +34,19 @@ Feature: Common behaviour of RxHub
     Then Consumer"C" should receive Event"E"
 
     Examples:
-      | proxyType        |
-      | BehaviorSubjectProxy |
-      | PublishSubjectProxy  |
-      | ReplaySubjectProxy   |
-      | BehaviorRelayProxy   |
-      | PublishRelayProxy    |
-      | ReplayRelayProxy     |
-
-  Scenario: Consumer subscription before subscribed to provider for ObservableRef
-    Given Consumer"C"
-    And Hub"H" with ProxyType ObservableRefProxy
-    When Consumer"C" subscribes to Hub"H" with tag "T"
-    Then there should be Error "java.lang.IllegalStateException"
+      | proxyType                      |
+      | BehaviorSubjectProxy           |
+      | PublishSubjectProxy            |
+      | ReplaySubjectProxy             |
+      | BehaviorRelayProxy             |
+      | PublishRelayProxy              |
+      | ReplayRelayProxy               |
+      | SerializedBehaviorSubjectProxy |
+      | SerializedPublishSubjectProxy  |
+      | SerializedReplaySubjectProxy   |
+      | SerializedBehaviorRelayProxy   |
+      | SerializedPublishRelayProxy    |
+      | SerializedReplayRelayProxy     |
 
   Scenario Outline: 2 providers 1 consumer
     Given Provider"P1"
@@ -53,18 +58,23 @@ Feature: Common behaviour of RxHub
     And Consumer"C" is subscribed to Hub"H" with tag "T"
     When Provider"P1" emits Event"E1"
     And Provider"P2" emits Event"E2"
-    Then Consumer"C" should <receiveE1> Event"E1"
+    Then Consumer"C" should receive Event"E1"
     And Consumer"C" should receive Event"E2"
 
     Examples:
-      | proxyType        | receiveE1   |
-      | BehaviorSubjectProxy | receive     |
-      | PublishSubjectProxy  | receive     |
-      | ReplaySubjectProxy   | receive     |
-      | BehaviorRelayProxy   | receive     |
-      | PublishRelayProxy    | receive     |
-      | ReplayRelayProxy    | receive     |
-      | ObservableRefProxy  | not receive |
+      | proxyType                      |
+      | BehaviorSubjectProxy           |
+      | PublishSubjectProxy            |
+      | ReplaySubjectProxy             |
+      | BehaviorRelayProxy             |
+      | PublishRelayProxy              |
+      | ReplayRelayProxy               |
+      | SerializedBehaviorSubjectProxy |
+      | SerializedPublishSubjectProxy  |
+      | SerializedReplaySubjectProxy   |
+      | SerializedBehaviorRelayProxy   |
+      | SerializedPublishRelayProxy    |
+      | SerializedReplayRelayProxy     |
 
   Scenario Outline: 1 provider 2 consumers
     Given Provider"P"
@@ -79,14 +89,19 @@ Feature: Common behaviour of RxHub
     And Consumer"C2" should receive Event"E"
 
     Examples:
-      | proxyType        |
-      | BehaviorSubjectProxy |
-      | PublishSubjectProxy  |
-      | ReplaySubjectProxy   |
-      | BehaviorRelayProxy   |
-      | PublishRelayProxy    |
-      | ReplayRelayProxy     |
-      | ObservableRefProxy   |
+      | proxyType                      |
+      | BehaviorSubjectProxy           |
+      | PublishSubjectProxy            |
+      | ReplaySubjectProxy             |
+      | BehaviorRelayProxy             |
+      | PublishRelayProxy              |
+      | ReplayRelayProxy               |
+      | SerializedBehaviorSubjectProxy |
+      | SerializedPublishSubjectProxy  |
+      | SerializedReplaySubjectProxy   |
+      | SerializedBehaviorRelayProxy   |
+      | SerializedPublishRelayProxy    |
+      | SerializedReplayRelayProxy     |
 
   Scenario Outline: 2 consumers + manual emit on the Proxy
     Given Hub"H" with ProxyType <proxyType>
@@ -99,19 +114,19 @@ Feature: Common behaviour of RxHub
     And Consumer"C2" should receive Event"E"
 
     Examples:
-      | proxyType        |
-      | BehaviorSubjectProxy |
-      | PublishSubjectProxy  |
-      | ReplaySubjectProxy   |
-      | BehaviorRelayProxy   |
-      | PublishRelayProxy    |
-      | ReplayRelayProxy     |
-
-  Scenario: manual emit on ProxyType ObservableRef
-    Given Hub"H" with ProxyType ObservableRefProxy
-    When Event"E" with tag "T" is emitted on Hub"H"
-    Then there should be Error "java.lang.IllegalStateException"
-    Then there should be ErrorMessage "Emitting event not possible. Tag(T) represents immutable stream."
+      | proxyType                      |
+      | BehaviorSubjectProxy           |
+      | PublishSubjectProxy            |
+      | ReplaySubjectProxy             |
+      | BehaviorRelayProxy             |
+      | PublishRelayProxy              |
+      | ReplayRelayProxy               |
+      | SerializedBehaviorSubjectProxy |
+      | SerializedPublishSubjectProxy  |
+      | SerializedReplaySubjectProxy   |
+      | SerializedBehaviorRelayProxy   |
+      | SerializedPublishRelayProxy    |
+      | SerializedReplayRelayProxy     |
 
   Scenario Outline: Remove provider
     Given Provider"P"
@@ -124,14 +139,19 @@ Feature: Common behaviour of RxHub
     Then Consumer"C" should not receive Event"E"
 
     Examples:
-      | proxyType        |
-      | BehaviorSubjectProxy |
-      | PublishSubjectProxy  |
-      | ReplaySubjectProxy   |
-      | BehaviorRelayProxy   |
-      | PublishRelayProxy    |
-      | ReplayRelayProxy    |
-      | ObservableRefProxy   |
+      | proxyType                      |
+      | BehaviorSubjectProxy           |
+      | PublishSubjectProxy            |
+      | ReplaySubjectProxy             |
+      | BehaviorRelayProxy             |
+      | PublishRelayProxy              |
+      | ReplayRelayProxy               |
+      | SerializedBehaviorSubjectProxy |
+      | SerializedPublishSubjectProxy  |
+      | SerializedReplaySubjectProxy   |
+      | SerializedBehaviorRelayProxy   |
+      | SerializedPublishRelayProxy    |
+      | SerializedReplayRelayProxy     |
 
 
   Scenario Outline: Remove all providers
@@ -151,14 +171,19 @@ Feature: Common behaviour of RxHub
     And Consumer"C" should not receive Event"E2"
 
     Examples:
-      | proxyType        |
-      | BehaviorSubjectProxy |
-      | PublishSubjectProxy  |
-      | ReplaySubjectProxy   |
-      | BehaviorRelayProxy   |
-      | PublishRelayProxy    |
-      | ReplayRelayProxy     |
-      | ObservableRefProxy   |
+      | proxyType                      |
+      | BehaviorSubjectProxy           |
+      | PublishSubjectProxy            |
+      | ReplaySubjectProxy             |
+      | BehaviorRelayProxy             |
+      | PublishRelayProxy              |
+      | ReplayRelayProxy               |
+      | SerializedBehaviorSubjectProxy |
+      | SerializedPublishSubjectProxy  |
+      | SerializedReplaySubjectProxy   |
+      | SerializedBehaviorRelayProxy   |
+      | SerializedPublishRelayProxy    |
+      | SerializedReplayRelayProxy     |
 
 
   Scenario Outline: Filtered Proxy Observable
@@ -174,14 +199,19 @@ Feature: Common behaviour of RxHub
     And Consumer"C2" should not receive Event"E"
 
     Examples:
-      | proxyType        |
-      | BehaviorSubjectProxy |
-      | PublishSubjectProxy  |
-      | ReplaySubjectProxy   |
-      | BehaviorRelayProxy   |
-      | PublishRelayProxy    |
-      | ReplayRelayProxy     |
-      | ObservableRefProxy   |
+      | proxyType                      |
+      | BehaviorSubjectProxy           |
+      | PublishSubjectProxy            |
+      | ReplaySubjectProxy             |
+      | BehaviorRelayProxy             |
+      | PublishRelayProxy              |
+      | ReplayRelayProxy               |
+      | SerializedBehaviorSubjectProxy |
+      | SerializedPublishSubjectProxy  |
+      | SerializedReplaySubjectProxy   |
+      | SerializedBehaviorRelayProxy   |
+      | SerializedPublishRelayProxy    |
+      | SerializedReplayRelayProxy     |
 
   Scenario Outline: Non manually Emittable Proxy
     Given Provider"P"
@@ -196,11 +226,16 @@ Feature: Common behaviour of RxHub
     And Consumer"C2" should not receive Event"E"
 
     Examples:
-      | proxyType        |
-      | BehaviorSubjectProxy |
-      | PublishSubjectProxy  |
-      | ReplaySubjectProxy   |
-      | BehaviorRelayProxy   |
-      | PublishRelayProxy    |
-      | ReplayRelayProxy     |
-      | ObservableRefProxy   |
+      | proxyType                      |
+      | BehaviorSubjectProxy           |
+      | PublishSubjectProxy            |
+      | ReplaySubjectProxy             |
+      | BehaviorRelayProxy             |
+      | PublishRelayProxy              |
+      | ReplayRelayProxy               |
+      | SerializedBehaviorSubjectProxy |
+      | SerializedPublishSubjectProxy  |
+      | SerializedReplaySubjectProxy   |
+      | SerializedBehaviorRelayProxy   |
+      | SerializedPublishRelayProxy    |
+      | SerializedReplayRelayProxy     |

@@ -16,8 +16,8 @@ import io.reactivex.observables.ConnectableObservable;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.subjects.PublishSubject;
 
-import static io.apptik.rhub.RxJava2ObsHub.RxJava2ObsProxyType.PublishSubjectProxy;
-import static io.apptik.rhub.RxJava2ObsHub.RxJava2PubProxyType.PublishProcessorProxy;
+import static io.apptik.rhub.RxJava2SubjProxyType.PublishSubjectProxy;
+import static io.apptik.rhub.RxJava2ProcProxyType.PublishProcessorProxy;
 
 public class States {
 

@@ -7,6 +7,7 @@ import com.sun.source.util.Trees;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -29,7 +30,8 @@ import javax.tools.Diagnostic;
 import io.apptik.rhub.RHub;
 import io.apptik.roxy.Removable;
 
-public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProcessor {
+public abstract class ShieldProcessor<H extends RHub<? extends P>, P> extends
+        AbstractProcessor {
 
     private Elements elementUtils;
     private Types typeUtils;
@@ -40,13 +42,17 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
 
     abstract Class<H> hubClass();
 
-    abstract Class<P> pubClass();
+    abstract Set<Class<? extends P>> pubClass();
 
+    Set<String> pubClassStrings = new HashSet<>();
 
     @Override
     public synchronized void init(ProcessingEnvironment env) {
         super.init(env);
 
+        for (Class<? extends P> pClass : pubClass()) {
+            pubClassStrings.add(pClass.getName());
+        }
         elementUtils = env.getElementUtils();
         typeUtils = env.getTypeUtils();
         filer = env.getFiler();
@@ -55,6 +61,10 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
             trees = Trees.instance(processingEnv);
         } catch (IllegalArgumentException ignored) {
         }
+    }
+
+    private boolean knowsClass(String clz) {
+        return pubClassStrings.contains(clz);
     }
 
     @Override
@@ -126,7 +136,6 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
     }
 
     private boolean checkIfOK2(ExecutableElement annotatedNode) {
-        final String pubClass = pubClass().getName();
         if (annotatedNode.getReturnType().getKind().equals(TypeKind.VOID)
                 || typeUtils.isSameType(annotatedNode.getReturnType(),
                 elementUtils.getTypeElement(Removable.class.getCanonicalName()).asType())) {
@@ -134,18 +143,18 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
                     annotatedNode.getParameters().size() < 1) {
                 throw new IllegalStateException(
                         String.format("void methods must accept exactly 1 param of returnType " +
-                                        "%s to be annotated with @%s. Got : %s",
-                                pubClass,
+                                        " to be annotated with @%s. Got : %s",
+                                //pubClass,
                                 ProxyTag.class.getSimpleName(),
                                 annotatedNode.getParameters()
 
                         ));
             }
-            if (!typeUtils.erasure(annotatedNode.getParameters().get(0).asType()).toString()
-                    .equals(pubClass)) {
+            if (!knowsClass(typeUtils.erasure(annotatedNode.getParameters().get(0).asType())
+                    .toString())) {
                 warn(annotatedNode, "void methods must accept exactly 1 param of returnType " +
-                                "%s to be annotated with @%s. Got : %s",
-                        pubClass,
+                                " to be annotated with @%s. Got : %s",
+                        //pubClass,
                         ProxyTag.class.getSimpleName(),
                         typeUtils.erasure(annotatedNode.getParameters().get(0).asType()));
                 return false;
@@ -158,13 +167,12 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
 //
 //                        ));
             }
-        } else if (typeUtils.erasure(annotatedNode.getReturnType()).toString()
-                .equals(pubClass)) {
+        } else if (knowsClass(typeUtils.erasure(annotatedNode.getReturnType()).toString())) {
             if (annotatedNode.getParameters().size() > 0) {
                 throw new IllegalStateException(
-                        String.format("Methods that return %s must have 0 " +
+                        String.format("Methods that return  must have 0 " +
                                         "params to be annotated with @%s. Got : %s",
-                                pubClass,
+                                //pubClass,
                                 ProxyTag.class.getSimpleName(),
                                 annotatedNode.getReturnType()
 
@@ -172,9 +180,9 @@ public abstract class ShieldProcessor<H extends RHub<P>, P> extends AbstractProc
             }
         } else {
             //just ignore and warn
-            warn(annotatedNode, "Only void methods or that return %s can " +
+            warn(annotatedNode, "Only void methods or that return can " +
                             "be annotated with @%s. Got : %s",
-                    pubClass,
+                    //pubClass,
                     ProxyTag.class.getSimpleName(),
                     annotatedNode.getReturnType());
             return false;

@@ -4,12 +4,15 @@ dependencies {
     compile project(":rxjava-v1")
     compile project(":rxjava-v2")
     compile project(":reactor")
-    compile project(":shield:shield-processor-rs")
+    compile project(":shield:shield-processor-reactor")
     compile project(":shield:shield-maker-rs")
-    compile project(":shield:shield-processor-rxjava2")
+    //compile project(":shield:shield-processor-rxjava2-proc")
+    compile project(":shield:shield-processor-rxjava2-subj")
     compile project(":shield:shield-maker-rxjava2")
     compile project(":shield:shield-processor-rxjava1")
     compile project(":shield:shield-maker-rxjava1")
+
+    compile rootProject.ext.assertjCore2
 
 }
 

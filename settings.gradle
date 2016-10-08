@@ -15,8 +15,9 @@ include ':example-java', ':example-app',
         ':shield:shield-base-maker',
         ':shield:shield-processor-rxjava1',
         ':shield:shield-maker-rxjava1',
-        ':shield:shield-processor-rxjava2',
+        ':shield:shield-processor-rxjava2-proc',
+        ':shield:shield-processor-rxjava2-subj',
         ':shield:shield-maker-rxjava2',
-        ':shield:shield-processor-rs',
+        ':shield:shield-processor-reactor',
         ':shield:shield-maker-rs'
 

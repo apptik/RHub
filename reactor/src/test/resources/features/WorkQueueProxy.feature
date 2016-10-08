@@ -15,9 +15,11 @@ Feature: Specific behaviour for WorkQueueProcessor based Proxies
     Then Consumer"C1" xor Consumer"C2" should receive Event"E2"
 
     Examples:
-      | proxyType               |
-      | WorkQueueProcessorProxy |
-      | WorkQueueSafeProxy      |
+      | proxyType                             |
+      | WorkQueueProcessorProxy               |
+      | SafeWorkQueueProcessorProxy           |
+      | SerializedWorkQueueProcessorProxy     |
+      | SafeSerializedWorkQueueProcessorProxy |
 
   Scenario Outline: 2 consumers + manual emit on the Proxy
     Given Hub"H" with ProxyType <proxyType>
@@ -31,6 +33,8 @@ Feature: Specific behaviour for WorkQueueProcessor based Proxies
     Then Consumer"C1" xor Consumer"C2" should receive Event"E2"
 
     Examples:
-      | proxyType               |
-      | WorkQueueProcessorProxy |
-      | WorkQueueSafeProxy      |
+      | proxyType                             |
+      | WorkQueueProcessorProxy               |
+      | SafeWorkQueueProcessorProxy           |
+      | SerializedWorkQueueProcessorProxy     |
+      | SafeSerializedWorkQueueProcessorProxy |

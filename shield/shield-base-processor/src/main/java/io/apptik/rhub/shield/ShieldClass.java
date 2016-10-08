@@ -45,7 +45,6 @@ public class ShieldClass<H extends RHub> {
                 .addModifiers(PUBLIC);
 
         res.addSuperinterface(shieldInterfaceName);
-
         res.addField(ClassName.get(hubClass), "rHub", PRIVATE, FINAL);
         MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(PUBLIC);

@@ -6,6 +6,7 @@ import android.support.v4.util.Pair;
 
 import io.apptik.rhub.DefaultRxJava1Hub;
 import io.apptik.rhub.RxJava1Hub;
+import io.apptik.rhub.RxJava1ProxyType;
 import io.apptik.rhub.shield.ProxyTag;
 import io.apptik.rhub.shield.ShieldMakerRxJava1;
 import io.apptik.roxy.Removable;

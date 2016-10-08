@@ -30,13 +30,4 @@ public interface RxJava1Hub extends RHub<Observable> {
      */
     <T> Observable<T> getPub(Object tag, Class<T> filterClass);
 
-    enum RxJava1ProxyType implements ProxyType {
-        BehaviorSubjectProxy,
-        PublishSubjectProxy,
-        ReplaySubjectProxy,
-        BehaviorRelayProxy,
-        PublishRelayProxy,
-        ReplayRelayProxy,
-        ObservableRefProxy
-    }
 }

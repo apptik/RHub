@@ -15,16 +15,11 @@ public interface Roxy<P> {
 
     void removeUpstream(P publisher);
     P pub();
+    <T> P pub(Class<T> filterClass);
     void emit(Object event);
     void complete();
     void clear();
     TePolicy tePolicy();
-
-    /**
-     *
-     */
-    interface ProxyType {
-    }
 
     enum TePolicy {
         PASS,WRAP,SKIP
