@@ -60,7 +60,7 @@ dependencies {
     compile project(':shield:shield-maker-rxjava1')
     compile project(':shield:shield-annotations')
     annotationProcessor project(':shield:shield-processor-rxjava1')
-    annotationProcessor project(':shield:shield-base-processor')
+    //annotationProcessor project(':shield:shield-base-processor')
 
 
     compile 'com.github.pwittchen:reactivesensors:0.1.2'
