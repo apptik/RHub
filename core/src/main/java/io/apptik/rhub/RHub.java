@@ -4,12 +4,13 @@ import io.apptik.roxy.Removable;
 import io.apptik.roxy.Roxy;
 
 /**
- * Reactive Hub connecting Publishers and Subscribers so that Subscribers can receive
+ * Reactive Hub is a multi-receiver and a multi-producer connecting Publishers and Subscribers so
+ * that Subscribers can receive
  * events without knowledge of which Publishers, if any, there are,
- * while maintaining clear connection between them.
+ * while maintaining easily identifiable connection between them.
  * <p>
- * The Hub is fairly simple it just accepts Publishers or single events and merges them depending
- * on the type of Proxy then returns the resulting Publisher.
+ * The Hub is fairly simple, it just accepts Publishers or single events and merges them depending
+ * on the type of Proxy then returns the resulting Publisher identified by a Tag(topic).
  * <p>
  * The Proxy is a Concept responsible for multiplex/multicast the streams of events.
  * Internally they might be implemented by Processors or Subjects or simple Observables

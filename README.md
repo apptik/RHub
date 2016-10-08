@@ -40,7 +40,7 @@ Snapshots of the development versions are available in [Sonatype's `snapshots` r
 ## Motivation
 
 *   Simplified combination of Pub/Sub (EventBus) pattern and Reactive Programming
-*   Most EventBus implementations support only non Rx input/output of events
+*   Most 'Rx-EventBus' implementations support only non Rx input/output of events
 *   EventBus connections with producers and event consumers are not that evident thus making the code more difficult to read, reason and debug 
 
 

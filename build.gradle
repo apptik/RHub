@@ -33,7 +33,7 @@ ext {
     reactor = "io.projectreactor:reactor-core:3.0.2.RELEASE"
     rxjava1 = 'io.reactivex:rxjava:1.2.1'
     rxjava2 = 'io.reactivex.rxjava2:rxjava:2.0.0-RC3'
-    rxrelay = 'com.jakewharton.rxrelay:rxrelay:1.1.0'
+    rxrelay = 'com.jakewharton.rxrelay:rxrelay:1.2.0'
     junit = 'junit:junit:4.12'
     mockito = 'org.mockito:mockito-core:2.0.99-beta'
     assertjCore2 = 'org.assertj:assertj-core:2.5.0'
