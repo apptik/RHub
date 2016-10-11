@@ -8,7 +8,7 @@ description: > # this means to ignore newlines until "baseurl:"
   It is ideal for centralizing cross-cutting activities
   like UI updates, logging, alerting, monitoring, security, etc.
 baseurl: "/RHub"
-url: "http://apptik.io"
+url: "https://apptik.github.io"
 twitter_username: apptikProj
 github_username:  apptik
 
