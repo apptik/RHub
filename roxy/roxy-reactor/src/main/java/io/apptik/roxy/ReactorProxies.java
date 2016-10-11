@@ -9,6 +9,9 @@ import reactor.core.publisher.WorkQueueProcessor;
 import static io.apptik.roxy.Roxy.TePolicy.PASS;
 import static io.apptik.roxy.Roxy.TePolicy.WRAP;
 
+/**
+ * Helper Roxy factories for common proxies based on Reactor-Core
+ */
 final public class ReactorProxies {
     private ReactorProxies() {
     }

@@ -6,6 +6,9 @@ import org.reactivestreams.Processor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxProcessor;
 
+/**
+ * Roxy implementation using Reactor-Core
+ */
 public class ReactorProcProxy extends RSProcProxy<Flux> {
 
     public ReactorProcProxy(FluxProcessor proc, TePolicy tePolicy) {

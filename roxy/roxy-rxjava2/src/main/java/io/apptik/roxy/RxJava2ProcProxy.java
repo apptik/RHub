@@ -7,6 +7,9 @@ import io.reactivex.Flowable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.processors.FlowableProcessor;
 
+/**
+ * Roxy implementation using RxJava 2.x {@link Processor}
+ */
 public class RxJava2ProcProxy extends RSProcProxy<Flowable> {
 
     public RxJava2ProcProxy(FlowableProcessor proc, TePolicy tePolicy) {

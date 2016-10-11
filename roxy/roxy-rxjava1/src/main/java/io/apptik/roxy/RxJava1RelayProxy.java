@@ -11,7 +11,9 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
 
-
+/**
+ * Roxy implementation using RxRelay
+ */
 public class RxJava1RelayProxy implements Roxy<Observable> {
 
     private final Relay relay;

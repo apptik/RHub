@@ -12,6 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import static io.apptik.roxy.Roxy.TePolicy.PASS;
 import static io.apptik.roxy.Roxy.TePolicy.WRAP;
 
+/**
+ * Roxy implementation using Reactive Streams
+ */
 public abstract class RSProcProxy<P extends Publisher> implements Roxy<P> {
 
     private final Processor proc;

@@ -1,5 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
+apply plugin: 'java'
 buildscript {
     repositories {
         maven {
@@ -13,6 +13,7 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+        classpath 'com.netflix.nebula:gradle-aggregate-javadocs-plugin:2.2.+'
     }
 }
 
@@ -22,11 +23,9 @@ allprojects {
     }
 }
 
-
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
+//task clean(type: Delete) {
+//    delete rootProject.buildDir
+//}
 
 ext {
     rs = "org.reactivestreams:reactive-streams:1.0.0"
@@ -50,4 +49,41 @@ ext {
     jmhCore = 'org.openjdk.jmh:jmh-core:1.13'
     jmhGen = 'org.openjdk.jmh:jmh-generator-annprocess:1.13'
 
+}
+
+task docs(type: Javadoc) {
+    exclude "**/bindup/**"
+    exclude "**/example/**"
+    destinationDir = file("$buildDir/docs/all")
+    options {
+        links('http://docs.oracle.com/javase/7/docs/api/',
+                'http://docs.oracle.com/javase/8/docs/api/',
+                'http://www.reactive-streams.org/reactive-streams-1.0.0-javadoc',
+                'http://reactivex.io/RxJava/1.x/javadoc/',
+                'http://jakewharton.github.io/RxRelay/',
+                'http://reactivex.io/RxJava/2.x/javadoc/',
+                'https://projectreactor.io/core/docs/api/')
+    }
+
+    if (JavaVersion.current().isJava8Compatible()) {
+        //options.addStringOption('Xdoclint:none', '-quiet')
+    }
+}
+
+subprojects {
+    afterEvaluate {
+        if (plugins.hasPlugin(JavaPlugin)) {
+            // configuration here
+            rootProject.tasks.docs {
+                source += files(sourceSets.collect { srcSet -> sourceSets.main.allJava })
+                classpath += files(sourceSets*.compileClasspath)
+            }
+
+        }
+    }
+}
+
+task publishJavaDocAll(type: Copy, dependsOn: docs) {
+    from file("$buildDir/docs/all")
+    into(rootProject.projectDir.absolutePath + '/docs/javadoc/' + VERSION_NAME + '/all')
 }

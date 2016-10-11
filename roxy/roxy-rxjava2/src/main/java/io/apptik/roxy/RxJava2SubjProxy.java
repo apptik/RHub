@@ -13,6 +13,9 @@ import io.reactivex.subjects.Subject;
 import static io.apptik.roxy.Roxy.TePolicy.PASS;
 import static io.apptik.roxy.Roxy.TePolicy.WRAP;
 
+/**
+ * Roxy implementation using RxJava 2.x {@link Subject}
+ */
 public class RxJava2SubjProxy implements Roxy<Observable> {
 
     private final Subject subj;

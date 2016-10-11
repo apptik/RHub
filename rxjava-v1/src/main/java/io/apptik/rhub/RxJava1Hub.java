@@ -5,17 +5,7 @@ import rx.Observable;
 
 
 /**
- * RxJava based Hub connecting Observables and Observers so that Observers can receive events
- * without knowledge of which Observables, if any, there are,
- * while maintaining clear connection between them.
- * <p>
- * The Hub is fairly simple it just accepts Observables or single events and merges them depending
- * on the type of Proxy then returns the resulting Observable.
- * <p>
- * The Proxy is a Concept responsible for multiplex/multicast the streams of events.
- * Internally they might be implemented by Subjects or simple Observables
- *
- * @see AbstractRxJava1Hub
+ * Reactive Hub compatible with RxJava 1.x {@link Observable}
  */
 public interface RxJava1Hub extends RHub<Observable> {
 

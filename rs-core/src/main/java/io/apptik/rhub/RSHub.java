@@ -6,15 +6,18 @@ import org.reactivestreams.Publisher;
 import io.apptik.roxy.Removable;
 
 /**
- * Reactive Streams based Hub connecting Publishers and Subscribers so that Subscribers can receive
- * events without knowledge of which Publishers, if any, there are,
- * while maintaining clear connection between them.
+ * Reactive Hub compatible with Reactive Streams {@link Publisher} Interface.
+ * This Hub accepts and returns {@link Publisher} as upstream sources and merged outputs.
  * <p>
- * The Hub is fairly simple it just accepts Publishers or single events and merges them depending
- * on the type of RSProcProxy then returns the resulting Publisher.
+ * This interface overrides {@link #addUpstream(Object, Publisher)} and
+ * {@link #removeUpstream(Object, Publisher)} in order to remove type parameters as the Hub does
+ * not care
+ * of the input Sources as lon as they are compatible with the Reactive Streams {@link Publisher}
+ * interface.
  * <p>
- * The RSProcProxy is a Concept responsible for multiplex/multicast the streams of events.
- * Internally they might be implemented by Processors or Subjects or simple Observables
+ * Implementations however can override {@link #getPub(Object)} and
+ * {@link #getPub(Object, Class)} to return specific implementations of the {@link Publisher}
+ * interface depending on the Reactive Framework used.
  */
 public interface RSHub<P extends Publisher> extends RHub<P> {
 

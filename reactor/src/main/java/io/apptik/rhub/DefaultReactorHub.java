@@ -1,6 +1,11 @@
 package io.apptik.rhub;
 
 
+/**
+ * Default Reactor-Core implementation of {@link RSHub}
+ * <p>
+ * Default hub proxy is implemented by {@link ReactorProxyType#SafeBehaviorProcessorProxy}
+ */
 public class DefaultReactorHub extends AbstractReactorHub {
 
     @Override

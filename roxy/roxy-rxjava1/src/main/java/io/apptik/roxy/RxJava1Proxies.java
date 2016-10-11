@@ -8,6 +8,9 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import rx.subjects.ReplaySubject;
 
+/**
+ * Helper Roxy factories for common proxies based on RxJava 1.x
+ */
 public class RxJava1Proxies {
 
     private RxJava1Proxies() {

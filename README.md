@@ -1,6 +1,6 @@
 # RHub - WIP
 
-[JavaDocs](http://apptik.github.io/rxHub/)
+[JavaDocs](http://apptik.github.io/RHub/)
 
 [![Build Status](https://travis-ci.org/apptik/RHub.svg?branch=master)](https://travis-ci.org/apptik/RHub)
 [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rxhub/core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rxhub/core)
@@ -8,9 +8,9 @@
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-rxHub-green.svg?style=true)](https://android-arsenal.com/details/1/4260)
 
 
-RxJava based Observables Hub connecting Observables and Observers so that 
-Observers can subscribe to an Event Source without knowledge of which 
-Observables, if any, there are, while maintaining clear connection between them.
+Reactive Hub is a collection of multi-receiver and multi-producer Proxies connecting Publishers 
+and Subscribers so that Subscribers can receive events without knowledge of which Publishers, if 
+any, there are, while maintaining easily identifiable connection between them.
 
 It is ideal for centralizing cross-cutting activities like 
 UI updates, logging, alerting, monitoring, security, etc.
@@ -110,5 +110,5 @@ Backpressure strategy interface could be used and applied to nodes in the hub
 [mvn]: http://search.maven.org/#search|ga|1|io.apptik.rhub.core
  [release]: https://oss.sonatype.org/content/repositories/releases/io/apptik/rxhub/core
  [snap]: https://oss.sonatype.org/content/repositories/snapshots/io/apptik/rxhub/core
- [features]: https://github.com/apptik/rxHub/tree/master/rxjava-v1/src/test/resources/features
+ [features]: https://github.com/apptik/RHub/tree/master/rxjava-v1/src/test/resources/features
  

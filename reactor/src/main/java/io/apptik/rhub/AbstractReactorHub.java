@@ -3,6 +3,9 @@ package io.apptik.rhub;
 
 import reactor.core.publisher.Flux;
 
+/**
+ * Base Reactor-Core implementation of {@link RSHub}
+ */
 public abstract class AbstractReactorHub extends AbstractRSHub<Flux> {
 
     @Override

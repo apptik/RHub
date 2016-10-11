@@ -10,7 +10,9 @@ import rx.Subscription;
 import rx.functions.Func1;
 import rx.subjects.Subject;
 
-
+/**
+ * Roxy implementation using RxJava 1.x
+ */
 public class RxJava1SubjProxy implements Roxy<Observable> {
 
     private final Subject subj;
