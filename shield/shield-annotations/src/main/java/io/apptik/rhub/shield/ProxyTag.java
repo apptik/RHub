@@ -8,8 +8,8 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 
 /**
  * Bind a method to either:
- * <br>Node input "addProvider"
- * <br>or Node output "getNode"
+ * <br>Proxy input "addUpstream"
+ * <br>or Proxy output "getPub"
  */
 @Retention(CLASS) @Target(METHOD)
 public @interface ProxyTag {

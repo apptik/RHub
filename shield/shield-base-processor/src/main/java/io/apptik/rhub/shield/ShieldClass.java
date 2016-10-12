@@ -18,7 +18,7 @@ import static javax.lang.model.element.Modifier.FINAL;
 import static javax.lang.model.element.Modifier.PRIVATE;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
-public class ShieldClass<H extends RHub> {
+class ShieldClass<H extends RHub> {
 
 
     private final ClassName shieldImplName;

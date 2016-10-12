@@ -30,6 +30,14 @@ import javax.tools.Diagnostic;
 import io.apptik.rhub.RHub;
 import io.apptik.roxy.Removable;
 
+/**
+ * Base processor to generate Shield implementations for specific Hub.
+ * <br>
+ * Normally one will not use this directly but rather
+ * more specific helpers based on some concrete Reactive Framework.
+ * @param <H> The specific type of the Hub
+ * @param <P> The specific type of the Publishers the Hub accepts and returns
+ */
 public abstract class ShieldProcessor<H extends RHub<? extends P>, P> extends
         AbstractProcessor {
 
@@ -88,7 +96,7 @@ public abstract class ShieldProcessor<H extends RHub<? extends P>, P> extends
     }
 
     @Override
-    public boolean process(Set<? extends TypeElement> set, RoundEnvironment env) {
+    public final boolean process(Set<? extends TypeElement> set, RoundEnvironment env) {
         Map<TypeElement, ShieldClass> shields = findAndParseNodes(env);
         for (Map.Entry<TypeElement, ShieldClass> entry : shields.entrySet()) {
             TypeElement typeElement = entry.getKey();

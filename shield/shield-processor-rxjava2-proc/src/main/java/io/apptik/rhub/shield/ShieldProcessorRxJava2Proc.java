@@ -13,8 +13,12 @@ import io.apptik.rhub.AbstractRxJava2PubHub;
 import io.reactivex.Flowable;
 
 
+/**
+ * Annotation Processor that knows about Reactive Streams and RxJava 2.x {@link Flowable} types
+ */
 @AutoService(Processor.class)
-public class ShieldProcessorRxJava2Proc extends ShieldProcessor<AbstractRxJava2PubHub, Publisher> {
+public final class ShieldProcessorRxJava2Proc extends ShieldProcessor<AbstractRxJava2PubHub,
+        Publisher> {
 
     @Override
     Class<AbstractRxJava2PubHub> hubClass() {

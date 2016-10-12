@@ -12,8 +12,12 @@ import javax.annotation.processing.Processor;
 import io.apptik.rhub.AbstractReactorHub;
 import reactor.core.publisher.Flux;
 
+
+/**
+ * Annotation Processor that knows about Reactive Streams and Reactor-Core types
+ */
 @AutoService(Processor.class)
-public class ShieldProcessorReactor extends ShieldProcessor<AbstractReactorHub, Publisher> {
+public final class ShieldProcessorReactor extends ShieldProcessor<AbstractReactorHub, Publisher> {
 
     @Override
     Class<AbstractReactorHub> hubClass() {

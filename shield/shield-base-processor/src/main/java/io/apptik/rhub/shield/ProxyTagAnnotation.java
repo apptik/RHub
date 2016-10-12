@@ -7,7 +7,7 @@ import com.squareup.javapoet.TypeName;
 
 import io.apptik.roxy.Removable;
 
-public class ProxyTagAnnotation {
+class ProxyTagAnnotation {
 
     final String nodeTag;
     final TypeName returnType;

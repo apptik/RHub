@@ -10,8 +10,11 @@ import javax.annotation.processing.Processor;
 import io.apptik.rhub.RxJava1Hub;
 import rx.Observable;
 
+/**
+ * Annotation Processor that knows about RxJava 1.x types
+ */
 @AutoService(Processor.class)
-public class ShieldProcessorRxJava1 extends ShieldProcessor<RxJava1Hub, Observable> {
+public final class ShieldProcessorRxJava1 extends ShieldProcessor<RxJava1Hub, Observable> {
 
     @Override
     Class<RxJava1Hub> hubClass() {

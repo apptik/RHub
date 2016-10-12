@@ -11,8 +11,11 @@ import io.apptik.rhub.RxJava2ObsHub;
 import io.reactivex.Observable;
 
 
+/**
+ * Annotation Processor that knows about RxJava 2.x {@link Observable} types
+ */
 @AutoService(Processor.class)
-public class ShieldProcessorRxJava2Obs extends ShieldProcessor<RxJava2ObsHub, Observable> {
+public final class ShieldProcessorRxJava2Obs extends ShieldProcessor<RxJava2ObsHub, Observable> {
 
     @Override
     Class<RxJava2ObsHub> hubClass() {
