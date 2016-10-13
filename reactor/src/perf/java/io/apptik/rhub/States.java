@@ -13,7 +13,7 @@ import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
 
-import static io.apptik.rhub.ReactorProxyTypes.ReactorProxyType.EmitterProcessorProxy;
+import static io.apptik.rhub.ReactorProxyType.EmitterProcessorProxy;
 
 public class States {
 

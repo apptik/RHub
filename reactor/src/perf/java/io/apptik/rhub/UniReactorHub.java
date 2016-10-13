@@ -15,11 +15,6 @@ public class UniReactorHub extends AbstractReactorHub {
     }
 
     @Override
-    public boolean isProxyThreadsafe(Object tag) {
-        return false;
-    }
-
-    @Override
     public boolean canTriggerEmit(Object tag) {
         return true;
     }

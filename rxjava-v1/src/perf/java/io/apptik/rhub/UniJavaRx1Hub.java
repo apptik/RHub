@@ -15,11 +15,6 @@ public class UniJavaRx1Hub extends AbstractRxJava1Hub {
     }
 
     @Override
-    public boolean isProxyThreadsafe(Object tag) {
-        return false;
-    }
-
-    @Override
     public boolean canTriggerEmit(Object tag) {
         return true;
     }
