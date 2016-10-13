@@ -1,5 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'nebula-aggregate-javadocs'
 
 compileJava {
     sourceCompatibility = 1.7
