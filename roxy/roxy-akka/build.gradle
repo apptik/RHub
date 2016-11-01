@@ -8,4 +8,4 @@ dependencies {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-//apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push.gradle'
+apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push.gradle'

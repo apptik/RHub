@@ -56,66 +56,66 @@ Check also the [Gherkin Features][features]
 ## Modules
 * [core][core] - core module containing the very basic interfaces of RHub
 [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/core)
-[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:core/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:core/0.1.0-alpha1)
+[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:core/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:core/0.1.0)
 * [rxjava-v1][rxjava-v1] - RxJava 1.x implementation of RHub
 [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/rxjava-v1.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/rxjava-v1)
-[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:rxjava-v1/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:rxjava-v1/0.1.0-alpha1)
+[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:rxjava-v1/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:rxjava-v1/0.1.0)
 * [rxjava-v2][rxjava-v2] - RxJava 2.x implementation of RHub
 [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/rxjava-v2.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/rxjava-v2)
-[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:rxjava-v2/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:rxjava-v2/0.1.0-alpha1)
+[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:rxjava-v2/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:rxjava-v2/0.1.0)
 * [reactor][reactor] - Reactor Core implementation of RHub
 [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/reactor.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/reactor)
-[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:reactor/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:reactor/0.1.0-alpha1)
+[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:reactor/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:reactor/0.1.0)
 * [rs-core][rs-core] - Reactive Streams generic implementation of RHub
 [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/rs-core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/rs-core)
-[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:rs-core/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:rs-core/0.1.0-alpha1)
+[![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:rs-core/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:rs-core/0.1.0)
 * Roxy (Reactive Proxy) - single fan-in/fan-out unit in RHub
 	* [roxy-core][roxy-core] - core Roxy module containing the very basic interfaces
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/roxy-core.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/roxy-core)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:roxy-core/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:roxy-core/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:roxy-core/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:roxy-core/0.1.0)
     * [roxy-rs][roxy-rs] - Reactive Strems generic implementation of Roxy
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/roxy-rs.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/roxy-rs)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:roxy-rs/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:roxy-rs/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:roxy-rs/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:roxy-rs/0.1.0)
     * [roxy-rxjava1][roxy-rxjava1] - RxJava 1.x implementation of Roxy
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/roxy-rxjava1.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/roxy-rxjava1)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:roxy-rxjava1/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:roxy-rxjava1/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:roxy-rxjava1/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:roxy-rxjava1/0.1.0)
     * [roxy-rxjava2][roxy-rxjava2] - RxJava 2.x implementation of Roxy
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/roxy-rxjava2.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/roxy-rxjava2)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:roxy-rxjava2/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:roxy-rxjava2/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:roxy-rxjava2/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:roxy-rxjava2/0.1.0)
     * [roxy-reactor][roxy-reactor] - Reactor Core implementation of Roxy
     [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/roxy-reactor.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/roxy-reactor)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:roxy-reactor/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:roxy-reactor/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:roxy-reactor/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:roxy-reactor/0.1.0)
 * Shield - Type-safe handy layer on top of RHub
 	* [shield-annotations][shield-annotations] - Common Shield Annotations
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/shield-annotations.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/shield-annotations)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-annotations/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-annotations/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-annotations/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-annotations/0.1.0)
 	* [shield-base-maker][shield-base-maker] - base module for Shield Maker responsible to create instances for a given Shield interface
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/shield-base-maker.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/shield-base-maker)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-base-maker/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-base-maker/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-base-maker/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-base-maker/0.1.0)
     * [shield-maker-rs][shield-maker-rs] - Shield Maker module for Reactive Streams Hubs
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/shield-maker-rs.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/shield-maker-rs)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rs/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rs/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rs/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rs/0.1.0)
     * [shield-maker-rxjava1][shield-maker-rxjava1] - Shield Maker module for RxJava 1.x Hubs
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/shield-maker-rxjava1.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/shield-maker-rxjava1)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rxjava1/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rxjava1/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rxjava1/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rxjava1/0.1.0)
     * [shield-maker-rxjava2][shield-maker-rxjava2] - Shield Maker module for RxJava 2.x Hubs
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/shield-maker-rxjava2.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/shield-maker-rxjava2)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rxjava2/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rxjava2/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rxjava2/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-maker-rxjava2/0.1.0)
     * [shield-base-processor][shield-base-processor] - base Annotation Processor module
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/shield-base-processor.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/shield-base-processor)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-base-processor/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-base-processor/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-base-processor/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-base-processor/0.1.0)
     * [shield-processor-rxjava1][shield-processor-rxjava1] - Annotation Processor module for RxJava1
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/shield-processor-rxjava1.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/shield-processor-rxjava1)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava1/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava1/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava1/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava1/0.1.0)
     * [shield-processor-rxjava2-subj][shield-processor-rxjava2-subj] - Annotation Processor module for RxJava2 Subject/Observable types
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/shield-processor-rxjava2-subj.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/shield-processor-rxjava2-subj)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava2-subj/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava2-subj/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava2-subj/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava2-subj/0.1.0)
     * [shield-processor-rxjava2-proc][shield-processor-rxjava2-proc] - Annotation Processor module for RxJava2 Processor/Flowable types
 	[![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/shield-processor-rxjava2-proc.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/shield-processor-rxjava2-proc)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava2-proc/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava2-proc/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava2-proc/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-rxjava2-proc/0.1.0)
     * [shield-processor-reactor][shield-processor-reactor] - Annotation Processor module for Reactor Core
     [![Maven Central](https://img.shields.io/maven-central/v/io.apptik.rhub/shield-processor-reactor.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.apptik.rhub/shield-processor-reactor)
-    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-reactor/0.1.0-alpha1/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-reactor/0.1.0-alpha1)
+    [![VersionEye](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-reactor/0.1.0/badge.svg)](https://www.versioneye.com/java/io.apptik.rhub:shield-processor-reactor/0.1.0)
 
 
 ## Download
@@ -125,12 +125,12 @@ Find [the latest JARs][mvn] or grab via Maven:
 <dependency>
   <groupId>io.apptik.rhub</groupId>
   <artifactId>XXX</artifactId>
-  <version>0.1.0-alpha1</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'io.apptik.rhub:XXX:0.1.0-alpha1'
+compile 'io.apptik.rhub:XXX:0.1.0'
 ```
 
 Downloads of the released versions are available in [Sonatype's `releases` repository][release].
