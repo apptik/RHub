@@ -128,10 +128,11 @@ public abstract class RSProcProxy<P extends Publisher> implements Roxy<P> {
 
     /**
      * Hides processor identity
+     *
      * @param processor
      * @return
      */
-    abstract P hide(Processor processor);
+    protected abstract P hide(Processor processor);
 
-    abstract <T> P filter(Processor processor, Class<T> filterClass);
+    protected abstract <T> P filter(Processor processor, Class<T> filterClass);
 }

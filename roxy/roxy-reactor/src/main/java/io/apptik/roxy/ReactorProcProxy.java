@@ -16,13 +16,13 @@ public class ReactorProcProxy extends RSProcProxy<Flux> {
     }
 
     @Override
-    Flux hide(Processor processor) {
+    protected Flux hide(Processor processor) {
         return ((Flux) processor).hide();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    <T> Flux<T> filter(Processor processor, final Class<T> filterClass) {
+    protected <T> Flux<T> filter(Processor processor, final Class<T> filterClass) {
         return ((Flux) processor).filter(o -> filterClass.isAssignableFrom(o.getClass()));
     }
 

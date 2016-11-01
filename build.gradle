@@ -8,7 +8,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.2.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -29,6 +29,7 @@ allprojects {
 ext {
     rs = "org.reactivestreams:reactive-streams:1.0.0"
     reactor = "io.projectreactor:reactor-core:3.0.2.RELEASE"
+    akkaStream = "com.typesafe.akka:akka-stream_2.11:2.4.11"
     rxjava1 = 'io.reactivex:rxjava:1.2.1'
     rxjava2 = 'io.reactivex.rxjava2:rxjava:2.0.0-RC4'
     rxrelay = 'com.jakewharton.rxrelay:rxrelay:1.2.0'

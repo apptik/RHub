@@ -17,13 +17,13 @@ public class RxJava2ProcProxy extends RSProcProxy<Flowable> {
     }
 
     @Override
-    Flowable hide(Processor processor) {
+    protected Flowable hide(Processor processor) {
         return ((Flowable) processor).hide();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    <T> Flowable<T> filter(Processor processor, final Class<T> filterClass) {
+    protected <T> Flowable<T> filter(Processor processor, final Class<T> filterClass) {
         return ((Flowable) processor).filter(new Predicate() {
             @Override
             public boolean test(Object o) {
