@@ -31,7 +31,7 @@ ext {
     reactor = "io.projectreactor:reactor-core:3.0.2.RELEASE"
     akkaStream = "com.typesafe.akka:akka-stream_2.11:2.4.11"
     rxjava1 = 'io.reactivex:rxjava:1.2.1'
-    rxjava2 = 'io.reactivex.rxjava2:rxjava:2.0.0-RC4'
+    rxjava2 = 'io.reactivex.rxjava2:rxjava:2.0.0'
     rxrelay = 'com.jakewharton.rxrelay:rxrelay:1.2.0'
     junit = 'junit:junit:4.12'
     mockito = 'org.mockito:mockito-core:2.0.99-beta'
@@ -44,7 +44,7 @@ ext {
     javapoet = 'com.squareup:javapoet:1.7.0'
     javaparser = 'com.github.javaparser:javaparser-core:2.4.0'
     autoservice = 'com.google.auto.service:auto-service:1.0-rc2'
-    autocommon = 'com.google.auto:auto-common:0.6'
+    autocommon = 'com.google.auto:auto-common:0.8'
 
     jmhCore = 'org.openjdk.jmh:jmh-core:1.13'
     jmhGen = 'org.openjdk.jmh:jmh-generator-annprocess:1.13'
