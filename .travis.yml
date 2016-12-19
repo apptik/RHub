@@ -3,15 +3,8 @@ language: android
 jdk:
   - oraclejdk8
 
-android:
-  components:
-    - tools
-    - build-tools-24.0.3
-    - android-24
-    - extra-android-m2repository
-
 script:
-  - ./gradlew clean ":$MODULE:build"
+  - ./gradlew ":$MODULE:build"
 
 after_success:
   - .buildscript/deploy_snapshot.sh
