@@ -22,7 +22,7 @@ public class Sensors {
         return startSensor(context, Sensor.TYPE_LIGHT, "LIGHT");
     }
 
-    public static Observable<String> startSensor(Context context, int sensorType, String type) {
+     private static Observable<String> startSensor(Context context, int sensorType, String type) {
        return new ReactiveSensors(context).observeSensor(sensorType)
                 .subscribeOn(Schedulers.computation())
                 .filter(ReactiveSensorFilter.filterSensorChanged())

@@ -36,6 +36,7 @@ public interface Shield {
     class Inst {
         private static Shield inst;
         private static RxJava1Hub hub;
+
         public static Shield get() {
             if(inst==null) {
                 hub = new DefaultRxJava1Hub() {
