@@ -1,7 +1,6 @@
 include ':example-java',
         ':roxy:roxy-akka',
         ':roxy:example-roxy-java',
-        ':example-app',
         ':roxy:roxy-core',
         ':roxy:roxy-rs',
         ':roxy:roxy-rxjava1',
@@ -24,3 +23,6 @@ include ':example-java',
         ':shield:shield-processor-reactor',
         ':shield:shield-maker-rs'
 
+if (System.getenv()['ANDROID_HOME']) {
+    include ':example-app'
+}

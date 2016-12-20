@@ -4,6 +4,7 @@ jdk:
   - oraclejdk8
 
 install: echo "skip 'gradle assemble' step"
+
 script:
   - ./gradlew ":$MODULE:build"
 
