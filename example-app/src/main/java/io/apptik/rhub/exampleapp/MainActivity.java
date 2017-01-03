@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         shield = Shield.Inst.get();
         TextView tv1 = (TextView) findViewById(R.id.txt1);
         compositeSubscription.add(shield.sensorData().subscribe(new Comp1()));
