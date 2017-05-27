@@ -8,7 +8,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0-beta3'
+        classpath 'com.android.tools.build:gradle:2.3.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -30,10 +30,10 @@ allprojects {
 
 ext {
     rs = "org.reactivestreams:reactive-streams:1.0.0"
-    reactor = "io.projectreactor:reactor-core:3.0.4.RELEASE"
-    akkaStream = "com.typesafe.akka:akka-stream_2.12:2.4.14"
-    rxjava1 = 'io.reactivex:rxjava:1.2.5'
-    rxjava2 = 'io.reactivex.rxjava2:rxjava:2.0.5'
+    reactor = "io.projectreactor:reactor-core:3.0.7.RELEASE"
+    akkaStream = "com.typesafe.akka:akka-stream_2.12:2.5.2"
+    rxjava1 = 'io.reactivex:rxjava:1.3.0'
+    rxjava2 = 'io.reactivex.rxjava2:rxjava:2.1.0'
     rxrelay = 'com.jakewharton.rxrelay:rxrelay:1.2.0'
     junit = 'junit:junit:4.12'
     mockito = 'org.mockito:mockito-core:2.4.0'
