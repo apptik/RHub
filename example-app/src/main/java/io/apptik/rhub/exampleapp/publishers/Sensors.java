@@ -19,7 +19,7 @@ public class Sensors {
     }
 
     public static Observable<String> startLight(Context context) {
-        return startSensor(context, Sensor.TYPE_LIGHT, "LIGHT");
+        return startSensor(context, Sensor.TYPE_GRAVITY, "GRAVITY");
     }
 
      private static Observable<String> startSensor(Context context, int sensorType, String type) {

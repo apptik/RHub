@@ -32,8 +32,8 @@
             android:id="@+id/btnLight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textOn="Light ON"
-            android:textOff="Light OFF"
+            android:textOn="Gravity ON"
+            android:textOff="Gravity OFF"
         />
     </LinearLayout>
 

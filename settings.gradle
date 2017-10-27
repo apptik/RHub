@@ -23,6 +23,7 @@ include ':example-java',
         ':shield:shield-processor-reactor',
         ':shield:shield-maker-rs'
 
-if (System.getenv()['ANDROID_HOME']) {
+if (System.getenv()['ANDROID_HOME'] != null) {
+    println System.getenv()['ANDROID_HOME']
     include ':example-app'
 }
