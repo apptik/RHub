@@ -80,7 +80,7 @@ public class RxHubTest {
     }
 
     @Then("^Consumer\"([^\"]*)\" should receive Event\"([^\"]*)\"$")
-    public void consumer_should_receive_Event(String consumer, String event) throws Throwable {
+    public void consumer_should_receive_Event(final String consumer,final String event) throws Throwable {
         helper.consumers.get(consumer).await(Duration.ofSeconds(3),
                 "consumer " + consumer + " should_receive_Event: " + event,
                 new BooleanSupplier() {
@@ -172,13 +172,13 @@ public class RxHubTest {
         public String proxyType;
         //use subjects  so we can easily emit events when needed
         public Map<String, DirectProcessor> publishers = new HashMap<>();
-        public Map<String, TestSubscriber> consumers = new HashMap<>();
+        public Map<String, AssertSubscriber> consumers = new HashMap<>();
         public Throwable error;
 
-        public static TestSubscriber getDummyConsumer() {
+        public static AssertSubscriber getDummyConsumer() {
             System.err.println("GOT: getDummyConsumer");
             //return new DummyConsumer();
-            return new TestSubscriber();
+            return new AssertSubscriber();
         }
 
         public static RSHub.ProxyType getProxyType(String proxyType) {

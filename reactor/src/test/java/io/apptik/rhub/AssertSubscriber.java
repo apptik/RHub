@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016 Pivotal Software Inc, All Rights Reserved.
+ * Copyright (c) 2011-2017 Pivotal Software Inc, All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  */
 
 package io.apptik.rhub;
-
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -36,41 +32,37 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+import reactor.core.CoreSubscriber;
 import reactor.core.Fuseable;
-import reactor.core.Receiver;
-import reactor.core.Trackable;
 import reactor.core.publisher.Operators;
 
 /**
  * A Subscriber implementation that hosts assertion tests for its state and allows
  * asynchronous cancellation and requesting.
- * <p>
- * <p> To create a new instance of {@link TestSubscriber}, you have the choice between
+ *
+ * <p> To create a new instance of {@link AssertSubscriber}, you have the choice between
  * these static methods:
  * <ul>
- * <li>{@link TestSubscriber#subscribe(Publisher)}: create a new {@link TestSubscriber},
- * subscribe to it with the specified {@link Publisher} and requests an unbounded
- * number of elements.</li>
- * <li>{@link TestSubscriber#subscribe(Publisher, long)}: create a new {@link TestSubscriber},
- * subscribe to it with the specified {@link Publisher} and requests {@code n} elements
- * (can be 0 if you want no initial demand).
- * <li>{@link TestSubscriber#create()}: create a new {@link TestSubscriber} and requests
- * an unbounded number of elements.</li>
- * <li>{@link TestSubscriber#create(long)}: create a new {@link TestSubscriber} and
- * requests {@code n} elements (can be 0 if you want no initial demand).
+ *     <li>{@link AssertSubscriber#create()}: create a new {@link AssertSubscriber} and requests
+ *     an unbounded number of elements.</li>
+ *     <li>{@link AssertSubscriber#create(long)}: create a new {@link AssertSubscriber} and
+ *     requests {@code n} elements (can be 0 if you want no initial demand).
  * </ul>
- * <p>
+ *
  * <p>If you are testing asynchronous publishers, don't forget to use one of the
  * {@code await*()} methods to wait for the data to assert.
- * <p>
+ *
  * <p> You can extend this class but only the onNext, onError and onComplete can be overridden.
  * You can call {@link #request(long)} and {@link #cancel()} from any thread or from within
  * the overridable methods but you should avoid calling the assertXXX methods asynchronously.
- * <p>
+ *
  * <p>Usage:
  * <pre>
  * {@code
- * TestSubscriber
+ * AssertSubscriber
  *   .subscribe(publisher)
  *   .await()
  *   .assertValues("ABC", "DEF");
@@ -78,14 +70,15 @@ import reactor.core.publisher.Operators;
  * </pre>
  *
  * @param <T> the value type.
+ *
  * @author Sebastien Deleuze
  * @author David Karnok
  * @author Anatoly Kadyshev
  * @author Stephane Maldini
  * @author Brian Clozel
  */
-public class TestSubscriber<T>
-        implements Subscriber<T>, Subscription, Trackable, Receiver {
+public class AssertSubscriber<T>
+        implements CoreSubscriber<T>, Subscription {
 
     /**
      * Default timeout for waiting next values to be received
@@ -93,17 +86,17 @@ public class TestSubscriber<T>
     public static final Duration DEFAULT_VALUES_TIMEOUT = Duration.ofSeconds(3);
 
     @SuppressWarnings("rawtypes")
-    private static final AtomicLongFieldUpdater<TestSubscriber> REQUESTED =
-            AtomicLongFieldUpdater.newUpdater(TestSubscriber.class, "requested");
+    private static final AtomicLongFieldUpdater<AssertSubscriber> REQUESTED =
+            AtomicLongFieldUpdater.newUpdater(AssertSubscriber.class, "requested");
 
     @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<TestSubscriber, List> NEXT_VALUES =
-            AtomicReferenceFieldUpdater.newUpdater(TestSubscriber.class, List.class,
+    private static final AtomicReferenceFieldUpdater<AssertSubscriber, List> NEXT_VALUES =
+            AtomicReferenceFieldUpdater.newUpdater(AssertSubscriber.class, List.class,
                     "values");
 
     @SuppressWarnings("rawtypes")
-    private static final AtomicReferenceFieldUpdater<TestSubscriber, Subscription> S =
-            AtomicReferenceFieldUpdater.newUpdater(TestSubscriber.class, Subscription.class, "s");
+    private static final AtomicReferenceFieldUpdater<AssertSubscriber, Subscription> S =
+            AtomicReferenceFieldUpdater.newUpdater(AssertSubscriber.class, Subscription.class, "s");
 
 
     private final List<Throwable> errors = new LinkedList<>();
@@ -143,20 +136,19 @@ public class TestSubscriber<T>
 
     private boolean valuesStorage = true;
 
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 //	 Static methods
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 
     /**
      * Blocking method that waits until {@code conditionSupplier} returns true, or if it
      * does not before the specified timeout, throws an {@link AssertionError} with the
      * specified error message supplier.
      *
-     * @param timeout              the timeout duration
+     * @param timeout the timeout duration
      * @param errorMessageSupplier the error message supplier
-     * @param conditionSupplier    condition to break out of the wait loop
+     * @param conditionSupplier condition to break out of the wait loop
+     *
      * @throws AssertionError
      */
     public static void await(Duration timeout, Supplier<String> errorMessageSupplier,
@@ -174,7 +166,8 @@ public class TestSubscriber<T>
             }
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
@@ -188,9 +181,10 @@ public class TestSubscriber<T>
      * does not before the specified timeout, throw an {@link AssertionError} with the
      * specified error message.
      *
-     * @param timeout           the timeout duration
-     * @param errorMessage      the error message
+     * @param timeout the timeout duration
+     * @param errorMessage the error message
      * @param conditionSupplier condition to break out of the wait loop
+     *
      * @throws AssertionError
      */
     public static void await(Duration timeout,
@@ -205,98 +199,57 @@ public class TestSubscriber<T>
     }
 
     /**
-     * Create a new {@link TestSubscriber} that requests an unbounded number of elements.
-     * <p>Be sure at least a publisher has subscribed to it via
-     * {@link Publisher#subscribe(Subscriber)}
+     * Create a new {@link AssertSubscriber} that requests an unbounded number of elements.
+     * <p>Be sure at least a publisher has subscribed to it via {@link Publisher#subscribe(Subscriber)}
      * before use assert methods.
-     *
      * @param <T> the observed value type
-     * @return a fresh TestSubscriber instance
-     * @see #subscribe(Publisher)
+     * @return a fresh AssertSubscriber instance
      */
-    public static <T> TestSubscriber<T> create() {
-        return new TestSubscriber<>();
+    public static <T> AssertSubscriber<T> create() {
+        return new AssertSubscriber<>();
     }
 
     /**
-     * Create a new {@link TestSubscriber} that requests initially {@code n} elements. You
+     * Create a new {@link AssertSubscriber} that requests initially {@code n} elements. You
      * can then manage the demand with {@link Subscription#request(long)}.
-     * <p>Be sure at least a publisher has subscribed to it via
-     * {@link Publisher#subscribe(Subscriber)}
+     * <p>Be sure at least a publisher has subscribed to it via {@link Publisher#subscribe(Subscriber)}
      * before use assert methods.
-     *
-     * @param n   Number of elements to request (can be 0 if you want no initial demand).
+     * @param n Number of elements to request (can be 0 if you want no initial demand).
      * @param <T> the observed value type
-     * @return a fresh TestSubscriber instance
-     * @see #subscribe(Publisher, long)
+     * @return a fresh AssertSubscriber instance
      */
-    public static <T> TestSubscriber<T> create(long n) {
-        return new TestSubscriber<>(n);
+    public static <T> AssertSubscriber<T> create(long n) {
+        return new AssertSubscriber<>(n);
     }
 
-    /**
-     * Create a new {@link TestSubscriber} that requests an unbounded number of elements,
-     * and make the specified {@code publisher} subscribe to it.
-     *
-     * @param publisher The publisher to subscribe with
-     * @param <T>       the observed value type
-     * @return a fresh TestSubscriber instance
-     */
-    public static <T> TestSubscriber<T> subscribe(Publisher<T> publisher) {
-        TestSubscriber<T> subscriber = new TestSubscriber<>();
-        publisher.subscribe(subscriber);
-        return subscriber;
-    }
-
-    /**
-     * Create a new {@link TestSubscriber} that requests initially {@code n} elements,
-     * and make the specified {@code publisher} subscribe to it. You can then manage the
-     * demand with {@link Subscription#request(long)}.
-     *
-     * @param publisher The publisher to subscribe with
-     * @param n         Number of elements to request (can be 0 if you want no initial demand).
-     * @param <T>       the observed value type
-     * @return a fresh TestSubscriber instance
-     */
-    public static <T> TestSubscriber<T> subscribe(Publisher<T> publisher, long n) {
-        TestSubscriber<T> subscriber = new TestSubscriber<>(n);
-        publisher.subscribe(subscriber);
-        return subscriber;
-    }
-
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 //	 constructors
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 
-    public TestSubscriber() {
+    public AssertSubscriber() {
         this(Long.MAX_VALUE);
     }
 
-    public TestSubscriber(long n) {
+    public AssertSubscriber(long n) {
         if (n < 0) {
             throw new IllegalArgumentException("initialRequest >= required but it was " + n);
         }
         REQUESTED.lazySet(this, n);
     }
 
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 //	 Configuration
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 
 
     /**
      * Enable or disabled the values storage. It is enabled by default, and can be disable
      * in order to be able to perform performance benchmarks or tests with a huge amount
      * values.
-     *
      * @param enabled enable value storage?
      * @return this
      */
-    public final TestSubscriber<T> configureValuesStorage(boolean enabled) {
+    public final AssertSubscriber<T> configureValuesStorage(boolean enabled) {
         this.valuesStorage = enabled;
         return this;
     }
@@ -304,11 +257,10 @@ public class TestSubscriber<T>
     /**
      * Configure the timeout in seconds for waiting next values to be received (3 seconds
      * by default).
-     *
      * @param timeout the new default value timeout duration
      * @return this
      */
-    public final TestSubscriber<T> configureValuesTimeout(Duration timeout) {
+    public final AssertSubscriber<T> configureValuesTimeout(Duration timeout) {
         this.valuesTimeout = timeout;
         return this;
     }
@@ -322,18 +274,15 @@ public class TestSubscriber<T>
         return establishedFusionMode;
     }
 
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 //	 Assertions
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 
     /**
      * Assert a complete successfully signal has been received.
-     *
      * @return this
      */
-    public final TestSubscriber<T> assertComplete() {
+    public final AssertSubscriber<T> assertComplete() {
         assertNoError();
         int c = completionCount;
         if (c == 0) {
@@ -348,12 +297,11 @@ public class TestSubscriber<T>
     /**
      * Assert the specified values have been received. Values storage should be enabled to
      * use this method.
-     *
      * @param expectedValues the values to assert
-     * @return this
      * @see #configureValuesStorage(boolean)
+     * @return this
      */
-    public final TestSubscriber<T> assertContainValues(Set<? extends T> expectedValues) {
+    public final AssertSubscriber<T> assertContainValues(Set<? extends T> expectedValues) {
         if (!valuesStorage) {
             throw new IllegalStateException(
                     "Using assertNoValues() requires enabling values storage");
@@ -370,17 +318,18 @@ public class TestSubscriber<T>
                 T t2 = expected.next();
                 if (!values.contains(t2)) {
                     throw new AssertionError("The element is not contained in the " +
-                            "received resuls" +
-                            " = " + valueAndClass(t2) + " :: " + values, null);
+                            "received results" +
+                            " = " + valueAndClass(t2), null);
                 }
-            } else {
+            }
+            else{
                 break;
             }
         }
         return this;
     }
 
-    public final TestSubscriber<T> assertContainValue(T expectedValue) {
+    public final AssertSubscriber<T> assertContainValue(T expectedValue) {
         if (!valuesStorage) {
             throw new IllegalStateException(
                     "Using assertNoValues() requires enabling values storage");
@@ -394,7 +343,7 @@ public class TestSubscriber<T>
 
         return this;
     }
-    public final TestSubscriber<T> assertDoesNotContainValue(T expectedValue) {
+    public final AssertSubscriber<T> assertDoesNotContainValue(T expectedValue) {
         if (!valuesStorage) {
             throw new IllegalStateException(
                     "Using assertNoValues() requires enabling values storage");
@@ -411,10 +360,9 @@ public class TestSubscriber<T>
 
     /**
      * Assert an error signal has been received.
-     *
      * @return this
      */
-    public final TestSubscriber<T> assertError() {
+    public final AssertSubscriber<T> assertError() {
         assertNotComplete();
         int s = errors.size();
         if (s == 0) {
@@ -428,11 +376,10 @@ public class TestSubscriber<T>
 
     /**
      * Assert an error signal has been received.
-     *
      * @param clazz The class of the exception contained in the error signal
      * @return this
      */
-    public final TestSubscriber<T> assertError(Class<? extends Throwable> clazz) {
+    public final AssertSubscriber<T> assertError(Class<? extends Throwable> clazz) {
         assertNotComplete();
         int s = errors.size();
         if (s == 0) {
@@ -451,7 +398,7 @@ public class TestSubscriber<T>
         return this;
     }
 
-    public final TestSubscriber<T> assertErrorMessage(String message) {
+    public final AssertSubscriber<T> assertErrorMessage(String message) {
         assertNotComplete();
         int s = errors.size();
         if (s == 0) {
@@ -474,13 +421,11 @@ public class TestSubscriber<T>
 
     /**
      * Assert an error signal has been received.
-     *
      * @param expectation A method that can verify the exception contained in the error signal
-     *                    and throw an exception (like an {@link AssertionError}) if the
-     *                    exception is not valid.
+     * and throw an exception (like an {@link AssertionError}) if the exception is not valid.
      * @return this
      */
-    public final TestSubscriber<T> assertErrorWith(Consumer<? super Throwable> expectation) {
+    public final AssertSubscriber<T> assertErrorWith(Consumer<? super Throwable> expectation) {
         assertNotComplete();
         int s = errors.size();
         if (s == 0) {
@@ -500,7 +445,7 @@ public class TestSubscriber<T>
      *
      * @return this
      */
-    public final TestSubscriber<T> assertFuseableSource() {
+    public final AssertSubscriber<T> assertFuseableSource() {
         if (qs == null) {
             throw new AssertionError("Upstream was not Fuseable");
         }
@@ -512,14 +457,14 @@ public class TestSubscriber<T>
      *
      * @return this
      */
-    public final TestSubscriber<T> assertFusionEnabled() {
+    public final AssertSubscriber<T> assertFusionEnabled() {
         if (establishedFusionMode != Fuseable.SYNC && establishedFusionMode != Fuseable.ASYNC) {
             throw new AssertionError("Fusion was not enabled");
         }
         return this;
     }
 
-    public final TestSubscriber<T> assertFusionMode(int expectedMode) {
+    public final AssertSubscriber<T> assertFusionMode(int expectedMode) {
         if (establishedFusionMode != expectedMode) {
             throw new AssertionError("Wrong fusion mode: expected: " + fusionModeName(
                     expectedMode) + ", actual: " + fusionModeName(establishedFusionMode));
@@ -532,7 +477,7 @@ public class TestSubscriber<T>
      *
      * @return this
      */
-    public final TestSubscriber<T> assertFusionRejected() {
+    public final AssertSubscriber<T> assertFusionRejected() {
         if (establishedFusionMode != Fuseable.NONE) {
             throw new AssertionError("Fusion was granted");
         }
@@ -541,10 +486,9 @@ public class TestSubscriber<T>
 
     /**
      * Assert no error signal has been received.
-     *
      * @return this
      */
-    public final TestSubscriber<T> assertNoError() {
+    public final AssertSubscriber<T> assertNoError() {
         int s = errors.size();
         if (s == 1) {
             Throwable e = errors.get(0);
@@ -562,10 +506,9 @@ public class TestSubscriber<T>
      *
      * @return this
      */
-    public final TestSubscriber<T> assertNoValues() {
+    public final AssertSubscriber<T> assertNoValues() {
         if (valueCount != 0) {
-            throw new AssertionError("No values expected but received: [length = " + values.size
-					() + "] " + values,
+            throw new AssertionError("No values expected but received: [length = " + values.size() + "] " + values,
                     null);
         }
         return this;
@@ -573,10 +516,9 @@ public class TestSubscriber<T>
 
     /**
      * Assert that the upstream was not a Fuseable source.
-     *
      * @return this
      */
-    public final TestSubscriber<T> assertNonFuseableSource() {
+    public final AssertSubscriber<T> assertNonFuseableSource() {
         if (qs != null) {
             throw new AssertionError("Upstream was Fuseable");
         }
@@ -585,10 +527,9 @@ public class TestSubscriber<T>
 
     /**
      * Assert no complete successfully signal has been received.
-     *
      * @return this
      */
-    public final TestSubscriber<T> assertNotComplete() {
+    public final AssertSubscriber<T> assertNotComplete() {
         int c = completionCount;
         if (c == 1) {
             throw new AssertionError("Completed", null);
@@ -604,7 +545,7 @@ public class TestSubscriber<T>
      *
      * @return this
      */
-    public final TestSubscriber<T> assertNotSubscribed() {
+    public final AssertSubscriber<T> assertNotSubscribed() {
         int s = subscriptionCount;
 
         if (s == 1) {
@@ -619,10 +560,9 @@ public class TestSubscriber<T>
 
     /**
      * Assert no complete successfully or error signal has been received.
-     *
      * @return this
      */
-    public final TestSubscriber<T> assertNotTerminated() {
+    public final AssertSubscriber<T> assertNotTerminated() {
         if (cdl.getCount() == 0) {
             throw new AssertionError("Terminated", null);
         }
@@ -631,10 +571,9 @@ public class TestSubscriber<T>
 
     /**
      * Assert subscription occurred (once).
-     *
      * @return this
      */
-    public final TestSubscriber<T> assertSubscribed() {
+    public final AssertSubscriber<T> assertSubscribed() {
         int s = subscriptionCount;
 
         if (s == 0) {
@@ -649,10 +588,9 @@ public class TestSubscriber<T>
 
     /**
      * Assert either complete successfully or error signal has been received.
-     *
      * @return this
      */
-    public final TestSubscriber<T> assertTerminated() {
+    public final AssertSubscriber<T> assertTerminated() {
         if (cdl.getCount() != 0) {
             throw new AssertionError("Not terminated", null);
         }
@@ -663,12 +601,12 @@ public class TestSubscriber<T>
      * Assert {@code n} values has been received.
      *
      * @param n the expected value count
+     *
      * @return this
      */
-    public final TestSubscriber<T> assertValueCount(long n) {
+    public final AssertSubscriber<T> assertValueCount(long n) {
         if (valueCount != n) {
-            throw new AssertionError("Different value count: expected = " + n + ", actual = " +
-					valueCount,
+            throw new AssertionError("Different value count: expected = " + n + ", actual = " + valueCount,
                     null);
         }
         return this;
@@ -679,15 +617,13 @@ public class TestSubscriber<T>
      * passed {@link Iterable}. Values storage
      * should be enabled to
      * use this method.
-     *
      * @param expectedSequence the values to assert
-     * @return this
      * @see #configureValuesStorage(boolean)
+     * @return this
      */
-    public final TestSubscriber<T> assertValueSequence(Iterable<? extends T> expectedSequence) {
+    public final AssertSubscriber<T> assertValueSequence(Iterable<? extends T> expectedSequence) {
         if (!valuesStorage) {
-            throw new IllegalStateException("Using assertNoValues() requires enabling values " +
-                    "storage");
+            throw new IllegalStateException("Using assertNoValues() requires enabling values storage");
         }
         Iterator<T> actual = values.iterator();
         Iterator<? extends T> expected = expectedSequence.iterator();
@@ -699,8 +635,7 @@ public class TestSubscriber<T>
                 T t1 = actual.next();
                 T t2 = expected.next();
                 if (!Objects.equals(t1, t2)) {
-                    throw new AssertionError("The element with index " + i + " does not match: " +
-							"expected = " + valueAndClass(t2) + ", actual = "
+                    throw new AssertionError("The element with index " + i + " does not match: expected = " + valueAndClass(t2) + ", actual = "
                             + valueAndClass(
                             t1), null);
                 }
@@ -721,11 +656,13 @@ public class TestSubscriber<T>
      * storage should be enabled to use this method.
      *
      * @param expectedValues the values to assert
+     *
      * @return this
+     *
      * @see #configureValuesStorage(boolean)
      */
     @SafeVarargs
-    public final TestSubscriber<T> assertValues(T... expectedValues) {
+    public final AssertSubscriber<T> assertValues(T... expectedValues) {
         return assertValueSequence(Arrays.asList(expectedValues));
     }
 
@@ -734,20 +671,21 @@ public class TestSubscriber<T>
      * storage should be enabled to use this method.
      *
      * @param expectations One or more methods that can verify the values and throw a
-     *                     exception (like an {@link AssertionError}) if the value is not valid.
+     * exception (like an {@link AssertionError}) if the value is not valid.
+     *
      * @return this
+     *
      * @see #configureValuesStorage(boolean)
      */
     @SafeVarargs
-    public final TestSubscriber<T> assertValuesWith(Consumer<T>... expectations) {
+    public final AssertSubscriber<T> assertValuesWith(Consumer<T>... expectations) {
         if (!valuesStorage) {
             throw new IllegalStateException(
                     "Using assertNoValues() requires enabling values storage");
         }
         final int expectedValueCount = expectations.length;
         if (expectedValueCount != values.size()) {
-            throw new AssertionError("Different value count: expected = " + expectedValueCount +
-                    ", actual = " + valueCount, null);
+            throw new AssertionError("Different value count: expected = " + expectedValueCount + ", actual = " + valueCount, null);
         }
         for (int i = 0; i < expectedValueCount; i++) {
             Consumer<T> consumer = expectations[i];
@@ -757,18 +695,15 @@ public class TestSubscriber<T>
         return this;
     }
 
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 //	 Await methods
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 
     /**
      * Blocking method that waits until a complete successfully or error signal is received.
-     *
      * @return this
      */
-    public final TestSubscriber<T> await() {
+    public final AssertSubscriber<T> await() {
         if (cdl.getCount() == 0) {
             return this;
         }
@@ -783,11 +718,10 @@ public class TestSubscriber<T>
     /**
      * Blocking method that waits until a complete successfully or error signal is received
      * or until a timeout occurs.
-     *
      * @param timeout The timeout value
      * @return this
      */
-    public final TestSubscriber<T> await(Duration timeout) {
+    public final AssertSubscriber<T> await(Duration timeout) {
         if (cdl.getCount() == 0) {
             return this;
         }
@@ -796,7 +730,8 @@ public class TestSubscriber<T>
                 throw new AssertionError("No complete or error signal before timeout");
             }
             return this;
-        } catch (InterruptedException ex) {
+        }
+        catch (InterruptedException ex) {
             throw new AssertionError("Wait interrupted", ex);
         }
     }
@@ -805,11 +740,12 @@ public class TestSubscriber<T>
      * Blocking method that waits until {@code n} next values have been received.
      *
      * @param n the value count to assert
+     *
      * @return this
      */
-    public final TestSubscriber<T> awaitAndAssertNextValueCount(final long n) {
+    public final AssertSubscriber<T> awaitAndAssertNextValueCount(final long n) {
         await(valuesTimeout, () -> {
-            if (valuesStorage) {
+            if(valuesStorage){
                 return String.format("%d out of %d next values received within %d, " +
                                 "values : %s",
                         valueCount - nextValueAssertedCount,
@@ -832,11 +768,12 @@ public class TestSubscriber<T>
      * number of values provided) to assert them.
      *
      * @param values the values to assert
+     *
      * @return this
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public final TestSubscriber<T> awaitAndAssertNextValues(T... values) {
+    public final AssertSubscriber<T> awaitAndAssertNextValues(T... values) {
         final int expectedNum = values.length;
         final List<Consumer<T>> expectations = new ArrayList<>();
         for (int i = 0; i < expectedNum; i++) {
@@ -857,17 +794,16 @@ public class TestSubscriber<T>
     /**
      * Blocking method that waits until {@code n} next values have been received
      * (n is the number of expectations provided) to assert them.
-     *
      * @param expectations One or more methods that can verify the values and throw a
-     *                     exception (like an {@link AssertionError}) if the value is not valid.
+     * exception (like an {@link AssertionError}) if the value is not valid.
      * @return this
      */
     @SafeVarargs
-    public final TestSubscriber<T> awaitAndAssertNextValuesWith(Consumer<T>... expectations) {
+    public final AssertSubscriber<T> awaitAndAssertNextValuesWith(Consumer<T>... expectations) {
         valuesStorage = true;
         final int expectedValueCount = expectations.length;
         await(valuesTimeout, () -> {
-            if (valuesStorage) {
+            if(valuesStorage){
                 return String.format("%d out of %d next values received within %d, " +
                                 "values : %s",
                         valueCount - nextValueAssertedCount,
@@ -883,9 +819,9 @@ public class TestSubscriber<T>
         }, () -> valueCount >= (nextValueAssertedCount + expectedValueCount));
         List<T> nextValuesSnapshot;
         List<T> empty = new ArrayList<>();
-        for (; ; ) {
+        for(;;){
             nextValuesSnapshot = values;
-            if (NEXT_VALUES.compareAndSet(this, values, empty)) {
+            if(NEXT_VALUES.compareAndSet(this, values, empty)){
                 break;
             }
         }
@@ -903,11 +839,9 @@ public class TestSubscriber<T>
         return this;
     }
 
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 //	 Overrides
-//
-// ==============================================================================================================
+//	 ==============================================================================================================
 
     @Override
     public void cancel() {
@@ -920,17 +854,10 @@ public class TestSubscriber<T>
         }
     }
 
-    @Override
-    public final boolean isCancelled() {
+    final boolean isCancelled() {
         return s == Operators.cancelledSubscription();
     }
 
-    @Override
-    public final boolean isStarted() {
-        return s != null;
-    }
-
-    @Override
     public final boolean isTerminated() {
         return cdl.getCount() == 0;
     }
@@ -969,7 +896,8 @@ public class TestSubscriber<T>
                     }
                 }
             }
-        } else {
+        }
+        else {
             valueCount++;
             if (valuesStorage) {
                 List<T> nextValuesSnapshot;
@@ -994,18 +922,18 @@ public class TestSubscriber<T>
         if (requestMode >= 0) {
             if (!setWithoutRequesting(s)) {
                 if (!isCancelled()) {
-                    errors.add(new IllegalStateException("Subscription already set: " +
+                    errors.add(new IllegalStateException("Subscription already push: " +
                             subscriptionCount));
                 }
             } else {
                 if (s instanceof Fuseable.QueueSubscription) {
-                    this.qs = (Fuseable.QueueSubscription<T>) s;
+                    this.qs = (Fuseable.QueueSubscription<T>)s;
 
                     int m = qs.requestFusion(requestMode);
                     establishedFusionMode = m;
 
                     if (m == Fuseable.SYNC) {
-                        for (; ; ) {
+                        for (;;) {
                             T v = qs.poll();
                             if (v == null) {
                                 onComplete();
@@ -1014,17 +942,19 @@ public class TestSubscriber<T>
 
                             onNext(v);
                         }
-                    } else {
+                    }
+                    else {
                         requestDeferred();
                     }
-                } else {
+                }
+                else {
                     requestDeferred();
                 }
             }
         } else {
             if (!set(s)) {
                 if (!isCancelled()) {
-                    errors.add(new IllegalStateException("Subscription already set: " +
+                    errors.add(new IllegalStateException("Subscription already push: " +
                             subscriptionCount));
                 }
             }
@@ -1040,24 +970,17 @@ public class TestSubscriber<T>
         }
     }
 
-    @Override
-    public final long requestedFromDownstream() {
-        return requested;
-    }
-
     /**
-     * Setup what fusion mode should be requested from the incomining
+     * Setup what fusion mode should be requested from the incoming
      * Subscription if it happens to be QueueSubscription
-     *
      * @param requestMode the mode to request, see Fuseable constants
      * @return this
      */
-    public final TestSubscriber<T> requestedFusionMode(int requestMode) {
+    public final AssertSubscriber<T> requestedFusionMode(int requestMode) {
         this.requestedFusionMode = requestMode;
         return this;
     }
 
-    @Override
     public Subscription upstream() {
         return s;
     }
@@ -1072,7 +995,7 @@ public class TestSubscriber<T>
         if (a != null) {
             a.request(n);
         } else {
-            Operators.addAndGet(REQUESTED, this, n);
+            Operators.addCap(REQUESTED, this, n);
 
             a = s;
 
@@ -1101,7 +1024,7 @@ public class TestSubscriber<T>
      * Atomically sets the single subscription and requests the missed amount from it.
      *
      * @param s
-     * @return false if this arbiter is cancelled or there was a subscription already set
+     * @return false if this arbiter is cancelled or there was a subscription already push
      */
     protected final boolean set(Subscription s) {
         Objects.requireNonNull(s, "s");
@@ -1140,13 +1063,12 @@ public class TestSubscriber<T>
 
     /**
      * Sets the Subscription once but does not request anything.
-     *
-     * @param s the Subscription to set
+     * @param s the Subscription to push
      * @return true if successful, false if the current subscription is not null
      */
     protected final boolean setWithoutRequesting(Subscription s) {
         Objects.requireNonNull(s, "s");
-        for (; ; ) {
+        for (;;) {
             Subscription a = this.s;
             if (a == Operators.cancelledSubscription()) {
                 s.cancel();
@@ -1169,7 +1091,8 @@ public class TestSubscriber<T>
      * active state and the potential errors so far.
      *
      * @param message the message
-     * @param cause   the optional Throwable cause
+     * @param cause the optional Throwable cause
+     *
      * @throws AssertionError as expected
      */
     protected final void assertionError(String message, Throwable cause) {
@@ -1217,17 +1140,17 @@ public class TestSubscriber<T>
         return o + " (" + o.getClass().getSimpleName() + ")";
     }
 
-    public List<T> values() {
+    public List<T> values(){
         return values;
     }
 
 
-    public final TestSubscriber<T> assertNoEvents() {
+    public final AssertSubscriber<T> assertNoEvents() {
         return assertNoValues().assertNoError().assertNotComplete();
     }
 
     @SafeVarargs
-    public final TestSubscriber<T> assertIncomplete(T... values) {
+    public final AssertSubscriber<T> assertIncomplete(T... values) {
         return assertValues(values).assertNotComplete().assertNoError();
     }
 }

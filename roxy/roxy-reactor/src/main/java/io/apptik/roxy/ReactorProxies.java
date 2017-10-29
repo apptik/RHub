@@ -26,11 +26,11 @@ final public class ReactorProxies {
 
     public static ReactorProcProxy emitterProcessorProxy() {
         //todo .connect() later when first subscribed to
-        return new ReactorProcProxy(EmitterProcessor.create().connect(), PASS);
+        return new ReactorProcProxy(EmitterProcessor.create(false), PASS);
     }
 
     public static ReactorProcProxy serializedEmitterProcessorProxy() {
-        return new ReactorProcProxy(EmitterProcessor.create().serialize().connect(), PASS);
+        return new ReactorProcProxy(EmitterProcessor.create(false).serialize(), PASS);
     }
 
     public static ReactorProcProxy topicProcessorProxy() {
@@ -66,11 +66,11 @@ final public class ReactorProxies {
     }
 
     public static ReactorProcProxy safeEmitterProcessorProxy() {
-        return new ReactorProcProxy(EmitterProcessor.create().connect(), WRAP);
+        return new ReactorProcProxy(EmitterProcessor.create(false), WRAP);
     }
 
     public static ReactorProcProxy safeSerializedEmitterProcessorProxy() {
-        return new ReactorProcProxy(EmitterProcessor.create().serialize().connect(), WRAP);
+        return new ReactorProcProxy(EmitterProcessor.create(false).serialize(), WRAP);
     }
 
     public static ReactorProcProxy safeTopicProcessorProxy() {

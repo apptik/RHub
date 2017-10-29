@@ -26,4 +26,5 @@ include ':example-java',
 if (System.getenv()['ANDROID_HOME'] != null) {
     println System.getenv()['ANDROID_HOME']
     include ':example-app'
+    include ':example-app-kotlin'
 }
