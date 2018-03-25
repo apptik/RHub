@@ -1,3 +1,5 @@
+import org.gradle.internal.jvm.Jvm
+
 apply plugin: 'java'
 
 dependencies {
@@ -6,7 +8,9 @@ dependencies {
     compile rootProject.ext.autoservice
     compile rootProject.ext.autocommon
     compile rootProject.ext.javapoet
-    compileOnly files(org.gradle.internal.jvm.Jvm.current().getToolsJar())
+    if(Jvm.current().getToolsJar()) {
+        compileOnly files(Jvm.current().getToolsJar())
+    }
 
 }
 
